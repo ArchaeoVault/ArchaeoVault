@@ -15,5 +15,11 @@
   "bugs": {
     "url": "https://github.com/ArchaeoVault/ArchaeoVault/issues"
   },
-  "homepage": "https://github.com/ArchaeoVault/ArchaeoVault#readme"
+  "homepage": "https://github.com/ArchaeoVault/ArchaeoVault#readme",
+  "devDependencies": {
+    "@testing-library/react": "^16.2.0"
+  },
+  "dependencies": {
+    "web-vitals": "^4.2.4"
+  }
 }

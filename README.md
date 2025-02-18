@@ -16,7 +16,7 @@
 
     a. Make sure all your work is committed  
 
-    b. Pull any changes from the main branch.
+    b. Pull any changes from the main branch. By opening the menu -> hovering over the Pull, Push option -> Pull from -> origin -> origin/main
 
     c. Resolve merge conflicts if there are any 
 

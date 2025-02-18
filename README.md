@@ -22,7 +22,7 @@
 
     d. Commit and new changes that may have been made when resolving conflicts 
 
-    e. Push and open a pull request with the branch name and the a longer description of the user story in the title and give a description! 
+    e. Push to origin/main from the Pull, Push menu and then by clicking the push to option. Then open a pull request with the branch name and the a longer description of the user story in the title and give a description! To do this visit the repository homepage on github and you should see a notifcation on the screen asking if you want to create a pull request.
 
     For example:
     Title - ArchaeoVault-27; Description - Added instructions on the git workflow to the readme file

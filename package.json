@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/ArchaeoVault/ArchaeoVault#readme",
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@testing-library/react": "^16.2.0"
   },
   "dependencies": {

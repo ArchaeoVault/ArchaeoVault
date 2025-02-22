@@ -34,7 +34,7 @@ body {
   padding: 0.4rem 1rem;
   border-radius: 20px;
   background-color: #333;
-  color: white;
+  color: white !important;
   text-decoration: none;
 }
 

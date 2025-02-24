@@ -21,7 +21,7 @@ const HomePage = () => {
       <section className="hero">
         <div className="hero-image">
           <img
-            src="https://via.placeholder.com/600x600"
+            src="/placeholder.jpg"
             alt="Artifact Display"
           />
         </div>

@@ -23,16 +23,11 @@
     font-size: 1rem;
   }
   
-  .nav-link, .login-btn {
+  .nav-links button {
     margin: 0 1rem;
     text-decoration: none;
     color: #333;
     font-size: 1rem;
-    padding: 0.4rem 1rem;
-    border-radius: 20px;
-    background-color: transparent;
-    cursor: pointer;
-    border: none;
   }
   
   .search-button {

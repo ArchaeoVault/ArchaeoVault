@@ -24,11 +24,14 @@
   }
   
   .nav-links button {
-    margin: 0 1rem;
-    text-decoration: none;
-    color: #333;
-    font-size: 1rem;
-  }
+      margin: 0 1rem;
+      text-decoration: none;
+      color: #333;
+      font-size: 1rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
   
   .search-button {
     padding: 0.4rem 1rem;

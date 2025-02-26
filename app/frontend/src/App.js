@@ -6,20 +6,17 @@ import ForgotPassword from "./ForgotPassword";
 
 
 const App = () => {
+  const [showLogin, setShowLogin] = useState(false);
 
   return (
-    <Router> {/* Wrap the entire app in Router */}
-      <div>
-        <Header /> {/* Include the Header to have the logo with navigation */}
-        <Routes> 
-          {/* Define the routes for each page */}
-          <Route path="/" element={<HomePage/>} />  {/* Homepage route */}
-          <Route path="/login" element={<Login />} /> {/* Login page route */}
-        </Routes>
-      </div>
-    </Router>
+   <Router>
+     <Routes>
+       <Route path="/login" element={<Login />} />
+       <Route path="/forgot-password" element={<ForgotPassword />} />
+       <Route path="/" element={showLogin ? <Login /> : <HomePage setShowLogin={setShowLogin} />} />
+     </Routes>
+   </Router>
   );
-
 };
 
 export default App;

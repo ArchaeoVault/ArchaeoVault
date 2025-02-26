@@ -6,8 +6,7 @@ import "./Homepage.css";
 const HomePage = () => {
   return (
     <div className="homepage">
-      {/* Pass the setShowLogin prop down to Header */}
-      <Header setShowLogin={setShowLogin} />
+      <Header />
       <section className="hero">
         <div className="hero-image">
           <img src="/placeholder.jpg" alt="Artifact Display" />

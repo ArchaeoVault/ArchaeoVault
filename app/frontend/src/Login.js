@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 import './Login.css';
 import Header from './Header';
 import Footer from './Footer';
 
 
+
 const clientId = 'YOUR_GOOGLE_CLIENT_ID_HERE'; // Replace with your actual Google Client ID
 
 const Login = () => {
   const [isSignup, setIsSignup] = useState(false);
+  const isLogin = !isSignup;
 
   const handleToggle = () => {
     setIsSignup(!isSignup);
@@ -76,6 +79,11 @@ const Login = () => {
               {isSignup ? 'Log In' : 'Sign Up'}
             </span>
           </div>
+            {isLogin && (
+            <p className="forgot-password">
+              <Link to="/forgot-password">Forgot Password?</Link>
+            </p>
+          )}
         </div>
       </div>
       <Footer />

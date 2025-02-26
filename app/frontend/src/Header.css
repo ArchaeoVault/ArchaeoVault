@@ -12,8 +12,11 @@
   }
   
   .logo {
-    font-size: 1.8rem;
-    font-weight: bold;
+    font-size: 1.8rem;  /* Logo font size (can adjust this if needed) */
+    font-weight: bold;  /* Make logo text bold */
+    color: #333;        /* Color same as nav links */
+    text-decoration: none;  /* Remove underline */
+    margin: 0 1rem; 
   }
   
   .nav-links a {

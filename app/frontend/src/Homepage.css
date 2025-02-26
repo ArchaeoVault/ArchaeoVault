@@ -1,0 +1,66 @@
+/* Homepage css */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Georgia', serif;
+  background-color: #f6f6f6;
+}
+
+/* Hero Section */
+.hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4rem 2rem;
+  background-color: #e0dedb;
+}
+
+.hero-image img {
+  width: 100%;
+  max-width: 500px;
+  border-radius: 10px;
+}
+
+.hero-content {
+  max-width: 600px;
+  margin-left: 2rem;
+}
+
+.hero-content h1 {
+  font-size: 2.8rem;
+  margin-bottom: 1rem;
+}
+
+.hero-content p {
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
+  color: #555;
+}
+
+.learn-more {
+  padding: 0.6rem 1.5rem;
+  border-radius: 20px;
+  background-color: #333;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .hero {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .hero-content {
+    margin-left: 0;
+    margin-top: 2rem;
+  }
+}

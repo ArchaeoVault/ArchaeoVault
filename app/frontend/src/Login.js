@@ -49,13 +49,12 @@ const Login = () => {
                 <input type="email" placeholder="Email" required />
               </>
             )}
+            <input type="password" placeholder="Email" required />
             <input type="password" placeholder="Password" required />
-            <input type="password" placeholder="Confirm Password" required />
             <button type="submit">{isSignup ? 'Sign Up' : 'Log In'}</button>
           </form>
 
           <div className="google-login-container">
-            
             <GoogleOAuthProvider clientId={clientId}>
               <GoogleLogin
                 onSuccess={handleGoogleSuccess}

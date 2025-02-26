@@ -1,16 +1,31 @@
-// Updated Login.js with Google Sign-In placed under 'Forgot Password?'
-import React from 'react';
+import React, { useState } from 'react';
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 import './Login.css';
 import Header from './Header';
 import Footer from './Footer';
 
-const clientId = 'YOUR_GOOGLE_CLIENT_ID'; // Replace with your Google OAuth Client ID
+
+const clientId = 'YOUR_GOOGLE_CLIENT_ID_HERE'; // Replace with your actual Google Client ID
 
 const Login = () => {
+  const [isSignup, setIsSignup] = useState(false);
+
+  const handleToggle = () => {
+    setIsSignup(!isSignup);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (isSignup) {
+      alert('Sign up successful!');
+    } else {
+      alert('Login successful!');
+    }
+  };
+
   const handleGoogleSuccess = (response) => {
     console.log('Google Sign-In Success:', response);
-    // Handle user authentication with the response.tokenId
+    // Handle user authentication with response.credential or response.tokenId
   };
 
   const handleGoogleFailure = (error) => {
@@ -19,31 +34,50 @@ const Login = () => {
 
   return (
     <>
-    <Header />
-    <div className="auth-container">
-      <div className="auth-card">
-        <h2>Login</h2>
-        <form>
-          <input type="email" placeholder="Email" required />
-          <input type="password" placeholder="Password" required />
-          <button type="submit">Sign In</button>
-        </form>
-        <p className="forgot-password">Forgot Password?</p>
-        <div className="google-login-container">
-          <GoogleOAuthProvider clientId={clientId}>
-            <GoogleLogin
-              onSuccess={handleGoogleSuccess}
-              onError={handleGoogleFailure}
-            />
-          </GoogleOAuthProvider>
+      <Header />
+      <div className="auth-container">
+        <div className="auth-card">
+          <h2>{isSignup ? 'Sign Up' : 'Log In'}</h2>
+          <form onSubmit={handleSubmit}>
+            {isSignup && (
+              <>
+                <input type="text" placeholder="Username" required />
+                <input type="password" placeholder="Confirm Password" required />
+              </>
+            )}
+            <input type="email" placeholder="Email" required />
+            <input type="password" placeholder="Password" required />
+            <button type="submit">{isSignup ? 'Sign Up' : 'Log In'}</button>
+          </form>
+
+          <div className="google-login-container">
+            
+            <GoogleOAuthProvider clientId={clientId}>
+              <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={handleGoogleFailure}
+                width="100%"
+                size="medium"
+                theme="outline"
+                type="standard"
+                logo_alignment="left"
+                shape="pill"
+                text="signin_with"
+                id="googleSignInButton"
+                style={{ display: 'none' }}
+              />
+            </GoogleOAuthProvider>
+          </div>
+
+          <div className="toggle-text">
+            {isSignup ? 'Already have an account?' : "Don't have an account?"}
+            <span className="toggle-link" onClick={handleToggle}>
+              {isSignup ? 'Log In' : 'Sign Up'}
+            </span>
+          </div>
         </div>
-        <p className="toggle-text">
-          Don't have an account?
-          <span className="toggle-link">Sign Up</span>
-        </p>
       </div>
-    </div>
-    <Footer />
+      <Footer />
     </>
   );
 };

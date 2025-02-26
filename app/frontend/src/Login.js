@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import './Login.css';
 import Header from "./Header";
 import Footer from "./Footer";
@@ -12,7 +13,6 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Insert your authentication logic here
     console.log(isLogin ? "Logging in..." : "Signing up...");
   };
 
@@ -39,9 +39,11 @@ const Login = () => {
               {isLogin ? " Sign Up" : " Login"}
             </span>
           </p>
-          <p className="forgot-password">
-            <a href="/forgot-password">Forgot Password?</a>
-          </p>
+          {isLogin && (
+            <p className="forgot-password">
+              <Link to="/forgot-password">Forgot Password?</Link>
+            </p>
+          )}
         </div>
       </div>
       <Footer />

@@ -1,19 +1,35 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 import './Login.css';
-import Header from "./Header";
-import Footer from "./Footer";
+import Header from './Header';
+import Footer from './Footer';
+
+
+const clientId = 'YOUR_GOOGLE_CLIENT_ID_HERE'; // Replace with your actual Google Client ID
 
 const Login = () => {
-  const [isLogin, setIsLogin] = useState(true);
+  const [isSignup, setIsSignup] = useState(false);
 
-  const toggleMode = () => {
-    setIsLogin(!isLogin);
+  const handleToggle = () => {
+    setIsSignup(!isSignup);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(isLogin ? "Logging in..." : "Signing up...");
+    if (isSignup) {
+      alert('Sign up successful!');
+    } else {
+      alert('Login successful!');
+    }
+  };
+
+  const handleGoogleSuccess = (response) => {
+    console.log('Google Sign-In Success:', response);
+    // Handle user authentication with response.credential or response.tokenId
+  };
+
+  const handleGoogleFailure = (error) => {
+    console.error('Google Sign-In Failure:', error);
   };
 
   return (
@@ -21,33 +37,50 @@ const Login = () => {
       <Header />
       <div className="auth-container">
         <div className="auth-card">
-          <h2>{isLogin ? 'Login' : 'Sign Up'}</h2>
+          <h2>{isSignup ? 'Sign Up' : 'Log In'}</h2>
           <form onSubmit={handleSubmit}>
-            {!isLogin && (
-              <input type="text" placeholder="Full Name" required />
+            {isSignup && (
+              <>
+                <input type="text" placeholder="First Name" required />
+                <input type="text" placeholder="Last Name" required />
+                <input type="email" placeholder="Email" required />
+              </>
             )}
-            <input type="email" placeholder="Email" required />
             <input type="password" placeholder="Password" required />
-            {!isLogin && (
-              <input type="password" placeholder="Confirm Password" required />
-            )}
-            <button type="submit">{isLogin ? 'Login' : 'Sign Up'}</button>
+            <input type="password" placeholder="Confirm Password" required />
+            <button type="submit">{isSignup ? 'Sign Up' : 'Log In'}</button>
           </form>
-          <p className="toggle-text">
-            {isLogin ? "Don't have an account?" : "Already have an account?"}
-            <span className="toggle-link" onClick={toggleMode}>
-              {isLogin ? " Sign Up" : " Login"}
+
+          <div className="google-login-container">
+            
+            <GoogleOAuthProvider clientId={clientId}>
+              <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={handleGoogleFailure}
+                width="100%"
+                size="medium"
+                theme="outline"
+                type="standard"
+                logo_alignment="left"
+                shape="pill"
+                text="signin_with"
+                id="googleSignInButton"
+                style={{ display: 'none' }}
+              />
+            </GoogleOAuthProvider>
+          </div>
+
+          <div className="toggle-text">
+            {isSignup ? 'Already have an account?' : "Don't have an account?"}
+            <span className="toggle-link" onClick={handleToggle}>
+              {isSignup ? 'Log In' : 'Sign Up'}
             </span>
-          </p>
-          {isLogin && (
-            <p className="forgot-password">
-              <Link to="/forgot-password">Forgot Password?</Link>
-            </p>
-          )}
+          </div>
         </div>
       </div>
       <Footer />
     </>
   );
 };
+
 export default Login;

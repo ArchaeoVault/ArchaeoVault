@@ -39,6 +39,9 @@ const Login = () => {
               {isLogin ? " Sign Up" : " Login"}
             </span>
           </p>
+          <p className="forgot-password">
+            <a href="/forgot-password">Forgot Password?</a>
+          </p>
         </div>
       </div>
       <Footer />

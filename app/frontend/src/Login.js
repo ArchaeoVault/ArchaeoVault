@@ -1,9 +1,5 @@
 import React, { useState } from 'react';
-<<<<<<< HEAD
-import { Link } from 'react-router-dom';
-=======
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
->>>>>>> 63ddfaa7eadd65eb8152e7b29aa1f77b8bd7264d
 import './Login.css';
 import Header from './Header';
 import Footer from './Footer';
@@ -20,9 +16,6 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-<<<<<<< HEAD
-    console.log(isLogin ? "Logging in..." : "Signing up...");
-=======
     if (isSignup) {
       alert('Sign up successful!');
     } else {
@@ -37,7 +30,6 @@ const Login = () => {
 
   const handleGoogleFailure = (error) => {
     console.error('Google Sign-In Failure:', error);
->>>>>>> 63ddfaa7eadd65eb8152e7b29aa1f77b8bd7264d
   };
 
   return (
@@ -49,13 +41,12 @@ const Login = () => {
           <form onSubmit={handleSubmit}>
             {isSignup && (
               <>
-                <input type="text" placeholder="First Name" required />
-                <input type="text" placeholder="Last Name" required />
-                <input type="email" placeholder="Email" required />
+                <input type="text" placeholder="Username" required />
+                <input type="password" placeholder="Confirm Password" required />
               </>
             )}
+            <input type="email" placeholder="Email" required />
             <input type="password" placeholder="Password" required />
-            <input type="password" placeholder="Confirm Password" required />
             <button type="submit">{isSignup ? 'Sign Up' : 'Log In'}</button>
           </form>
 
@@ -83,16 +74,7 @@ const Login = () => {
             <span className="toggle-link" onClick={handleToggle}>
               {isSignup ? 'Log In' : 'Sign Up'}
             </span>
-<<<<<<< HEAD
-          </p>
-          {isLogin && (
-            <p className="forgot-password">
-              <Link to="/forgot-password">Forgot Password?</Link>
-            </p>
-          )}
-=======
           </div>
->>>>>>> 63ddfaa7eadd65eb8152e7b29aa1f77b8bd7264d
         </div>
       </div>
       <Footer />

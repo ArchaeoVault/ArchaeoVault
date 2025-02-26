@@ -24,11 +24,11 @@ const Footer = ({ setShowLogin }) => {
           </div>
           <div className="footer-section">
             <h3>Follow</h3>
-            <a href="#">Facebook</a>
+            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">Facebook</a>
             <br />
-            <a href="#">Instagram</a>
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">Instagram</a>
             <br />
-            <a href="#">Twitter</a>
+            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">Twitter</a>
           </div>
         </div>
       </footer>

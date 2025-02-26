@@ -3,11 +3,10 @@ import Header from "./Header";
 import Footer from "./Footer";
 import "./Homepage.css";
 
-const HomePage = ({ setShowLogin }) => {
+const HomePage = () => {
   return (
     <div className="homepage">
-      {/* Pass the setShowLogin prop down to Header */}
-      <Header setShowLogin={setShowLogin} />
+      <Header />
       <section className="hero">
         <div className="hero-image">
           <img src="/placeholder.jpg" alt="Artifact Display" />

@@ -1,7 +1,7 @@
 import React from 'react';
 import './Footer.css';
 
-const Footer = ({ setShowLogin }) => {
+const Footer = () => {
   return (
     <div className="footer">
       {/* Footer Section */}

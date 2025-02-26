@@ -3,7 +3,7 @@ import Header from "./Header";
 import Footer from "./Footer";
 import "./Homepage.css";
 
-const HomePage = ({ setShowLogin }) => {
+const HomePage = () => {
   return (
     <div className="homepage">
       {/* Pass the setShowLogin prop down to Header */}

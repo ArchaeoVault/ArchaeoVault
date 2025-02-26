@@ -3,7 +3,7 @@ import os
 from .base import *
 DEBUG = False
 
-ALLOWED_HOSTS = [os.environ.get('DJANGO_ALLOWED_HOST_1', 'None'), os.environ.get('DJANGO_ALLOWED_HOST_2', 'None')]
+ALLOWED_HOSTS = [os.environ.get('DJANGO_ALLOWED_HOST_1', 'None'), os.environ.get('DJANGO_ALLOWED_HOST_2', 'None'), os.environ.get('DJANGO_ALLOWED_HOST_3', 'None')]
 
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'None')
 

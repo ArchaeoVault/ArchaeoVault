@@ -7,7 +7,7 @@ import Footer from './Footer';
 
 
 
-const clientId = 'YOUR_GOOGLE_CLIENT_ID_HERE'; // Replace with your actual Google Client ID
+const clientId = 'YOUR_GOOGLE_CLIENT_ID_HERE'; // Replace with actual Google Client ID
 
 const Login = () => {
   const [isSignup, setIsSignup] = useState(false);

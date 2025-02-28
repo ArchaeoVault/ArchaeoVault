@@ -1,16 +1,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
-import './Login.css';
+import './Signup.css';
 import Header from './Header';
 import Footer from './Footer';
 
 const clientId = 'YOUR_GOOGLE_CLIENT_ID_HERE'; // Replace with actual Google Client ID
 
-const Login = () => {
+const Signup = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert('Login successful!');
+    alert('Sign up successful!');
   };
 
   const handleGoogleSuccess = (response) => {
@@ -26,11 +26,14 @@ const Login = () => {
       <Header />
       <div className="auth-container">
         <div className="auth-card">
-          <h2>Log In</h2>
+          <h2>Sign Up</h2>
           <form onSubmit={handleSubmit}>
+            <input type="text" placeholder="First Name" required />
+            <input type="text" placeholder="Last Name" required />
             <input type="email" placeholder="Email" required />
             <input type="password" placeholder="Password" required />
-            <button type="submit">Log In</button>
+            <input type="password" placeholder="Confirm Password" required />
+            <button type="submit">Sign Up</button>
           </form>
 
           <div className="google-login-container">
@@ -44,20 +47,17 @@ const Login = () => {
                 type="standard"
                 logo_alignment="left"
                 shape="pill"
-                text="signin_with"
+                text="signup_with"
               />
             </GoogleOAuthProvider>
           </div>
 
           <div className="toggle-text">
-            Don't have an account?{' '}
-            <Link to="/signup" className="toggle-link">
-              Sign Up
+            Already have an account?{' '}
+            <Link to="/login" className="toggle-link">
+              Log In
             </Link>
           </div>
-          <p className="forgot-password">
-            <Link to="/forgot-password">Forgot Password?</Link>
-          </p>
         </div>
       </div>
       <Footer />
@@ -65,4 +65,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Signup;

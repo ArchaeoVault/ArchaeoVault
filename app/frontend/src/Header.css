@@ -1,0 +1,42 @@
+/* Header css*/
+.header {
+    position: fixed;
+    top: 0;
+
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: #e0dedb;
+  }
+  
+  .logo {
+    font-size: 1.8rem;
+    font-weight: bold;
+  }
+  
+  .nav-links a {
+    margin: 0 1rem;
+    text-decoration: none;
+    color: #333;
+    font-size: 1rem;
+  }
+  
+  .nav-links button {
+      margin: 0 1rem;
+      text-decoration: none;
+      color: #333;
+      font-size: 1rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+  
+  .search-button {
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    background-color: #333;
+    color: white !important;
+    text-decoration: none;
+  }

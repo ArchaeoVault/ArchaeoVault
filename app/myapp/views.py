@@ -1,7 +1,18 @@
+import os
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from myapp.forms import *
-
+from django.contrib.auth.models import User
+from django.core.mail import send_mail
+from django.conf import settings
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
+from .forms import UserRegistrationForm
+from django.urls import reverse
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+from django.template.loader import render_to_string
+from .tokens import account_activation_token
 
 
 def login_view(request):
@@ -18,20 +29,55 @@ def login_view(request):
         form = LoginForm()
     return render(request, 'login.html', {'form': form})
 
-def home(request):
-    # Your logic here (e.g., checking conditions, processing data, etc.)
-    message = "Welcome to the Home Page!"
-    items = ['Item 1', 'Item 2', 'Item 3']
 
-    context = {
-        'message': message,
-        'items': items
-    }
-    return render(request, 'home.html', context)
+def create_user(request):
+    if request.method == 'POST':
+        form = UserRegistrationForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.set_password(form.cleaned_data['password'])
+            user.is_active = False 
+            #user.save()
 
+            #this generates the uid
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            token = account_activation_token.make_token(user)
+            verification_link = request.build_absolute_uri(
+                reverse('activate', kwargs={'uidb64': uid, 'token': token})
+            )
+
+            
+            message = Mail(
+                from_email='noreply@archaeovault.com',  
+                to_emails=user.email,
+                subject='Welcome to ArchaeoVault!',
+                html_content=(
+                    f'<h2>Thank you for registering for ArchaeoVault, we really hope you enjoy! '
+                    f'Click on the link below to verify your email address.</h2>'
+                    f'<a href="{verification_link}">Verify your email address</a>'
+                )
+            )
+
+            try:
+                sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
+                response = sg.send(message)
+                print(response.status_code)
+                print(response.body)
+                print(response.headers)
+            except Exception as e:
+                print(str(e) + ' didnt work')
+
+            return redirect('login') 
+    else:
+        form = UserRegistrationForm()
+    return render(request, 'createuser.html', {'form': form})
+
+def activate(request, uidb64, token):
+    
+    return render(request, 'activation_success.html')
 
 def index(request):
-    # Define the context to pass to the template
+  
     context = {
         'message': 'Welcome to the Index Page!',
         'items': ['Item 1', 'Item 2', 'Item 3']

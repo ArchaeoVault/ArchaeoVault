@@ -11,15 +11,6 @@
   z-index: 1000; /* Ensure it stays on top */
 }
 
-  }
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 2rem;
-    background-color: #e0dedb;
-  }
-  
   .logo {
     font-size: 1.8rem;  
     font-weight: bold; 
@@ -123,4 +114,4 @@
 .search-form:hover .search-input {
   border-color: #4CAF50; /* Highlight the input border on hover */
 }
->>>>>>> c117fb43e460a9a8e777daa80722b2741bebc7d8
+

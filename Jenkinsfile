@@ -4,7 +4,11 @@
 pipeline {
     agent any 
     stages{   
-
+        stage('Notify'){
+            steps{
+                slackSend color: "warning", message: "Started `${env.JOB_NAME}#${env.BUILD_NUMBER}`\n\n_The changes:_\n${lastChanges}"
+            }
+        }
         /*
         stage 'Test'
             sh 'virtualenv env -p python3.10'

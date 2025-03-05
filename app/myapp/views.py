@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseServerError
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
+from django.contrib.auth.hashers import check_password
 from myapp.forms import *
 
 
@@ -75,3 +76,47 @@ def create_user_view(request):
         return HttpResponse('User has been created', status = 200)
     else:
         return HttpResponse('Error creating user', status = 400)
+
+def send_reset_password_email_view(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        if not User.objects.filter(username=email).exists():
+            return HttpResponse('Error: User with this email does not exist', status = 400)
+        try:
+            validate_email(email)
+        except ValidationError as e:
+            return HttpResponse('Error: Not a valid email address', status = 400)
+        # generate stuff for the email and then send it(link to change password page or send a code depending on what we choose)
+        return HttpResponse('Email successfully sent', status = 200)
+    else:
+        return HttpResponse('Erro resetting password', status = 400)
+    
+def change_password_view(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        newPassword = request.POST.get('newPassword')
+        confirmPassword = request.POST.get('confirmPassword')
+        # makes sure the user trying to change password actually exists
+        if not User.objects.filter(username=email).exists():
+            return HttpResponse('Error: User with this email does not exist', status = 400)
+        # validates the email, same as the create just in case
+        try:
+            validate_email(email)
+        except ValidationError as e:
+            return HttpResponse('Error: Not a valid email address', status = 400)
+        # make sure the new and confirm password match 
+        if newPassword != confirmPassword:
+            return HttpResponse('Error: Passwords do not match', status = 400)
+        # checks to make sure the new password is not the same as the current
+        user = User.objects.get(username = email)
+        if check_password(newPassword, user.password):
+            return HttpResponse('Error: New Password can not be the same as the old password', status = 400)
+        try:
+            user.set_password(newPassword)
+            user.save()
+        except Exception as e:
+            return HttpResponse('Error in updating password', status = 400)
+        
+        return HttpResponse('Password successfully changed', status = 200)
+    else:
+        return HttpResponse('Error changing password', status = 400)

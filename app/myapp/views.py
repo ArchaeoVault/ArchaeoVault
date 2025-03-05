@@ -12,6 +12,7 @@ from django.conf import settings
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 from .forms import UserRegistrationForm
+from .models import *
 from django.urls import reverse
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
@@ -25,12 +26,10 @@ import json
 def login_view(request):
     if request.method == 'POST':
         try:
-            # Parse JSON data from request
             data = json.loads(request.body)
             username = data.get('username')
             password = data.get('password')
 
-            # Authenticate user
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
@@ -45,23 +44,17 @@ def login_view(request):
 
 def create_user_view(request):
     if request.method == 'POST':
-        # Get info from the post request
-        first_name = request.POST.get('first_name')
-        last_name = request.POST.get('last_name')
         email = request.POST.get('email')
         password = request.POST.get('password')
         confirm_password = request.POST.get('confirm_password')
 
-        # Checks that all required fields are filled out
-        if not all([first_name, last_name, email, password, confirm_password]):
+        if not all([email, password, confirm_password]):
             return HttpResponse('Error: All fields are required', status=400)
 
-        # Checks if the two passwords match
         if password != confirm_password:
             return HttpResponse('Error: Passwords do not match', status=400)
 
-        # Checks that a user does not exist with that email
-        if User.objects.filter(username=email).exists():
+        if User.objects.filter(email=email).exists():
             return HttpResponse('Error: User with this email already exists', status=400)
 
         try:
@@ -69,25 +62,22 @@ def create_user_view(request):
         except ValidationError:
             return HttpResponse('Error: Enter a valid email address', status=400)
 
-        # Create user object
-        user = User.objects.create_user(
-            username=email,
-            first_name=first_name,
-            last_name=last_name,
+        user = UserProfile.objects.create_user(
             email=email,
-            password=password
+            password=password,
+            activated=False
         )
+        request.session['user_session'] = user
         user.is_active = False  # Deactivate account until it is confirmed
-        user.save()
+        #user.save()
 
-        # Generate the uid and token
+        #generates the uid and token
         uid = urlsafe_base64_encode(force_bytes(user.pk))
         token = account_activation_token.make_token(user)
         verification_link = request.build_absolute_uri(
             reverse('activate', kwargs={'uidb64': uid, 'token': token})
         )
 
-        # Send verification email
         message = Mail(
             from_email='noreply@archaeovault.com',
             to_emails=user.email,
@@ -115,8 +105,10 @@ def create_user_view(request):
 
 def activate(request, uidb64, token):
     #put boolean that sets user active to true
-    return render(request, 'activation_success.html')
+    username = request.session.get('user_session', 'Guest')
+    username.activated = True
+    username.save()
+    return render(request, 'home.html')
 
 def index(request):
-    frontend_path = os.path.join('frontend', 'src', 'homepage.js')
-    return FileResponse(open(frontend_path, 'rb'), content_type='application/javascript')
+    return render(request,'index.html')

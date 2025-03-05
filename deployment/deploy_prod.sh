@@ -1,6 +1,6 @@
 #!/bin/sh
 
-ssh root@$DJANGO_ALLOWED_HOST_2 <<EOF
+ssh root@152.42.155.23 <<EOF
 cd /var/www/html/ArchaeoVault
 git pull
 source /var/www/html/ArchaeoVault/myprojectenv

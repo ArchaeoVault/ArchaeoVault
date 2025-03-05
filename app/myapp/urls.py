@@ -20,7 +20,11 @@ from . import views
 
 urlpatterns = [
     path('', views.index, name='index'),
+<<<<<<< HEAD
     path('login/', views.login_view, name='login'),
     path('createuser/',views.create_user,name = 'create_user'),
     path('activate/<uidb64>/<token>/', views.activate, name='activate'),
+=======
+    path('create_user/', views.create_user_view, name = 'create_user_view')
+>>>>>>> ee3ab4573fe57cfbca1533e1cd92f3d1271d8801
 ]

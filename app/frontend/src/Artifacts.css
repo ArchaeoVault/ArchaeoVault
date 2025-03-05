@@ -72,6 +72,60 @@
     line-height: 1.4;
   }
 
+  @media (max-width: 768px) {
+    .hero-title {
+      font-size: 2rem;
+    }
+  
+    .artifacts-container {
+      width: 95%;
+      margin: 1rem auto;
+    }
+  
+    .artifact-name {
+      font-size: 1.25rem;
+    }
+  
+    .artifact-location,
+    .artifact-timePeriod,
+    .artifact-material {
+      font-size: 0.85rem;
+    }
+  
+    .artifact-description {
+      font-size: 0.85rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .artifacts-hero {
+      height: 180px;
+    }
+  
+    .hero-title {
+      font-size: 1.5rem;
+      transform: translateY(15px);
+    }
+  
+    .artifacts-container {
+      width: 100%;
+      margin: 0.5rem auto;
+    }
+  
+    .artifact-name {
+      font-size: 1rem;
+    }
+  
+    .artifact-location,
+    .artifact-timePeriod,
+    .artifact-material {
+      font-size: 0.75rem;
+    }
+  
+    .artifact-description {
+      font-size: 0.75rem;
+    }
+  }
 
 
 

@@ -1,7 +1,7 @@
 #!groovy
 
 
-node {
+pipeline {
 
     try {
         stage('Checkout'){

@@ -13,21 +13,30 @@ from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.template.loader import render_to_string
 from .tokens import account_activation_token
+from django.http import FileResponse, JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
 
-
+@csrf_exempt
 def login_view(request):
     if request.method == 'POST':
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
+        try:
+            # Parse JSON data from request
+            data = json.loads(request.body)
+            username = data.get('username')
+            password = data.get('password')
+
+            # Authenticate user
             user = authenticate(request, username=username, password=password)
-            if user  is not None:
+            if user is not None:
                 login(request, user)
-                return redirect('home')  # Redirect to a home page or any other page
-    else:
-        form = LoginForm()
-    return render(request, 'login.html', {'form': form})
+                return JsonResponse({'status': 'success', 'message': 'Login successful'}, status=200)
+            else:
+                return JsonResponse({'status': 'error', 'message': 'Invalid credentials'}, status=401)
+        except json.JSONDecodeError:
+            return JsonResponse({'status': 'error', 'message': 'Invalid JSON data'}, status=400)
+    return JsonResponse({'status': 'error', 'message': 'Only POST requests are allowed'}, status=405)
+
 
 
 def create_user(request):
@@ -37,7 +46,7 @@ def create_user(request):
             user = form.save(commit=False)
             user.set_password(form.cleaned_data['password'])
             user.is_active = False 
-            #user.save()
+            user.save()
 
             #this generates the uid
             uid = urlsafe_base64_encode(force_bytes(user.pk))
@@ -73,13 +82,9 @@ def create_user(request):
     return render(request, 'createuser.html', {'form': form})
 
 def activate(request, uidb64, token):
-    
+    #put boolean that sets user active to true
     return render(request, 'activation_success.html')
 
 def index(request):
-  
-    context = {
-        'message': 'Welcome to the Index Page!',
-        'items': ['Item 1', 'Item 2', 'Item 3']
-    }
-    return render(request, 'index.html', context)
+    frontend_path = os.path.join('frontend', 'src', 'homepage.js')
+    return FileResponse(open(frontend_path, 'rb'), content_type='application/javascript')

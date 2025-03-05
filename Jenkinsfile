@@ -12,14 +12,15 @@ pipeline {
                     sh 'env/bin/pip install -r requirements.txt'
                     sh 'env/bin/python3.10 manage.py test --testrunner=blog.tests.test_runners.NoDbTestRunner'
                 */
-                stage('Deploy')
+                stage('Deploy'){
                     when { branch 'main' }
                     steps{
                         sh 'chmod +x ./deployment/deploy_prod.sh'
                         sh './deployment/deploy_prod.sh'
                     }
                     
-
+                }
+                
                 stage ('Publish results'){
                     steps{
                         slackSend color: "good", message: "Build successful: `${env.JOB_NAME}#${env.BUILD_NUMBER}` <${env.BUILD_URL}|Open in Jenkins>"

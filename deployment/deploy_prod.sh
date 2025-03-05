@@ -6,6 +6,7 @@ git pull
 source /var/www/html/ArchaeoVault/myprojectenv
 pip install -r requirements.txt
 cd app
+chmod +x manage.py
 ./manage.py makemigrations
 ./manage.py migrate  --run-syncdb
 sudo service gunicorn restart

@@ -3,10 +3,11 @@
 
 pipeline {
     agent any 
-    stages{   
+    stages{ 
+          
         stage('Notify'){
             steps{
-                slackSend color: "warning", message: "Started `${env.JOB_NAME}#${env.BUILD_NUMBER}`\n\n_The changes:_\n${lastChanges}"
+                slackSend color: "warning", message: "Started `${env.JOB_NAME}#${env.BUILD_NUMBER}`\n\n_The changes:_\n"
             }
         }
         /*
@@ -19,7 +20,7 @@ pipeline {
         stage('Deploy'){
             when { branch 'main' }
             steps{
-                //sh 'chmod +x ./deployment/deploy_prod.sh'
+                sh 'chmod +x ./deployment/deploy_prod.sh'
                 sh './deployment/deploy_prod.sh'
             }
             

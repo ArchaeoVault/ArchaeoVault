@@ -20,5 +20,9 @@ from . import views
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path('create_user/', views.create_user_view, name = 'create_user_view')
+    path('login/', views.login_view, name='login'),
+    path('create_user/',views.create_user_view,name = 'create_user'),
+    path('activate/<uidb64>/<token>/', views.activate, name='activate'),
+
+
 ]

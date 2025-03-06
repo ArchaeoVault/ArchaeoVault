@@ -10,8 +10,7 @@ DEBUG = True
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'None')
 
-
-ALLOWED_HOSTS = [env('DJANGO_ALLOWED_HOST_1'),env('DJANGO_ALLOWED_HOST_2') ]
+ALLOWED_HOSTS = [env('DJANGO_ALLOWED_HOST_1'), env('DJANGO_ALLOWED_HOST_2')]
 
 DATABASES = {
     'default': {
@@ -25,4 +24,14 @@ DATABASES = {
 }
 
 STATIC_URL = '/static/'
+
+# Email configuration
+SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
+
+EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_USER = 'apikey'  #This is exactly the value apikey
+EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
 

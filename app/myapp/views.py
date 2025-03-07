@@ -62,12 +62,21 @@ def create_user_view(request):
         except ValidationError:
             return HttpResponse('Error: Enter a valid email address', status=400)
 
-        user = UserProfile.objects.create_user(
+                # Create a new user
+        user = User.objects.create_user(
+            username=email,  # Using email as the username
             email=email,
-            password=password,
-            activated=False
+            password=password
         )
-        request.session['user_session'] = user
+
+        #Create the associated UserProfile
+        #user_profile = UserProfile.objects.create(
+        #user=user,
+        #activated=False
+        #)
+
+        request.session['user_session'] = user.username
+        #print(user_profile)
         user.is_active = False  # Deactivate account until it is confirmed
         #user.save()
 
@@ -83,7 +92,7 @@ def create_user_view(request):
             to_emails=user.email,
             subject='Welcome to ArchaeoVault!',
             html_content=(
-                f'<h2>Thank you for registering for ArchaeoVault, we really hope you enjoy! '
+                f'<h2>Thank you for registering for ArchaeoVault, we really hope you enjoy!'
                 f'Click on the link below to verify your email address.</h2>'
                 f'<a href="{verification_link}">Verify your email address</a>'
             )
@@ -93,8 +102,8 @@ def create_user_view(request):
             sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
             response = sg.send(message)
             print(response.status_code)
-            print(response.body)
-            print(response.headers)
+            #print(response.body)
+            #print(response.headers)
         except Exception as e:
             print(str(e) + ' didnt work')
 
@@ -107,7 +116,7 @@ def activate(request, uidb64, token):
     #put boolean that sets user active to true
     username = request.session.get('user_session', 'Guest')
     username.activated = True
-    username.save()
+    #username.save()
     return render(request, 'home.html')
 
 def index(request):

@@ -12,8 +12,8 @@ pipeline {
         }
         stage('Test'){
             steps{
-                sh 'virtualenv env -p python3.10'
-                sh '. env/bin/activate'
+                sh 'python3 -m venv env'
+                sh  'env/bin/activate'
                 sh 'env/bin/pip install -r requirements.txt'
                 sh 'cd myapp'
                 sh 'python ../manage.py test'

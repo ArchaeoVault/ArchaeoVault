@@ -5,7 +5,8 @@ import Login from "./Login";
 import ForgotPassword from "./ForgotPassword";
 import Signup from './Signup';
 import Artifacts from './Artifacts';
-
+import NewportArtifacts from './NewportArtifacts';
+import PortsmouthArtifacts from './PortsmouthArtifacts';
 
 const App = () => {
   const [showLogin, setShowLogin] = useState(false);
@@ -17,6 +18,8 @@ const App = () => {
        <Route path="/artifacts" element={<Artifacts />} />
        <Route path="/signup" element={<Signup />} />
        <Route path="/forgot-password" element={<ForgotPassword />} />
+       <Route path="/newport-artifacts" element={<NewportArtifacts />} />
+       <Route path="/portsmouth-artifacts" element={<PortsmouthArtifacts />} />
        <Route path="/" element={showLogin ? <Login /> : <HomePage setShowLogin={setShowLogin} />} />
      </Routes>
    </Router>

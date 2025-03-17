@@ -13,6 +13,7 @@ pipeline {
         stage('Test'){
             steps{
                 sh 'python3 -m venv env'
+                'chmod +x env/bin'
                 sh  'env/bin/activate'
                 sh 'env/bin/pip install -r requirements.txt'
                 sh 'cd myapp'

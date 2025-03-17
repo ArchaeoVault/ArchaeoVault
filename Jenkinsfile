@@ -16,8 +16,7 @@ pipeline {
                 sh 'chmod +x env/bin/activate'
                 sh  'env/bin/activate'
                 sh 'env/bin/pip install -r requirements.txt'
-                sh 'cd ./app/myapp'
-                sh 'python3 ./../manage.py test'
+                sh './manage.py test myapp'
             }
         }
 

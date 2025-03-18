@@ -8,7 +8,7 @@ from myapp.forms import *
 from django.http import JsonResponse
 import json
 from django.middleware.csrf import get_token
-
+from django.views.decorators.csrf import csrf_protect
 
 def login_view(request):
     if request.method == 'POST':
@@ -44,13 +44,13 @@ def index(request):
     }
     return render(request, 'index.html', context)
 
-
 def get_csrf_token(request):
     """Returns CSRF token to the frontend for client-side use"""
     csrf_token = get_token(request)
     print('Cookie: ', csrf_token)
     return JsonResponse({'csrfToken': csrf_token}, safe=False)
 
+@csrf_protect
 def create_user_view(request):
     print(request)
     if request.method == 'POST':

@@ -12,12 +12,13 @@ pipeline {
         }
         stage('Test'){
             steps{
-                sh 'python3 -m venv env'
+                sh 'which python'
+                sh 'python -m venv env'
                 sh 'chmod +x env/bin/activate'
                 sh  'env/bin/activate'
                 sh 'env/bin/pip install -r requirements.txt'
                 sh 'chmod +x ./app/manage.py'
-                sh 'python3 ./app/manage.py test app/myapp'
+                sh 'python ./app/manage.py test app/myapp'
             }
         }
 

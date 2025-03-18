@@ -6,7 +6,7 @@ pipeline {
     environment {
         ARCHAEODB_ENGINE = credentials('ARCHAEODB_ENGINE')
         ARCHAEODB_NAME = credentials('ARCHAEODB_NAME')
-        ARCHAEODB_USER = credentials('ARCHAEODB_USER')
+        //ARCHAEODB_USER = credentials('ARCHAEODB_USER')
         ARCHAEODB_PASSWORD = credentials('ARCHAEODB_PASSWORD')
         ARCHAEODB_HOST = credentials('ARCHAEODB_HOST')
         ARCHAEODB_PORT = credentials('ARCHAEODB_PORT')

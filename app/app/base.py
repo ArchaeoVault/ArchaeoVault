@@ -31,7 +31,22 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'app',
     'myapp',
+    'rest_framework',
+    'corsheaders',
 ]
+
+REST_FRAMEWORK = { 
+    # Use Django's standard `django.contrib.auth` permissions, 
+
+ 
+    # or allow read-only access for unauthenticated users. 
+
+ 
+    'DEFAULT_PERMISSION_CLASSES': [ 
+
+      'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+] 
+} 
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -41,7 +56,16 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
+# Custom Middleware to Exempt CSRF for OPTIONS Requests
+from django.middleware.csrf import CsrfViewMiddleware
+
+class ExemptCSRFForOptions(CsrfViewMiddleware):
+    def process_request(self, request):
+        if request.method == 'OPTIONS':
+            return None  # Skip CSRF validation for OPTIONS requests
+        return super().process_request(request)
 
 ROOT_URLCONF = 'app.urls'
 
@@ -108,3 +132,19 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CORS_ALLOW_ALL_ORIGINS = True
+
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:3000',  # Add your frontend's URL here
+    'http://127.0.0.1:8000/'
+]
+
+#CSRF_COOKIE_SECURE = False  # Ensure this is False for development over HTTP
+CSRF_COOKIE_HTTPONLY = True  # Make sure this is False so the cookie can be accessed by JS
+CORS_ALLOW_CREDENTIALS = True  # If you're using cookies or authentication headers
+
+CSRF_HEADER_NAME = 'X-CSRFToken'
+CSRF_COOKIE_SAMESITE = 'None'
+CSRF_COOKIE_SECURE = True  # Ensure you're using HTTPS in production
+CORS_ALLOW_CREDENTIALS = True  # Allow cookies (CSRF token cookie)

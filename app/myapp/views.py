@@ -5,7 +5,9 @@ from django.http import HttpResponse, HttpResponseRedirect, HttpResponseServerEr
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from myapp.forms import *
-
+from django.http import JsonResponse
+import json
+from django.middleware.csrf import get_token
 
 
 def login_view(request):
@@ -42,36 +44,52 @@ def index(request):
     }
     return render(request, 'index.html', context)
 
-def create_user_view(request):
-    if request.method == 'POST':
-        #Get info from the post request
-        first_name = request.POST.get('first_name')
-        last_name = request.POST.get('last_name')
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        confirm_password = request.POST.get('confirm_password')
-        #checks that all required fields are filled out
-        if not all([first_name, last_name, email, password, confirm_password]):
-            return HttpResponse('Error: All fields are required', status=400)
-        #checks if the two passwords match
-        if password != confirm_password:
-            return HttpResponse('Error: Passwords do not match', status = 400)
-        #checks that a user does not exist with that email
-        if User.objects.filter(username = email).exists():
-            return HttpResponse('Error: User with this email already exists', status = 400)
-        try:
-            validate_email(email)
-        except ValidationError as e:
-            return HttpResponse('Error: Enter a valid email address', status = 400)
 
-        #create user object
-        user = User.objects.create_user(
-            username = email,
-            first_name = first_name,
-            last_name = last_name,
-            email = email,
-            password = password
-        )
-        return HttpResponse('User has been created', status = 200)
-    else:
-        return HttpResponse('Error creating user', status = 400)
+def get_csrf_token(request):
+    """Returns CSRF token to the frontend for client-side use"""
+    csrf_token = get_token(request)
+    print('Cookie: ', csrf_token)
+    return JsonResponse({'csrfToken': csrf_token}, safe=False)
+
+def create_user_view(request):
+    print(request)
+    if request.method == 'POST':
+        try:
+            # Parsing the incoming JSON data
+            data = json.loads(request.body)
+
+            first_name = data.get('first_name')
+            last_name = data.get('last_name')
+            email = data.get('email')
+            password = data.get('password')
+            confirm_password = data.get('confirm_password')
+
+            # Validation logic
+            if not all([first_name, last_name, email, password, confirm_password]):
+                return JsonResponse({'error': 'All fields are required'}, status=400)
+            if password != confirm_password:
+                return JsonResponse({'error': 'Passwords do not match'}, status=400)
+            if User.objects.filter(username=email).exists():
+                return JsonResponse({'error': 'User with this email already exists'}, status=400)
+
+            try:
+                validate_email(email)
+            except ValidationError:
+                return JsonResponse({'error': 'Invalid email address'}, status=400)
+
+            # Create the user
+            user = User.objects.create_user(
+                username=email,
+                first_name=first_name,
+                last_name=last_name,
+                email=email,
+                password=password
+            )
+
+            return JsonResponse({'message': 'User created successfully'}, status=200)
+
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON data'}, status=400)
+
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+

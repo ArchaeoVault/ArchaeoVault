@@ -12,7 +12,7 @@ pipeline {
         }
         stage('Test'){
             steps{
-                sh 'virtualenv env -p python'
+                sh 'python3 -m venv env'
                 sh 'chmod +x env/bin/activate'
                 sh  '. env/bin/activate'
                 sh 'env/bin/pip install -r requirements.txt'

@@ -3,6 +3,16 @@
 
 pipeline {
     agent any 
+    environment {
+        ARCHAEODB_ENGINE = credentials('ARCHAEODB_ENGINE')
+        ARCHAEODB_NAME = credentials('ARCHAEODB_NAME')
+        ARCHAEODB_USER = credentials('ARCHAEODB_USER')
+        ARCHAEODB_PASSWORD = credentials('ARCHAEODB_PASSWORD')
+        ARCHAEODB_HOST = credentials('ARCHAEODB_HOST')
+        ARCHAEODB_PORT = credentials('ARCHAEODB_PORT')
+        DJANGO_ALLOWED_HOST_1 = credentials('DJANGO_ALLOWED_HOST_1')
+        DJANGO_ALLOWED_HOST_2 = credentials('DJANGO_ALLOWED_HOST_2')
+    }
     stages{ 
           
         stage('Notify'){

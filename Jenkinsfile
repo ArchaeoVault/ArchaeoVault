@@ -14,9 +14,9 @@ pipeline {
             steps{
                 sh 'python3 -m venv env'
                 sh 'chmod +x env/bin/activate'
-                sh  'env/bin/activate'
+                //sh  'env/bin/activate'
                 //sh 'env/bin/pip install -r requirements.txt'
-                sh 'python3 -m pip install django-environ'
+                sh 'source venv/bin/activate && pip install -r requirements.txt'
                 sh 'chmod +x ./app/manage.py'
                 sh 'python3 ./app/manage.py test app/myapp'
             }

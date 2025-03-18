@@ -12,7 +12,6 @@ pipeline {
         }
         stage('Test'){
             steps{
-                sh 'which python'
                 sh 'python -m venv env'
                 sh 'chmod +x env/bin/activate'
                 sh  'env/bin/activate'

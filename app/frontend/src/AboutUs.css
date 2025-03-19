@@ -1,0 +1,42 @@
+/* AboutUs.css */
+.about-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    background-color: #f8f6f2;
+  }
+  
+  .about-content {
+    flex: 1;
+    max-width: 50%;
+    padding-right: 40px;
+  }
+  
+  .about-title {
+    font-size: 48px;
+    font-weight: bold;
+    color: #5c5149;
+    font-family: "Georgia", serif;
+  }
+  
+  .about-text {
+    font-size: 18px;
+    line-height: 1.6;
+    color: #333;
+    font-family: "Arial", sans-serif;
+  }
+  
+  .about-image-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .about-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  

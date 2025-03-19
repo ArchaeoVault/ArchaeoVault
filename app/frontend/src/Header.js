@@ -41,9 +41,8 @@ const Header = () => {
         </form> */}
         
         <Link to="/Artifacts">Artifacts</Link>
-        <a href="#timeline">Timeline</a>
-        <a href="#contact">Contact</a>
-        <a href="#about">About Us</a>
+        <Link to="/Contact">Contact</Link>
+        <Link to="/About">About Us</Link>
         <Link to="/Login">Login</Link>
       </nav>
         

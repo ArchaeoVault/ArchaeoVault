@@ -1,48 +1,36 @@
 /* Header css */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Georgia', serif;
+  background-color: #f6f6f6;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+html, body {
+  height: 100%;
+}
+
+/* Header styling */
 .header {
-  position: fixed;
-  top: 0;
+  /* position: fixed; */
+  /* top: 0; */
   width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
-  background-color: #e0dedb;
+  background-color: rgba(129, 122, 122, 0.313);
+  border-bottom: 2px  #8a817c;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
   z-index: 1000; /* Ensure it stays on top */
 }
-
-  .logo {
-    font-size: 1.8rem;  
-    font-weight: bold; 
-    color: #333;        
-    text-decoration: none;  
-    margin: 0 1rem; 
-  }
-  
-  .nav-links a {
-    margin: 0 1rem;
-    text-decoration: none;
-    color: #333;
-    font-size: 1rem;
-  }
-  
-  .nav-links button {
-      margin: 0 1rem;
-      text-decoration: none;
-      color: #333;
-      font-size: 1rem;
-      background: none;
-      border: none;
-      cursor: pointer;
-    }
-  
-  .search-button {
-    padding: 0.4rem 1rem;
-    border-radius: 20px;
-    background-color: #333;
-    color: white !important;
-    text-decoration: none;
-  }
 
 .logo {
   font-size: 1.8rem; /* Logo font size (can adjust this if needed) */
@@ -62,6 +50,11 @@
   text-decoration: none;
   color: #333;
   font-size: 1rem;
+  transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+  color: #007bff; /* Change color on hover */
 }
 
 .nav-links button {
@@ -72,6 +65,25 @@
   background: none;
   border: none;
   cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.nav-links button:hover {
+  color: #007bff; /* Change color on hover */
+}
+
+
+.search-button {
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  background-color: #333;
+  color: white !important;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.search-button:hover {
+  background-color: #555; /* Change background color on hover */
 }
 
 /* Styling for the search bar */
@@ -115,3 +127,53 @@
   border-color: #4CAF50; /* Highlight the input border on hover */
 }
 
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+  }
+
+  .logo {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .nav-links {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+
+  .nav-links a,
+  .nav-links button {
+    margin: 0.5rem 0;
+    font-size: 0.9rem;
+  }
+
+  .search-button {
+    width: 100%;
+    text-align: center;
+    margin-top: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    padding: 0.5rem;
+  }
+
+  .logo {
+    font-size: 1.2rem;
+  }
+
+  .nav-links a,
+  .nav-links button {
+    font-size: 0.8rem;
+  }
+
+  .search-button {
+    font-size: 0.8rem;
+  }
+}

@@ -9,6 +9,13 @@
 body {
   font-family: 'Georgia', serif;
   background-color: #f6f6f6;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+html, body {
+  height: 100%;
 }
 
 /* Hero Section */
@@ -18,6 +25,7 @@ body {
   align-items: center;
   padding: 4rem 2rem;
   background-color: #e0dedb;
+  min-height: 100vh;
 }
 
 .hero-image img {
@@ -57,10 +65,44 @@ body {
   .hero {
     flex-direction: column;
     text-align: center;
+    padding: 2rem 1rem;
   }
 
   .hero-content {
     margin-left: 0;
     margin-top: 2rem;
+  }
+
+  .hero-content h1 {
+    font-size: 2rem;
+  }
+
+  .hero-content p {
+    font-size: 0.9rem;
+  }
+
+  .learn-more {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+  
+}
+
+@media (max-width: 480px) {
+  .hero {
+    padding: 1rem 0.5rem;
+  }
+
+  .hero-content h1 {
+    font-size: 1.5rem;
+  }
+
+  .hero-content p {
+    font-size: 0.8rem;
+  }
+
+  .learn-more {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
   }
 }

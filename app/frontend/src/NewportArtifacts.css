@@ -1,0 +1,82 @@
+.artifact-container {
+    padding: 150px 20px;
+    text-align: center;
+    background-color: #1a1a1a; 
+    color: white; 
+    min-height: 70vh; 
+  }
+  
+  h1 {
+    color: #FFFFFF;
+    font-size: 3rem;
+    text-align: center;
+    margin: 0;
+    transform: translateY(2px);
+  }
+  
+  .artifact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .artifact-card {
+    background-color: #292929;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 4px 4px 15px rgba(255, 255, 255, 0.1);
+    text-align: center;
+    transition: transform 0.2s ease-in-out, box-shadow 0.3s ease-in-out;
+    cursor: pointer;
+  }
+  
+  .artifact-card:hover {
+    transform: scale(1.05);
+    box-shadow: 6px 6px 20px rgba(255, 255, 255, 0.2);
+  }
+  
+  .artifact-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 2px solid white;
+  }
+  
+  .artifact-name {
+    font-size: 1.5rem;
+    margin-top: 15px;
+    font-weight: bold;
+    color: #f0f0f0;
+  }
+  
+  .artifact-description {
+    font-size: 1rem;
+    color: #ccc;
+    margin-top: 10px;
+    line-height: 1.4;
+    padding: 0 10px;
+  }
+  
+  /* Ensures grid stays responsive */
+  @media (max-width: 768px) {
+    .artifact-grid {
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+  
+    .artifact-card {
+      padding: 15px;
+    }
+  
+    .artifact-name {
+      font-size: 1.2rem;
+    }
+  
+    .artifact-description {
+      font-size: 0.9rem;
+    }
+  }
+  

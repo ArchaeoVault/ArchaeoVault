@@ -1,6 +1,7 @@
 import React from "react";
 import Header from "./Header";
 import Footer from "./Footer";
+import { Link } from 'react-router-dom';
 import "./Homepage.css";
 
 const HomePage = () => {
@@ -16,7 +17,9 @@ const HomePage = () => {
           <p>
             Discover the hidden treasures of Portsmouth and Newport, RI! Explore detailed 3D models of archaeological artifacts and dive into their rich history, origins, and craftsmanship. Unearth the past and let history come to life at your fingertips.
           </p>
-          <button className="learn-more">Learn more</button>
+          <Link to="/about">
+            <button className="learn-more">Learn more</button>
+          </Link>
         </div>
       </section>
       <Footer />

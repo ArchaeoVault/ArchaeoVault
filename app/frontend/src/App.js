@@ -9,6 +9,7 @@ import Artifacts from './Artifacts';
 import NewportArtifacts from './NewportArtifacts';
 import PortsmouthArtifacts from './PortsmouthArtifacts';
 import AboutUs from "./AboutUs";
+import Contact from "./Contact";
 
 const App = () => {
   const [showLogin, setShowLogin] = useState(false);
@@ -18,6 +19,7 @@ const App = () => {
      <Routes>
        <Route path="/login" element={<Login />} />
        <Route path="/about" element={<AboutUs />} />
+       <Route path="/contact" element={<Contact />} />
        <Route path="/artifacts" element={<Artifacts />} />
        <Route path="/signup" element={<Signup />} />
        <Route path="/forgot-password" element={<ForgotPassword />} />

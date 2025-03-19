@@ -23,8 +23,7 @@ const Header = () => {
       <Link to="/" className="logo">ArchaeoVault</Link>
       <nav className="nav-links">
         <Link to="/Artifacts">Artifacts</Link>
-        <a href="#timeline">Timeline</a>
-        <a href="#contact">Contact</a>
+        <Link to="/Contact">Contact</Link>
         <Link to="/About">About Us</Link>
         <Link to="/Login">Login</Link>
         

@@ -36,4 +36,8 @@ class CreateUserTests(TestCase):
         response = self.client.post(reverse('create_user_view'), data = {'first_name':'test','last_name':'user','email': 'temp@email.com','password': 'password123','confirm_password':'password123'}) 
         self.assertEqual(response.status_code, 400)
 
+    def test_jenkins_build(self):
+
+        
+        self.assertEqual(1,2)
     

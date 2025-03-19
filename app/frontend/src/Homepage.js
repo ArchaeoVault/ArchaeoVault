@@ -1,7 +1,8 @@
+
 import React from "react";
 import Header from "./Header";
 import Footer from "./Footer";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import "./Homepage.css";
 
 const HomePage = () => {
@@ -10,7 +11,7 @@ const HomePage = () => {
       <Header />
       <section className="hero">
         <div className="hero-image">
-          <img src="/placeholder.jpg" alt="Artifact Display" />
+          <img src="./placeholder.jpg" alt="Geometric artifact" />
         </div>
         <div className="hero-content">
           <h1>Explore the World of Archaeology</h1>

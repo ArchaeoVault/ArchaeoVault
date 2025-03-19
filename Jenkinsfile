@@ -50,6 +50,10 @@ pipeline {
 
         failure{
             slackSend color: "danger", message: "Build failed :face_with_head_bandage: \n`${env.JOB_NAME}#${env.BUILD_NUMBER}` <${env.BUILD_URL}|Open in Jenkins>"
+                script {
+                    def log = currentBuild.rawBuild.getLog(10).join("\n") // Get last 10 lines of logs
+                    slackSend(channel: SLACK_CHANNEL, message: "Build #${env.BUILD_NUMBER} failed on ${env.JOB_NAME}\nReason:\n``` ${log} ```")
+                }
         }
     }
     

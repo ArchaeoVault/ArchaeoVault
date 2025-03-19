@@ -29,3 +29,6 @@ yarn-debug.log*
 yarn-error.log*
 
 .node_modules
+
+app/.env
+app/app/.env

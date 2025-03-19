@@ -119,5 +119,40 @@ def activate(request, uidb64, token):
     #username.save()
     return render(request, 'home.html')
 
+def resend_verification_view(request):
+    if(request.method == 'POST'):
+        email = request.POST.get('email')
+        try:
+            validate_email(email)
+        except ValidationError:
+            return HttpResponse('Error: Enter a valid email address', status=400)
+        if(User.objects.filter(email=email).exists()):
+            #generates the uid and token
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            token = account_activation_token.make_token(user)
+            verification_link = request.build_absolute_uri(
+                reverse('activate', kwargs={'uidb64': uid, 'token': token})
+            )
+            message = Mail(
+                from_email='noreply@archaeovault.com',
+                to_emails=user.email,
+                subject='Welcome to ArchaeoVault!',
+                html_content=(
+                    f'<h2>Thank you for registering for ArchaeoVault, we really hope you enjoy!'
+                    f'Click on the link below to verify your email address.</h2>'
+                    f'<a href="{verification_link}">Verify your email address</a>'
+                )
+            )
+            try:
+                sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
+                response = sg.send(message)
+                print(response.status_code)
+                #print(response.body)
+                # #print(response.headers)
+            except Exception as e:
+                print(str(e) + ' didnt work')
+            return HttpResponse('Verification email has been sent', status=200)
+    return render(request, 'resend_verification.html')
+
 def index(request):
     return render(request,'index.html')

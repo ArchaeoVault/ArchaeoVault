@@ -23,6 +23,7 @@ urlpatterns = [
     path('login/', views.login_view, name='login'),
     path('create_user/',views.create_user_view,name = 'create_user'),
     path('activate/<uidb64>/<token>/', views.activate, name='activate'),
+    path('resend_verification/', views.resend_verification_view, name='resend_verification'),
 
 
 ]

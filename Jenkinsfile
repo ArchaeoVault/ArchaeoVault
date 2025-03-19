@@ -3,6 +3,16 @@
 
 pipeline {
     agent any 
+    environment {
+        ARCHAEODB_ENGINE = credentials('ARCHAEODB_ENGINE')
+        ARCHAEODB_NAME = credentials('ARCHAEODB_NAME')
+        ARCHAEODB_USER = credentials('ARCHAEODB_USER')
+        ARCHAEODB_PASSWORD = credentials('ARCHAEODB_PASSWORD')
+        ARCHAEODB_HOST = credentials('ARCHAEODB_HOST')
+        ARCHAEODB_PORT = credentials('ARCHAEODB_PORT')
+        DJANGO_ALLOWED_HOST_1 = credentials('DJANGO_ALLOWED_HOST_1')
+        DJANGO_ALLOWED_HOST_2 = credentials('DJANGO_ALLOWED_HOST_2')
+    }
     stages{ 
           
         stage('Notify'){
@@ -10,13 +20,17 @@ pipeline {
                 slackSend color: "warning", message: "Started `${env.JOB_NAME}#${env.BUILD_NUMBER}`\n"
             }
         }
-        /*
-        stage 'Test'
-            sh 'virtualenv env -p python3.10'
-            sh '. env/bin/activate'
-            sh 'env/bin/pip install -r requirements.txt'
-            sh 'env/bin/python3.10 manage.py test --testrunner=blog.tests.test_runners.NoDbTestRunner'
-        */
+        stage('Test'){
+            steps{
+                sh 'python3 -m venv env'
+                sh 'chmod +x env/bin/activate'
+                sh  '. env/bin/activate'
+                sh 'env/bin/pip install -r requirements.txt'
+                sh 'chmod +x ./app/manage.py'
+                sh 'env/bin/python ./app/manage.py test app/myapp'
+            }
+        }
+
         stage('Deploy'){
             when { branch 'main' }
             steps{

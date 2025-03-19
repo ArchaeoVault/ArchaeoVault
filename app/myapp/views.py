@@ -91,12 +91,10 @@ def create_user_view(request):
             from_email='noreply@archaeovault.com',
             to_emails=user.email,
             subject='Welcome to ArchaeoVault!',
-            html_content=(
-                f'<h2>Thank you for registering for ArchaeoVault, we really hope you enjoy!'
-                f'Click on the link below to verify your email address.</h2>'
-                f'<a href="{verification_link}">Verify your email address</a>'
-            )
+            html_content=f'<h2>Thank you for registering for ArchaeoVault. Click below to verify your email address!</h2><a href="{verification_link}">Verify your email address</a>',
+            plain_text_content=f'Thank you for registering for ArchaeoVault. Verify your email address here: {verification_link}'
         )
+
 
         try:
             sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))

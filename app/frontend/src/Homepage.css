@@ -30,7 +30,7 @@ html, body {
 
 /* Image Section */
 .hero-image {
-  flex: 1.2; /* Increased to make the image take more space */
+  flex: 1.9; /* Increased to make the image take more space */
   display: flex;
   justify-content: flex-start;
 }

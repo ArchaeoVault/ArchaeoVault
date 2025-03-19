@@ -49,7 +49,7 @@ pipeline {
             script{
                 def file_contents = readFile('test_results.log')
                 slackSend color: "good", message: "Build successful: `${env.JOB_NAME}#${env.BUILD_NUMBER}` <${env.BUILD_URL}|Open in Jenkins>"
-                slackSend color: "good", message: file_contents
+                slackSend color: "good", message: "File Contents:\n'''" + file_contents + "'''"
             }
         }
 

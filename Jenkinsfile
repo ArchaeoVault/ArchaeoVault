@@ -27,7 +27,7 @@ pipeline {
                 sh  '. env/bin/activate'
                 sh 'env/bin/pip install -r requirements.txt'
                 sh 'chmod +x ./app/manage.py'
-                sh 'env/bin/python python app/manage.py test app/myapp'
+                sh 'env/bin/python ./app/manage.py test app/myapp'
             }
         }
 

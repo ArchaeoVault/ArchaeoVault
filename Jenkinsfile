@@ -27,7 +27,7 @@ pipeline {
                 sh  '. env/bin/activate'
                 sh 'env/bin/pip install -r requirements.txt'
                 sh 'chmod +x ./app/manage.py'
-                sh 'env/bin/python ./app/manage.py test app/myapp'
+                sh 'env/bin/python ./app/manage.py test app/myapp > test_results.log 2>&1'
             }
         }
 
@@ -45,11 +45,16 @@ pipeline {
     }
     post{
         success{
-            slackSend color: "good", message: "Build successful: `${env.JOB_NAME}#${env.BUILD_NUMBER}` <${env.BUILD_URL}|Open in Jenkins>"
+            slackSend color: "good", message: "Build successful :man_dancing: `${env.JOB_NAME}#${env.BUILD_NUMBER}` <${env.BUILD_URL}|Open in Jenkins>"
         }
 
         failure{
-            slackSend color: "danger", message: "Build failed :face_with_head_bandage: \n`${env.JOB_NAME}#${env.BUILD_NUMBER}` <${env.BUILD_URL}|Open in Jenkins>"
+            script{
+                def file_contents = readFile('test_results.log')
+                slackSend color: "danger", message: "Build failed :face_with_head_bandage: \n`${env.JOB_NAME}#${env.BUILD_NUMBER}` <${env.BUILD_URL}|Open in Jenkins>"
+                slackSend color: "danger", message: "File Contents:\n\n'''" + file_contents + "'''"
+            }
+            
         }
     }
     

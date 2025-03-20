@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './Header.css';
 
@@ -24,6 +24,20 @@ const Header = () => {
     alert(`Searching for: ${searchQuery}`);
   };
 
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 768 && isOpen) {
+        setIsOpen(false);
+        document.body.classList.remove('blur');
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [isOpen]);
+
   return (
     <header className="header">
       <Link to="/" className="logo">ArchaeoVault</Link>
@@ -43,7 +57,7 @@ const Header = () => {
         <Link to="/Artifacts">Artifacts</Link>
         <Link to="/Contact">Contact</Link>
         <Link to="/About">About Us</Link>
-        <Link to="/Login">Login</Link>
+        <Link to="/Login" className="login-link">Login</Link>
       </nav>
         
         {/* Search bar */}

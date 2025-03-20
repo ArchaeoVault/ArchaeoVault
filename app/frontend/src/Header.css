@@ -149,14 +149,15 @@ html, body {
   display: none;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   width: 100%;
   position: fixed;
   top: 0;
   right: -100%;
   height: 100%;
   /* left: 10; */
-  background-color: rgba(255, 255, 255, 0.9);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background-color: rgba(5, 5, 5, 0.9);
+  box-shadow: 0 4px 8px rgba(255, 255, 255, 0.719);
   z-index: 999; 
   transition: right 0.4s ease;
 }
@@ -167,8 +168,28 @@ html, body {
 
 .nav-links-mobile a,
 .nav-links-mobile button {
-  margin: 0.5rem 0;
-  font-size: 1.5rem;
+  margin: 1rem 0;
+  font-size: 2rem;
+  color: white;
+
+}
+
+.nav-links-mobile .login-link {
+  position: absolute;
+  bottom: 2rem;
+  font-size: 2rem;
+  padding: 0.5rem 1rem;
+  border: 2px solid white;
+  border-radius: 10px;
+  background-color: transparent;
+  color: white;
+  transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+.nav-links-mobile .login-link:hover {
+  color: black; /* Change color on hover */
+  background-color: white; 
+  /* color: #007bff; Change color on hover */
 }
 
 .close-btn {
@@ -177,8 +198,10 @@ html, body {
   right: 1rem;
   font-size: 2rem;
   cursor: pointer;
-  color: #333;
-  transition: color 0.3s ease;
+  display: none;
+  color: white;
+  /* color: #333; */
+  /* transition: color 0.3s ease; */
 }
 
 /* Blur effect for the rest of the page when menu is open */
@@ -213,6 +236,10 @@ html, body {
   .nav-links-mobile {
     display: flex;
   }
+
+  .close-btn {
+    display: block;
+  }
 }
 
  @media (max-width: 768px) {
@@ -237,22 +264,3 @@ html, body {
     font-size: 0.9rem;
   }
 }
-
-/* @media (max-width: 480px) {
-  .header {
-    padding: 0.5rem;
-  }
-
-  .logo {
-    font-size: 1.2rem;
-  }
-
-  .nav-links a,
-  .nav-links button {
-    font-size: 0.8rem;
-  }
-
-  .search-button {
-    font-size: 0.8rem;
-  }
-} */

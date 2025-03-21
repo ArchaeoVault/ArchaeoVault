@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import './Login.css';
 import Header from './Header';
 import Footer from './Footer';
+import Cookies from 'js-cookie'; 
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -10,11 +11,11 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();    
-  
+
     // Check if CSRF token is in cookies
     let token = Cookies.get('csrftoken');
     console.log('Initial CSRF Token:', token);
-  
+
     // If token isn't in cookies, fetch it from the server
     if (!token) {
       try {
@@ -29,13 +30,13 @@ const Login = () => {
         return;
       }
     }
-  
+
     // If CSRF token is not found at this point, show alert
     if (!token) {
       alert('CSRF token is not available.');
       return;
     }
-  
+
     try {
       const response = await fetch('http://localhost:8000/login/', {
         method: 'POST',
@@ -46,13 +47,13 @@ const Login = () => {
         body: JSON.stringify({ email, password }),
         credentials: 'include', // Ensure cookies are sent with the request
       });
-  
+
       const data = await response.json();
       if (response.ok) {
         alert('Login successful!');
         window.location.href = '/home'; // Redirect to home page or desired URL
       } else {
-        alert('Login failed: ' + data.error);
+        alert('Login failed: ' + data.message); // Show error message from backend
       }
     } catch (error) {
       console.error('Error logging in:', error);
@@ -101,4 +102,3 @@ const Login = () => {
 };
 
 export default Login;
-

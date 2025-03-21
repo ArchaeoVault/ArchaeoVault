@@ -19,30 +19,17 @@ def login_view(request):
             user = authenticate(request, username=username, password=password)
             if user  is not None:
                 login(request, user)
-                return redirect('home')  # Redirect to a home page or any other page
+                return redirect('http://localhost:3000')  # Redirect to a home page or any other page
     else:
         form = LoginForm()
-    return render(request, 'login.html', {'form': form})
+    return redirect('http://localhost:3000')
 
 def home(request):
-    # Your logic here (e.g., checking conditions, processing data, etc.)
-    message = "Welcome to the Home Page!"
-    items = ['Item 1', 'Item 2', 'Item 3']
-
-    context = {
-        'message': message,
-        'items': items
-    }
-    return render(request, 'home.html', context)
+    return redirect('http://localhost:3000')
 
 
 def index(request):
-    # Define the context to pass to the template
-    context = {
-        'message': 'Welcome to the Index Page!',
-        'items': ['Item 1', 'Item 2', 'Item 3']
-    }
-    return render(request, 'index.html', context)
+    return redirect('http://localhost:3000')
 
 def get_csrf_token(request):
     """Returns CSRF token to the frontend for client-side use"""
@@ -70,7 +57,7 @@ def create_user_view(request):
             if password != confirm_password:
                 return JsonResponse({'error': 'Passwords do not match'}, status=400)
             if User.objects.filter(username=email).exists():
-                return JsonResponse({'error': 'User with this email already exists'}, status=400)
+                return JsonResponse({'error': 'Usa with this email already exists'}, status=400)
 
             try:
                 validate_email(email)
@@ -85,7 +72,7 @@ def create_user_view(request):
                 email=email,
                 password=password
             )
-
+            print(user)
             return JsonResponse({'message': 'User created successfully'}, status=200)
 
         except json.JSONDecodeError:

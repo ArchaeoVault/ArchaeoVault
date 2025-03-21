@@ -59,6 +59,7 @@ const Header = () => {
         <Link to="/About">About Us</Link>
         <Link to="/Login" className="login-link">Login</Link>
         <Link to="/Artifacts2" className="Artifacts2">3D Scans</Link>
+        <Link to="/list" className="list">List/Filter</Link>
       </nav>
         
         {/* Search bar */}

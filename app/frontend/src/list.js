@@ -39,7 +39,7 @@ const List = () => {
   return (
     <div className="artifact-page">
       <Header />
-      <div className="artifact-list">
+      <div className="artif the act-list">
         <h2>Artifacts</h2>
         <div className="artifacts">
           {displayedArtifacts.length === 0 ? (

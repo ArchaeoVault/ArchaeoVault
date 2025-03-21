@@ -1,3 +1,4 @@
+/* Pagination container */
 .pagination {
     display: flex;
     justify-content: center;
@@ -5,6 +6,7 @@
     margin: 2rem 0;
 }
 
+/* Pagination buttons */
 .pagination button {
     background-color: #2F2F2F;
     color: white;
@@ -23,10 +25,4 @@
 
 .pagination button:hover:not(:disabled) {
     background-color: #444;
-}
-
-.artifact-item {
-  border: 1px solid #ccc;
-  padding: 10px;
-  margin: 10px 0;
 }

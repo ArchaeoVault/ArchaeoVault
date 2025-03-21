@@ -7,6 +7,8 @@ import ForgotPassword from "./ForgotPassword";
 import ResetPassword from "./ResetPassword";
 import NewportArtifacts from './NewportArtifacts';
 import PortsmouthArtifacts from './PortsmouthArtifacts';
+import Artifacts from './Artifacts';
+import Artifacts2 from './Artifacts2';
 import AboutUs from "./AboutUs";
 import Contact from "./Contact";
 
@@ -20,6 +22,7 @@ const App = () => {
        <Route path="/about" element={<AboutUs />} />
        <Route path="/contact" element={<Contact />} />
        <Route path="/artifacts" element={<Artifacts />} />
+       <Route path="/Artifacts2" element={<Artifacts2 />} />
        <Route path="/signup" element={<Signup />} />
        <Route path="/forgot-password" element={<ForgotPassword />} />
        <Route path="/reset/:uidb64/:token" element={<ResetPassword />} />

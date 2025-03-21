@@ -1,12 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 import './Login.css';
 import Header from './Header';
 import Footer from './Footer';
-import Cookies from 'js-cookie';
-
-const clientId = 'YOUR_GOOGLE_CLIENT_ID_HERE'; // Replace with actual Google Client ID
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -63,16 +59,6 @@ const Login = () => {
       alert('Error logging in.');
     }
   };
-  
-
-  const handleGoogleSuccess = (response) => {
-    console.log('Google Sign-In Success:', response);
-    // Here you can send the Google response to your backend for authentication
-  };
-
-  const handleGoogleFailure = (error) => {
-    console.error('Google Sign-In Failure:', error);
-  };
 
   return (
     <>
@@ -97,22 +83,6 @@ const Login = () => {
             />
             <button type="submit">Log In</button>
           </form>
-
-          <div className="google-login-container">
-            <GoogleOAuthProvider clientId={clientId}>
-              <GoogleLogin
-                onSuccess={handleGoogleSuccess}
-                onError={handleGoogleFailure}
-                width="100%"
-                size="medium"
-                theme="outline"
-                type="standard"
-                logo_alignment="left"
-                shape="pill"
-                text="signin_with"
-              />
-            </GoogleOAuthProvider>
-          </div>
 
           <div className="toggle-text">
             Don't have an account?{' '}

@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponseServerError
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseServerError, JsonResponse
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from myapp.forms import *
@@ -11,18 +11,36 @@ from django.middleware.csrf import get_token
 from django.views.decorators.csrf import csrf_protect
 
 def login_view(request):
+    print(request.body)
     if request.method == 'POST':
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
-            user = authenticate(request, username=username, password=password)
-            if user  is not None:
-                login(request, user)
-                return redirect('http://localhost:3000')  # Redirect to a home page or any other page
-    else:
-        form = LoginForm()
-    return redirect('http://localhost:3000')
+        try:
+            # Parse JSON body manually since it's being sent as JSON
+            data = json.loads(request.body)
+            email = data.get('email')
+            password = data.get('password')
+            if not email or not password:
+                return JsonResponse({"status": "error", "message": "Email and password are required."}, status=400)
+
+            # Try to get the user by email
+            try:
+                # Get user by email
+                user = User.objects.get(email=email)
+
+                # Now authenticate using the user's username and password
+                user = authenticate(request, username=user.username, password=password)
+
+                if user is not None:
+                    login(request, user)
+                    return JsonResponse({"status": "ok"}, status=200)
+                else:
+                    return JsonResponse({"status": "error", "message": "Invalid credentials"}, status=400)
+            except User.DoesNotExist:
+                return JsonResponse({"status": "error", "message": "Invalid credentials"}, status=400)
+
+        except json.JSONDecodeError:
+            return JsonResponse({"status": "error", "message": "Invalid JSON format."}, status=400)
+
+    return JsonResponse({"status": "error", "message": "Invalid request method."}, status=400)
 
 def home(request):
     return redirect('http://localhost:3000')
@@ -79,4 +97,3 @@ def create_user_view(request):
             return JsonResponse({'error': 'Invalid JSON data'}, status=400)
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)
-

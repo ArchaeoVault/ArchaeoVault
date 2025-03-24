@@ -86,18 +86,6 @@ def create_user_view(request):
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
-        #create user object
-        user = User.objects.create_user(
-            username = email,
-            first_name = first_name,
-            last_name = last_name,
-            email = email,
-            password = password
-        )
-        return HttpResponse('User has been created', status = 200)
-    else:
-        return HttpResponse('Error creating user', status = 400)
-
 
 
 

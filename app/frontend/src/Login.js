@@ -51,7 +51,6 @@ const Login = () => {
       const data = await response.json();
       if (response.ok) {
         alert('Login successful!');
-        window.location.href = '/'; // Redirect to home page or desired URL
       } else {
         alert('Login failed: ' + data.message); // Show error message from backend
       }

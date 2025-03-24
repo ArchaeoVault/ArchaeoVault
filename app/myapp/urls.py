@@ -21,5 +21,6 @@ from . import views
 urlpatterns = [
     path('get-csrf-token/', views.get_csrf_token, name='get_csrf_token'),
     path('', views.index, name='index'),
-    path('create_user/', views.create_user_view, name = 'create_user_view')
+    path('create_user/', views.create_user_view, name = 'create_user_view'),
+    path('login/', views.login_view, name = 'login_view')
 ]

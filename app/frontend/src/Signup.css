@@ -5,6 +5,7 @@
     align-items: center;
     height: 100vh;
     background: #E0DEDC;
+    padding: 1rem;
   }
   
   .auth-card {
@@ -97,5 +98,43 @@
   
   .toggle-link:hover {
     color: #0056b3;
+  }
+
+  @media (max-width: 768px) {
+    .auth-card {
+      width: 90%;
+      padding: 1.5rem;
+    }
+  
+    .auth-card h2 {
+      font-size: 1.5rem;
+    }
+  
+    .auth-card form input {
+      font-size: 0.9rem;
+    }
+  
+    .auth-card form button {
+      font-size: 0.9rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .auth-card {
+      width: 100%;
+      padding: 1rem;
+    }
+  
+    .auth-card h2 {
+      font-size: 1.25rem;
+    }
+  
+    .auth-card form input {
+      font-size: 0.8rem;
+    }
+  
+    .auth-card form button {
+      font-size: 0.8rem;
+    }
   }
   

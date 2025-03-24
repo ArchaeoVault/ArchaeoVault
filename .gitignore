@@ -1,4 +1,6 @@
 node_modules/*
+node_modules
+
 .env
 __pycache__/
 
@@ -14,7 +16,7 @@ __pycache__/
 
 # production
 /build
-
+app\frontend\.env
 # misc
 .DS_Store
 .env.local
@@ -27,3 +29,8 @@ yarn-debug.log*
 yarn-error.log*
 
 .node_modules
+
+app/.env
+app/app/.env
+.venv
+env

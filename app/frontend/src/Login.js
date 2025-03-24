@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 import './Login.css';
 import Header from './Header';
@@ -7,14 +7,22 @@ import Footer from './Footer';
 
 const clientId = 'YOUR_GOOGLE_CLIENT_ID_HERE'; // Replace with actual Google Client ID
 
-const Login = () => {
+const Login = ({ setIsAuthenticated, redirectPath }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    setIsAuthenticated(true);
+    navigate(redirectPath || '/'); // Redirect to home page after successful login
     alert('Login successful!');
   };
 
   const handleGoogleSuccess = (response) => {
     console.log('Google Sign-In Success:', response);
+    setIsAuthenticated(true);
+    navigate(redirectPath || '/'); // Redirect to home page after successful login
+    alert('Google Sign-In successful!');
   };
 
   const handleGoogleFailure = (error) => {

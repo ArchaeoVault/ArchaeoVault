@@ -41,7 +41,7 @@ def login_view(request):
             return JsonResponse({"status": "error", "message": "Invalid JSON format."}, status=400)
 
     return JsonResponse({"status": "error", "message": "Invalid request method."}, status=400)
-
+  
 def home(request):
     return redirect('http://localhost:3000')
 
@@ -75,7 +75,7 @@ def create_user_view(request):
             if password != confirm_password:
                 return JsonResponse({'error': 'Passwords do not match'}, status=400)
             if User.objects.filter(username=email).exists():
-                return JsonResponse({'error': 'User with this email already exists'}, status=400)
+                return JsonResponse({'error': 'Usa with this email already exists'}, status=400)
 
             try:
                 validate_email(email)

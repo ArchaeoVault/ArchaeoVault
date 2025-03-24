@@ -10,6 +10,7 @@ from django.http import JsonResponse
 import json
 from django.middleware.csrf import get_token
 from django.views.decorators.csrf import csrf_protect
+from django.utils
 
 def login_view(request):
     if request.method == 'POST':
@@ -80,4 +81,67 @@ def create_user_view(request):
             return JsonResponse({'error': 'Invalid JSON data'}, status=400)
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+def send_reset_password_email_view(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        if not User.objects.filter(username = email).exists():
+            return HttpResponse('Error: User with this email does not exist', status = 400)
+        try:
+            validate_email(email)
+        except ValidationError as e:
+            return HttpResponse('Error: Not a valid email address', status = 400)
+        
+
+        uid = urlsafe_base64_encode(force_bytes(user.pk))
+        token = PasswordResetTokenGenerator()
+
+        message = Mail(
+            from_email ='noreply@archaeovault.com',
+            to_emails= email,
+            subject = 'Welcome to ArchaeoVaul!',
+            html_content = (
+                f'<h2>Thank you for registering for ArchaeoVault, we really hope you enjoy!'
+                f'Click on the link below to reset your password.</h2>'
+                f'<a href="'protocol'://'domain'/change_password/'uid'/'token'/">Reset your password</a>'
+                )
+            )
+        
+        try:
+            sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
+            response = sg.send(message)
+            print(response.status_code)
+
+
+        except Exception as e:
+            print(str(e) , 'did not work')
+        return HttpResponse('Email successefully sent', status = 200)
+    else:
+        return JsonResponse({'error': 'resetting password'}, status = 400)
+
+def change_password_view(request):
+    if request.method == 'POST':
+        try: 
+            data = json.loads(request.body)
+            # uid = urlsafe_base64_decode(uid64)
+            email = data.get('email')
+            newPassword = data.get('newPassword')
+            confirmPassword = data.get('confirmPassword')
+            if not User.objects.filter(username=email).exists():
+                return JsonResponse({'error':'User with this email does not exist'}, status = 400)
+            if newPassword != confirmPassword:
+                return JsonResponse({'error':'Passwords do not match'}, status = 400)
+            user = User.objects.get(username = email)
+            if check_password(newPassword, user.password):
+                return JsonResponse({'error':'New Password can not be the same as the old password'}, status = 400)
+            try:
+                user.set_password(newPassword)
+                user.save()
+            except Exception as e:
+                return JsonResponse({'error':'Error in updating and saving password'}, status = 400)
+            return JsonResponse({'message':'Password successfully reset'}, status = 200)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON'}, status=400)
+        except Exception as e:
+            return JsonResponse({'error':'Error changing password'},status = 400)
 

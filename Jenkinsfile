@@ -39,19 +39,6 @@ pipeline {
             }
             
         }
-
-        stage('Deploy-React') {
-            when { branch 'main '}
-            steps {
-                sh 'cd /var/www/html/build'
-                sh 'npm run build' 
-                sh 'cd /var/www/html'
-                sh 'mv /var/www/html/build/* /var/www/html/production/'
-                sh 'sudo chown -R www-data:www-data /var/www/html/production' 
-                sh 'sudo chmod -R 755 /var/www/html/production' 
-                sh 'sudo service nginx restart'
-            }
-        }
                     
                 
                 

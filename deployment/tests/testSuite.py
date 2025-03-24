@@ -4,15 +4,14 @@ import testTearDown
 import os
 import sys
 
-sys.path.append("../../app/myapp")
+sys.path.append("myapp")
 import test_create_user
 sys.path.append("../../deployment/tests")
 
+def load_tests(loader, standard_tests, pattern):
+    test_suite = unittest.TestSuite()
+    test_suite.addTests(loader.loadTestsFromModule(test_create_user))
+    return test_suite
 
-
-print(os.getcwd())
-
-print("thos")
-
-#if __name__ == '__main__':
-    #unittest.main()
+if __name__ == '__main__':
+    unittest.main()

@@ -5,8 +5,8 @@ node_modules
 __pycache__/
 
 # dependencies
-/node_modules
-/app/frontend/node_modules
+app/frontend/node_modules/*
+app/app/frontend/node_modules/*
 /.pnp
 .pnp.js
 @babel/plugin-proposal-private-property-in-object

@@ -41,7 +41,7 @@ def login_view(request):
             return JsonResponse({"status": "error", "message": "Invalid JSON format."}, status=400)
 
     return JsonResponse({"status": "error", "message": "Invalid request method."}, status=400)
-
+  
 def home(request):
     return redirect('http://localhost:3000')
 

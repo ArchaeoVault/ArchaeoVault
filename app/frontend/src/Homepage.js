@@ -14,7 +14,7 @@ const HomePage = () => {
         <div className="hero-content">
           <h1>Explore the World of Archaeology</h1>
           <p>
-            Discover the hidden treasures of Portsmouth and Newport, RI! Explore detailed 3D models of archaeological artifacts and dive into their rich history, origins, and craftsmanship. Unearth the past and let history come to life at your fingertips..
+            Discover the hidden treasures of Portsmouth and Newport, RI! Explore detailed 3D models of archaeological artifacts and dive into their rich history, origins, and craftsmanship. Unearth the past and let history come to life at your fingertips.
           </p>
           <button className="learn-more">Learn more</button>
         </div>

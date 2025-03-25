@@ -13,7 +13,7 @@ chmod +x manage.py
 cd /var/www/html/ArchaeoVault/app/frontend
 npm run build
 cd /var/www/html
-mv /var/www/html/ArchaeoVault/app/frontend/build/* /var/www/html/production/
+cp -R /var/www/html/ArchaeoVault/app/frontend/build/* /var/www/html/production/
 sudo chown -R www-data:www-data /var/www/html/production
 sudo chmod -R 755 /var/www/html/production
 sudo service nginx restart

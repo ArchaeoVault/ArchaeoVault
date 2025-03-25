@@ -69,7 +69,7 @@ const Signup = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:8000/create_user/', {
+      const response = await fetch('http://localhost:8000/api/create_user/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

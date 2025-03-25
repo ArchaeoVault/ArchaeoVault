@@ -10,6 +10,7 @@ import json
 from django.middleware.csrf import get_token
 from django.views.decorators.csrf import csrf_protect
 
+@csrf_protect
 def login_view(request):
     print(request.body)
     if request.method == 'POST':
@@ -31,7 +32,8 @@ def login_view(request):
 
                 if user is not None:
                     login(request, user)
-                    return JsonResponse({"status": "ok"}, status=200)
+                    return JsonResponse({"status": "ok", "redirect_url": "/homepage.js"}, status=200)
+                    
                 else:
                     return JsonResponse({"status": "error", "message": "Invalid credentials"}, status=400)
             except User.DoesNotExist:

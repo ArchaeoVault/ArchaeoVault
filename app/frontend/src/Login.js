@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate from react-router-dom
 import './Login.css';
 import Header from './Header';
 import Footer from './Footer';
 import Cookies from 'js-cookie'; 
 
-const Login = () => {
+const Login = ({ setIsAuthenticated, redirectPath }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();  // Use useNavigate for client-side redirection
 
   const handleSubmit = async (e) => {
     e.preventDefault();    
@@ -51,6 +52,10 @@ const Login = () => {
       const data = await response.json();
       if (response.ok) {
         alert('Login successful!');
+        setIsAuthenticated(true);
+
+        // Redirect the user to the intended path or home page if not available
+        navigate(redirectPath || '/'); // Redirect to the original path or home page
       } else {
         alert('Login failed: ' + data.message); // Show error message from backend
       }
@@ -101,3 +106,4 @@ const Login = () => {
 };
 
 export default Login;
+

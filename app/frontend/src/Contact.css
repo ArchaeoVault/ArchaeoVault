@@ -1,0 +1,113 @@
+/* Contact.css */
+.contact-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    background-color: #f8f6f2;
+  }
+  
+  .contact-content {
+    flex: 1;
+    max-width: 50%;
+    padding-right: 40px;
+  }
+  
+  .contact-title {
+    font-size: 48px;
+    font-weight: bold;
+    color: #5c5149;
+    font-family: "Georgia", serif;
+  }
+  
+  .contact-text {
+    font-size: 18px;
+    line-height: 1.6;
+    color: #333;
+    font-family: "Arial", sans-serif;
+  }
+  
+  .contact-email {
+    font-size: 18px;
+    color: #5c5149;
+    text-decoration: none;
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  .contact-email:hover {
+    text-decoration: underline;
+  }
+  
+  .contact-phone {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  .contact-form label {
+    display: block;
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 10px;
+    color: #333;
+  }
+  
+  .required {
+    font-size: 14px;
+    color: #888;
+    font-weight: normal;
+  }
+  
+  .name-fields {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .name-fields input {
+    flex: 1;
+  }
+  
+  .contact-form input,
+  .contact-form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+  }
+  
+  .contact-form textarea {
+    height: 100px;
+    resize: none;
+  }
+  
+  .contact-button {
+    background-color: #2d2926;
+    color: white;
+    font-size: 16px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    margin-top: 15px;
+    cursor: pointer;
+  }
+  
+  .contact-button:hover {
+    background-color: #44403c;
+  }
+  
+  .contact-image-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .contact-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  

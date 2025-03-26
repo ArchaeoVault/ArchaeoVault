@@ -65,6 +65,7 @@
   .artifact-material {
     font-size: 0.95rem;
     margin-bottom: 0.25rem;
+    color: rgb(204, 204, 204);
   }
   .artifact-description {
     margin-top: 0.5rem;

@@ -6,6 +6,10 @@ from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from django.contrib.auth.hashers import check_password
 from myapp.forms import *
+from django.utils.http import urlsafe_base64_encode
+from django.utils.http import urlsafe_base64_decode
+from django.utils.encoding import force_bytes
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
 
 
 
@@ -87,28 +91,46 @@ def send_reset_password_email_view(request):
         except ValidationError as e:
             return HttpResponse('Error: Not a valid email address', status = 400)
         # generate stuff for the email and then send it(link to change password page or send a code depending on what we choose)
+        #generates the uid and token
+        uid = urlsafe_base64_encode(force_bytes(user.pk))
+        token = PasswordResetTokenGenerator()
+
+        message = Mail(
+            from_email='noreply@archaeovault.com',
+            to_emails=user.email,
+            subject='Welcome to ArchaeoVault!',
+            html_content=(
+                f'<h2>Thank you for registering for ArchaeoVault, we really hope you enjoy!'
+                f'Click on the link below to reset your password.</h2>'
+                f'<a href="'protocol'://'domain'/change_password/'uid'/'token'/">Reset your password</a>'
+            )
+        )
+
+        try:
+            sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
+            response = sg.send(message)
+            print(response.status_code)
+            #print(response.body)
+            #print(response.headers)
+        except Exception as e:
+            print(str(e) + ' didnt work')
         return HttpResponse('Email successfully sent', status = 200)
     else:
-        return HttpResponse('Erro resetting password', status = 400)
+        return HttpResponse('Error resetting password', status = 400)
     
-def change_password_view(request):
+def change_password_view(request, uid64, token):
     if request.method == 'POST':
-        email = request.POST.get('email')
+        uid = urlsafe_base64_decode(uid64)
         newPassword = request.POST.get('newPassword')
         confirmPassword = request.POST.get('confirmPassword')
         # makes sure the user trying to change password actually exists
         if not User.objects.filter(username=email).exists():
             return HttpResponse('Error: User with this email does not exist', status = 400)
-        # validates the email, same as the create just in case
-        try:
-            validate_email(email)
-        except ValidationError as e:
-            return HttpResponse('Error: Not a valid email address', status = 400)
         # make sure the new and confirm password match 
         if newPassword != confirmPassword:
             return HttpResponse('Error: Passwords do not match', status = 400)
         # checks to make sure the new password is not the same as the current
-        user = User.objects.get(username = email)
+        user = User.objects.get(uid = uid)
         if check_password(newPassword, user.password):
             return HttpResponse('Error: New Password can not be the same as the old password', status = 400)
         try:

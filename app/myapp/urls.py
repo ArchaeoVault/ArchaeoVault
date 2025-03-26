@@ -21,5 +21,6 @@ from . import views
 urlpatterns = [
     path('', views.index, name='index'),
     path('create_user/', views.create_user_view, name = 'create_user_view'),
-    path('change_password/', views.change_password_view, name = 'change_password_view')
+    path('send_reset_password_email/', views.send_reset_password_email_view, name = 'send_reset_password_email_view'),
+    path('change_password/<uidb64>/<token>/', views.change_password_view, name = 'change_password_view')
 ]

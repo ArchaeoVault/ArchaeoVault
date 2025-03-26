@@ -49,18 +49,18 @@ def create_user_view(request):
         confirm_password = request.POST.get('confirm_password')
 
         if not all([email, password, confirm_password]):
-            return HttpResponse('Error: All fields are required', status=400)
+            return JsonResponse({'error': 'All fields are required'}, status=400)
 
         if password != confirm_password:
-            return HttpResponse('Error: Passwords do not match', status=400)
+            return JsonResponse({'error': 'Passwords do not match'}, status=400)
 
         if User.objects.filter(email=email).exists():
-            return HttpResponse('Error: User with this email already exists', status=400)
+            return JsonResponse({'error': 'User with this email already exists'}, status=400)
 
         try:
             validate_email(email)
         except ValidationError:
-            return HttpResponse('Error: Enter a valid email address', status=400)
+            return JsonResponse({'error': 'Enter a valid email address'}, status=400)
 
                 # Create a new user
         user = User.objects.create_user(
@@ -105,7 +105,7 @@ def create_user_view(request):
         except Exception as e:
             print(str(e) + ' didnt work')
 
-        return HttpResponse('User has been created and a verification email has been sent', status=200)
+        return JsonResponse({'message': 'User has been created and a verification email has been sent'}, status=200)
     else:
         form = UserRegistrationForm()
     return render(request, 'createuser.html', {'form': form})
@@ -123,7 +123,7 @@ def resend_verification_view(request):
         try:
             validate_email(email)
         except ValidationError:
-            return HttpResponse('Error: Enter a valid email address', status=400)
+            return JsonResponse({'error': 'Enter a valid email address'}, status=400)
         if(User.objects.filter(email=email).exists()):
             #generates the uid and token
             uid = urlsafe_base64_encode(force_bytes(user.pk))
@@ -149,7 +149,7 @@ def resend_verification_view(request):
                 # #print(response.headers)
             except Exception as e:
                 print(str(e) + ' didnt work')
-            return HttpResponse('Verification email has been sent', status=200)
+            return JsonResponse({'message': 'Verification email has been sent'}, status=200)
     return render(request, 'resend_verification.html')
 
 def index(request):

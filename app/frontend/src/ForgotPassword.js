@@ -5,16 +5,25 @@ import Footer from "./Footer";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [message, setMessage] = useState('');
+  // const [newPassword, setNewPassword] = useState('');
+  // const [confirmPassword, setConfirmPassword] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (newPassword !== confirmPassword) {
-      alert("Passwords do not match!");
-      return;
+    const response = await fetch('/password_reset/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email }),
+    });
+
+    if (response.ok) {
+      setMessage('A password reset link has been sent to your email.');
+    } else {
+      setMessage('Something went wrong. Please try again.');
     }
-    console.log("Password reset for:", email);
   };
 
   return (
@@ -22,7 +31,10 @@ const ForgotPassword = () => {
       <Header />
       <div className="forgot-password-container">
         <div className="forgot-password-card">
-          <h2>Reset Password</h2>
+          <h2>Forgot Your Password?</h2>
+
+          <p>Enter your email address below and we'll send you a link to reset your password.</p>
+          <br />
           <form onSubmit={handleSubmit}>
             <input
               type="email"
@@ -31,22 +43,9 @@ const ForgotPassword = () => {
               onChange={(e) => setEmail(e.target.value)}
               required
             />
-            <input
-              type="password"
-              placeholder="New Password"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              required
-            />
-            <input
-              type="password"
-              placeholder="Confirm New Password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-            />
-            <button type="submit">Save Password</button>
+            <button type="submit">Send Link</button>
           </form>
+          {message && <p>{message}</p>}
         </div>
       </div>
       <Footer />

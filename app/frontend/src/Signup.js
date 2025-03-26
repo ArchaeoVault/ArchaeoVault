@@ -26,7 +26,7 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Check if CSRF token is in cookies
+    // Check if CSRF token is in cookies :)
     let token = Cookies.get('csrftoken');
     console.log('Initial CSRF Token:', token);
 

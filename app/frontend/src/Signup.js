@@ -1,12 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 import './Signup.css';
 import Header from './Header';
 import Footer from './Footer';
 import Cookies from 'js-cookie'; 
-
-const clientId = 'YOUR_GOOGLE_CLIENT_ID_HERE'; // Replace with actual Google Client ID
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -72,7 +69,7 @@ const Signup = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:8000/create_user/', {
+      const response = await fetch('http://localhost:8000/api/create_user/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -99,14 +96,6 @@ const Signup = () => {
       console.error('There was an error during sign up:', error);
       alert('Error: Something went wrong.');
     }
-  };
-
-  const handleGoogleSuccess = (response) => {
-    console.log('Google Sign-In Success:', response);
-  };
-
-  const handleGoogleFailure = (error) => {
-    console.error('Google Sign-In Failure:', error);
   };
 
   return (
@@ -158,22 +147,6 @@ const Signup = () => {
             />
             <button type="submit">Sign Up</button>
           </form>
-
-          <div className="google-login-container">
-            <GoogleOAuthProvider clientId={clientId}>
-              <GoogleLogin
-                onSuccess={handleGoogleSuccess}
-                onError={handleGoogleFailure}
-                width="100%"
-                size="medium"
-                theme="outline"
-                type="standard"
-                logo_alignment="left"
-                shape="pill"
-                text="signup_with"
-              />
-            </GoogleOAuthProvider>
-          </div>
 
           <div className="toggle-text">
             Already have an account?{' '}

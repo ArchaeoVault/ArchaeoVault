@@ -26,7 +26,7 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Check if CSRF token is in cookies
+    // Check if CSRF token is in cookies :)
     let token = Cookies.get('csrftoken');
     console.log('Initial CSRF Token:', token);
 
@@ -69,7 +69,7 @@ const Signup = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:8000/api/create_user/', {
+      const response = await fetch('http://localhost:8000/create_user/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

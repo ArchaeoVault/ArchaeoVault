@@ -1,59 +1,67 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate from react-router-dom
 import './Login.css';
 import Header from './Header';
 import Footer from './Footer';
+import Cookies from 'js-cookie'; 
 
-const Login = () => {
-  const [csrfToken, setCsrfToken] = useState('');
-  const navigate = useNavigate(); // React Router's hook for navigation
-
-  // Fetch CSRF token when the component loads
-  useEffect(() => {
-    const fetchCsrfToken = async () => {
-      try {
-        const response = await fetch('http://localhost:8000/api/get_csrf_token/', {
-          method: 'GET',
-          credentials: 'include', // Ensures cookies are included
-        });
-        const data = await response.json();
-        setCsrfToken(data.csrfToken);
-      } catch (error) {
-        console.error('Error fetching CSRF token:', error);
-      }
-    };
-
-    fetchCsrfToken();
-  }, []);
+const Login = ({ setIsAuthenticated, redirectPath }) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const navigate = useNavigate();  // Use useNavigate for client-side redirection
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    const form = e.target;
-    const email = form.elements[0].value;
-    const password = form.elements[1].value;
+    e.preventDefault();    
+
+    // Check if CSRF token is in cookies
+    let token = Cookies.get('csrftoken');
+    console.log('Initial CSRF Token:', token);
+
+    // If token isn't in cookies, fetch it from the server
+    if (!token) {
+      try {
+        const response = await fetch('http://localhost:8000/get-csrf-token/');
+        const data = await response.json();
+        token = data.csrfToken;
+        console.log('Fetched CSRF Token from server:', token); 
+        Cookies.set('csrftoken', token);  // Set CSRF token in cookies
+      } catch (error) {
+        console.error('Error fetching CSRF token:', error);
+        alert('Error fetching CSRF token');
+        return;
+      }
+    }
+
+    // If CSRF token is not found at this point, show alert
+    if (!token) {
+      alert('CSRF token is not available.');
+      return;
+    }
 
     try {
-      const response = await fetch('http://localhost:8000/api/login/', {
+      const response = await fetch('http://localhost:8000/login/', {
         method: 'POST',
-        credentials: 'include', // Ensures cookies are sent with the request
         headers: {
           'Content-Type': 'application/json',
-          'X-CSRFToken': csrfToken, // Include the CSRF token
+          'X-CSRFToken': token, // Pass CSRF token directly from cookies
         },
         body: JSON.stringify({ email, password }),
+        credentials: 'include', // Ensure cookies are sent with the request
       });
 
-      const result = await response.json();
-
-      if (result.status === 'ok') {
+      const data = await response.json();
+      if (response.ok) {
         alert('Login successful!');
-        navigate('/'); // Redirect to the homepage
+        setIsAuthenticated(true);
+
+        // Redirect the user to the intended path or home page if not available
+        navigate(redirectPath || '/'); // Redirect to the original path or home page
       } else {
-        alert(result.message); // Show error message from the backend
+        alert('Login failed: ' + data.message); // Show error message from backend
       }
     } catch (error) {
-      console.error('Error:', error);
-      alert('An error occurred. Please try again.');
+      console.error('Error logging in:', error);
+      alert('Error logging in.');
     }
   };
 
@@ -64,10 +72,23 @@ const Login = () => {
         <div className="auth-card">
           <h2>Log In</h2>
           <form onSubmit={handleSubmit}>
-            <input type="email" placeholder="Email" required />
-            <input type="password" placeholder="Password" required />
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
             <button type="submit">Log In</button>
           </form>
+
           <div className="toggle-text">
             Don't have an account?{' '}
             <Link to="/signup" className="toggle-link">
@@ -85,3 +106,4 @@ const Login = () => {
 };
 
 export default Login;
+

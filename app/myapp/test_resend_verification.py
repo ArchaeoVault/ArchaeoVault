@@ -17,3 +17,8 @@ class ResendVerificationTests(TestCase):
         response = self.client.post(reverse('resend_verification_view'), data = {'email': 'temp@email.com'}) 
         self.assertTrue(User.objects.filter(username ='temp@email.com').exists())
         self.assertEqual(response.status_code, 200)
+    
+    def missing_value(self):
+
+        response = self.client.post(reverse('resend_verification_view'), data = {'email': ''}) 
+        self.assertEqual(response.status_code, 400)

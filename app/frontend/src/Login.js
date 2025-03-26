@@ -1,24 +1,60 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import './Login.css';
 import Header from './Header';
 import Footer from './Footer';
 
-const clientId = 'YOUR_GOOGLE_CLIENT_ID_HERE'; // Replace with actual Google Client ID
-
 const Login = () => {
-  const handleSubmit = (e) => {
+  const [csrfToken, setCsrfToken] = useState('');
+  const navigate = useNavigate(); // React Router's hook for navigation
+
+  // Fetch CSRF token when the component loads
+  useEffect(() => {
+    const fetchCsrfToken = async () => {
+      try {
+        const response = await fetch('http://localhost:8000/api/get_csrf_token/', {
+          method: 'GET',
+          credentials: 'include', // Ensures cookies are included
+        });
+        const data = await response.json();
+        setCsrfToken(data.csrfToken);
+      } catch (error) {
+        console.error('Error fetching CSRF token:', error);
+      }
+    };
+
+    fetchCsrfToken();
+  }, []);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert('Login successful!');
-  };
+    const form = e.target;
+    const email = form.elements[0].value;
+    const password = form.elements[1].value;
 
-  const handleGoogleSuccess = (response) => {
-    console.log('Google Sign-In Success:', response);
-  };
+    try {
+      const response = await fetch('http://localhost:8000/api/login/', {
+        method: 'POST',
+        credentials: 'include', // Ensures cookies are sent with the request
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrfToken, // Include the CSRF token
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
-  const handleGoogleFailure = (error) => {
-    console.error('Google Sign-In Failure:', error);
+      const result = await response.json();
+
+      if (result.status === 'ok') {
+        alert('Login successful!');
+        navigate('/'); // Redirect to the homepage
+      } else {
+        alert(result.message); // Show error message from the backend
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('An error occurred. Please try again.');
+    }
   };
 
   return (
@@ -32,23 +68,6 @@ const Login = () => {
             <input type="password" placeholder="Password" required />
             <button type="submit">Log In</button>
           </form>
-
-          <div className="google-login-container">
-            <GoogleOAuthProvider clientId={clientId}>
-              <GoogleLogin
-                onSuccess={handleGoogleSuccess}
-                onError={handleGoogleFailure}
-                width="100%"
-                size="medium"
-                theme="outline"
-                type="standard"
-                logo_alignment="left"
-                shape="pill"
-                text="signin_with"
-              />
-            </GoogleOAuthProvider>
-          </div>
-
           <div className="toggle-text">
             Don't have an account?{' '}
             <Link to="/signup" className="toggle-link">

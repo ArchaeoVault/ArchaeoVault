@@ -1,6 +1,6 @@
 node_modules/*
 node_modules
-
+.venv
 .env
 __pycache__/
 
@@ -10,6 +10,7 @@ app/app/frontend/node_modules/*
 /.pnp
 .pnp.js
 @babel/plugin-proposal-private-property-in-object
+app/frontend/node_modules
 
 # testing
 /coverage

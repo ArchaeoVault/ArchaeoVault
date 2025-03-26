@@ -16,7 +16,8 @@ app/app/frontend/node_modules/*
 
 # production
 /build
-
+app/frontend/build
+app\frontend\.env
 # misc
 .DS_Store
 .env.local

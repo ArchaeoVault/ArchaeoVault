@@ -24,5 +24,6 @@ urlpatterns = [
     path('all_artifacts/', views.all_artifacts_view, name = 'all_artifacts_view'),
     path('api/create_user/', views.create_user_view, name = 'create_user_view'),
     path('api/login/', views.login_view, name = 'login_view'),
+    path('api/change_password', views.change_password_view, name = 'change_password_view'),
     path('api/get_csrf_token/', views.get_csrf_token, name = 'get_csrf_token')
 ]

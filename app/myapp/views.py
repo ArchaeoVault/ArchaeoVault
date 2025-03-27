@@ -9,7 +9,7 @@ from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import Http404
 from myapp.models import Artifact
 from django.http import JsonResponse
-
+from django.contrib.auth.hashers import check_password
 
 from django.http import JsonResponse
 import json
@@ -175,5 +175,28 @@ def all_artifacts_view(request):
     # Return data as JSON response
     return JsonResponse({'artifacts': artifact_data}, status = 200)
 
-
+def change_password_view(request):
+    if request.method == 'POST':
+        try: 
+            data = json.loads(request.body)
+            email = data.get('email')
+            newPassword = data.get('newPassword')
+            confirmPassword = data.get('confirmPassword')
+            if not User.objects.filter(username=email).exists():
+                return JsonResponse({'error':'User with this email does not exist'}, status = 400)
+            if newPassword != confirmPassword:
+                return JsonResponse({'error':'Passwords do not match'}, status = 400)
+            user = User.objects.get(username = email)
+            if check_password(newPassword, user.password):
+                return JsonResponse({'error':'New Password can not be the same as the old password'}, status = 400)
+            try:
+                user.set_password(newPassword)
+                user.save()
+            except Exception as e:
+                return JsonResponse({'error':'Error in updating and saving password'}, status = 400)
+            return JsonResponse({'message':'Password successfully reset'}, status = 200)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON'}, status=400)
+        except Exception as e:
+            return JsonResponse({'error':'Error changing password'},status = 400)
 

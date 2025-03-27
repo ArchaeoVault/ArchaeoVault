@@ -40,7 +40,7 @@ const Login = () => {
       const result = await response.json();
       if (result.status === 'ok') {
         alert('Login successful!');
-        navigate('/'); // Redirect to the homepage
+        navigate('/artifacts'); // Redirect to the homepage
       } else {
         alert(result.message); // Show error message from the backend
       }

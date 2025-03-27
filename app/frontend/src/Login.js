@@ -1,70 +1,54 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate from react-router-dom
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import './Login.css';
 import Header from './Header';
 import Footer from './Footer';
-import Cookies from 'js-cookie'; 
-
-const Login = ({ setIsAuthenticated, redirectPath }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const navigate = useNavigate();  // Use useNavigate for client-side redirection
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();    
-
-    // Check if CSRF token is in cookies
-    let token = Cookies.get('csrftoken');
-    console.log('Initial CSRF Token:', token);
-
-    // If token isn't in cookies, fetch it from the server
-    if (!token) {
+const Login = () => {
+  const [csrfToken, setCsrfToken] = useState('');
+  const navigate = useNavigate(); // React Router's hook for navigation
+  // Fetch CSRF token when the component loads
+  useEffect(() => {
+    const fetchCsrfToken = async () => {
       try {
-        const response = await fetch('http://localhost:8000/get-csrf-token/');
+        const response = await fetch('http://localhost:8000/api/get_csrf_token/', {
+          method: 'GET',
+          credentials: 'include', // Ensures cookies are included
+        });
         const data = await response.json();
-        token = data.csrfToken;
-        console.log('Fetched CSRF Token from server:', token); 
-        Cookies.set('csrftoken', token);  // Set CSRF token in cookies
+        setCsrfToken(data.csrfToken);
       } catch (error) {
         console.error('Error fetching CSRF token:', error);
-        alert('Error fetching CSRF token');
-        return;
       }
-    }
-
-    // If CSRF token is not found at this point, show alert
-    if (!token) {
-      alert('CSRF token is not available.');
-      return;
-    }
-
+    };
+    fetchCsrfToken();
+  }, []);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const email = form.elements[0].value;
+    const password = form.elements[1].value;
     try {
-      const response = await fetch('http://localhost:8000/login/', {
+      const response = await fetch('http://localhost:8000/api/login/', {
         method: 'POST',
+        credentials: 'include', // Ensures cookies are sent with the request
         headers: {
           'Content-Type': 'application/json',
-          'X-CSRFToken': token, // Pass CSRF token directly from cookies
+          'X-CSRFToken': csrfToken, // Include the CSRF token
         },
         body: JSON.stringify({ email, password }),
-        credentials: 'include', // Ensure cookies are sent with the request
       });
-
-      const data = await response.json();
-      if (response.ok) {
+      const result = await response.json();
+      if (result.status === 'ok') {
         alert('Login successful!');
-        setIsAuthenticated(true);
-
-        // Redirect the user to the intended path or home page if not available
-        navigate(redirectPath || '/'); // Redirect to the original path or home page
+        navigate('/'); // Redirect to the homepage
       } else {
-        alert('Login failed: ' + data.message); // Show error message from backend
+        alert(result.message); // Show error message from the backend
       }
     } catch (error) {
-      console.error('Error logging in:', error);
-      alert('Error logging in.');
+      console.error('Error:', error);
+      alert('An error occurred. Please try again.');
     }
   };
-
   return (
     <>
       <Header />
@@ -72,23 +56,10 @@ const Login = ({ setIsAuthenticated, redirectPath }) => {
         <div className="auth-card">
           <h2>Log In</h2>
           <form onSubmit={handleSubmit}>
-            <input
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-            <input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+            <input type="email" placeholder="Email" required />
+            <input type="password" placeholder="Password" required />
             <button type="submit">Log In</button>
           </form>
-
           <div className="toggle-text">
             Don't have an account?{' '}
             <Link to="/signup" className="toggle-link">
@@ -104,6 +75,4 @@ const Login = ({ setIsAuthenticated, redirectPath }) => {
     </>
   );
 };
-
 export default Login;
-

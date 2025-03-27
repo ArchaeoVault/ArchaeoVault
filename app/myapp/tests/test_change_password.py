@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.hashers import check_password
 import json
 
-class ChangePasswordTests(TestCase):
+class test_change_password(TestCase):
 
     def setUp(self):
         self.user = User.objects.create_user(

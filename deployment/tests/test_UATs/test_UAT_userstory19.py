@@ -45,7 +45,7 @@ class test_UAT_userstory19(unittest.TestCase):
 			alert.accept()
 		except TimeoutException:
 			assert False
-		assert message == "Login successful!"
+		assert message == "Invalid Email or Password"
 
 	def test_long_password(self):
 		self.driver.implicitly_wait(1)
@@ -62,7 +62,7 @@ class test_UAT_userstory19(unittest.TestCase):
 			alert.accept()
 		except TimeoutException:
 			assert False
-		assert message == "Login successful!"
+		assert message == "Invalid Email or Password"
 
 	def test_long_email(self):
 		self.driver.implicitly_wait(1)
@@ -79,7 +79,7 @@ class test_UAT_userstory19(unittest.TestCase):
 			alert.accept()
 		except TimeoutException:
 			assert False
-		assert message == "Login successful!"
+		assert message == "Invalid Email or Password"
 	
 	def test_no_email_no_password(self):
 		self.driver.implicitly_wait(1)
@@ -147,7 +147,7 @@ class test_UAT_userstory19(unittest.TestCase):
 			alert.accept()
 		except TimeoutException:
 			assert False
-		assert message == "Login successful!"
+		assert message == "Invalid Username or Password"
 		
 	def test_forgot_password_button(self):
 		self.driver.implicitly_wait(1)

@@ -8,7 +8,7 @@ from myapp.models import (
     PicturePath, Artifact
 )
 
-class DisplayArtifactTests(TestCase):
+class test_artifact_model(TestCase):
 
     def setUp(self):
         # Address

@@ -11,6 +11,7 @@ chmod +x manage.py
 ./manage.py migrate  --run-syncdb
 
 cd /var/www/html/ArchaeoVault/app/frontend
+npm install
 npm run build
 cd /var/www/html
 cp -R /var/www/html/ArchaeoVault/app/frontend/build/* /var/www/html/production/

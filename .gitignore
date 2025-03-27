@@ -1,6 +1,7 @@
 node_modules/*
 node_modules
 .venv
+myenv
 .env
 __pycache__/
 

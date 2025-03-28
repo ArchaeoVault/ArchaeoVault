@@ -40,6 +40,7 @@ const Login = () => {
       const result = await response.json();
       if (result.status === 'ok') {
         alert('Login successful!');
+        localStorage.setItem('isAuthenticated', true); // Store authentication status
         navigate('/artifacts'); // Redirect to the homepage
       } else {
         alert(result.message); // Show error message from the backend

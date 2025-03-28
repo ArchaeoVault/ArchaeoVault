@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
+from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseServerError, JsonResponse
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
@@ -16,6 +17,7 @@ import json
 from django.middleware.csrf import get_token
 from django.views.decorators.csrf import csrf_protect
 
+@csrf_exempt
 def login_view(request):
     print(request.body)
     if request.method == 'POST':
@@ -48,6 +50,27 @@ def login_view(request):
 
     return JsonResponse({"status": "error", "message": "Invalid request method."}, status=400)
   
+@csrf_exempt
+def signup(request):
+    if request.methof == 'POST':
+        try:
+            data = json.loads(request.body)
+            username = data.get('username')
+            password = data.get('password')
+            email = data.get('email')
+
+            if not username or not password or not email:
+                return JsonResponse({'error': 'Missing fields'}, status=400)
+
+            if User.objects.filter(username=username).exists():
+                return JsonResponse({'error': 'Username already exists'}, status=400)
+
+            user = User.objects.create_user(username=username, password=password, email=email)
+            return JsonResponse({'message': 'User created successfully'}, status=201)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
 def home(request):
     return redirect('http://localhost:3000')
 

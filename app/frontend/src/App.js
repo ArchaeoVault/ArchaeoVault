@@ -20,13 +20,14 @@ const App = () => {
 
   // Move PrivateRoute component inside Router to ensure useLocation() works properly
   const PrivateRoute = ({ element }) => {
+    const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true'; // Check authentication state
     const location = useLocation(); // Move useLocation inside PrivateRoute
 
-    useEffect(() => {
-      if (!isAuthenticated && location.pathname !== '/login') {
-        setRedirectPath(location.pathname);  // Keep track of the attempted location
-      }
-    }, [location]);  // Only depend on location
+    // useEffect(() => {
+    //   if (!isAuthenticated && location.pathname !== '/login') {
+    //     setRedirectPath(location.pathname);  // Keep track of the attempted location
+    //   }
+    // }, [location]);  // Only depend on location
 
     if (!isAuthenticated) {
       return <Navigate to="/login" state={{ from: location }} />;
@@ -38,7 +39,9 @@ const App = () => {
     <Router>
       <Routes>
         {/* Login route with redirectPath */}
-        <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} redirectPath={redirectPath} />} />
+        {/* <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} redirectPath={redirectPath} />} /> */}
+
+        <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
         
         {/* Other routes */}
         <Route path="/about" element={<AboutUs />} />
@@ -55,7 +58,9 @@ const App = () => {
         <Route path="/portsmouth-artifacts" element={<PrivateRoute element={<PortsmouthArtifacts />} />} />
         
         {/* Default route: show login or homepage */}
-        <Route path="/" element={showLogin ? <Login setIsAuthenticated={setIsAuthenticated} /> : <HomePage setShowLogin={setShowLogin} />} />
+        {/* <Route path="/" element={showLogin ? <Login setIsAuthenticated={setIsAuthenticated} /> : <HomePage setShowLogin={setShowLogin} />} /> */}
+
+        <Route path="/" element={<HomePage />} />
       </Routes>
     </Router>
   );

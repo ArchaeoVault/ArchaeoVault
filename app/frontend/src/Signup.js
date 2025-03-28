@@ -69,7 +69,7 @@ const Signup = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:8000/create_user/', {
+      const response = await fetch('http://localhost:8000/api/create_user/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -85,12 +85,16 @@ const Signup = () => {
         credentials: 'include',  // Ensure cookies are sent with the request
       });
 
-      const responseData = await response.json();
-      console.log('Response Data:', responseData);
       if (response.ok) {
+        const responseData = await response.json();
+        console.log('Response Data:', responseData);
+        // if (response.ok) {
         alert('Sign up successful!');
       } else {
-        alert('Error: ' + (responseData.error || 'Something went wrong.'));
+        const errorText = await response.text(); // Read the response as text
+        console.error('Error Response:', errorText);
+        alert('Error: ' + errorText);
+        // alert('Error: ' + (responseData.error || 'Something went wrong.'));
       }
     } catch (error) {
       console.error('There was an error during sign up:', error);

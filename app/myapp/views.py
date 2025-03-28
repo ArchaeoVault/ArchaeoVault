@@ -8,13 +8,29 @@ from myapp.forms import *
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import Http404
 from myapp.models import Artifact
+
 from django.http import JsonResponse
 from django.contrib.auth.hashers import check_password
 
 from django.http import JsonResponse
-import json
 from django.middleware.csrf import get_token
 from django.views.decorators.csrf import csrf_protect
+
+from django.core.mail import send_mail
+from django.conf import settings
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
+from .models import *
+from django.urls import reverse
+from django.utils.http import urlsafe_base64_encode
+from django.utils.http import urlsafe_base64_decode
+from django.utils.encoding import force_bytes
+from django.template.loader import render_to_string
+from .tokens import account_activation_token
+from django.http import FileResponse, JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+import os
 
 @csrf_protect
 def login_view(request):
@@ -175,6 +191,48 @@ def all_artifacts_view(request):
     # Return data as JSON response
     return JsonResponse({'artifacts': artifact_data}, status = 200)
 
+def activate(request, uidb64, token):
+    #put boolean that sets user active to true
+    uid = urlsafe_base64_decode(uidb64)
+    user = User.objects.get(email = uid)
+    user.activated = True
+    user.save()
+    return render(request, 'home.html')
+
+def resend_verification_view(request):
+    if(request.method == 'POST'):
+        data = json.loads(request.body)
+        email = data.get('email')
+        if(User.objects.filter(email = email).exists()):
+            #generates the uid and token
+            user = User.objects.get(email = email)
+            uid = urlsafe_base64_encode(force_bytes(user.email))
+            token = account_activation_token.make_token(user)
+            verification_link = request.build_absolute_uri(
+                reverse('activate', kwargs={'uidb64': uid, 'token': token})
+            )
+            message = Mail(
+                from_email='noreply@archaeovault.com',
+                to_emails=user.email,
+                subject='Welcome to ArchaeoVault!',
+                html_content=(
+                    f'<h2>Thank you for registering for ArchaeoVault, we really hope you enjoy!'
+                    f'Click on the link below to verify your email address.</h2>'
+                    f'<a href="{verification_link}">Verify your email address</a>'
+                )
+            )
+            try:
+                sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
+                response = sg.send(message)
+                print(response.status_code)
+                #print(response.body)
+                # #print(response.headers)
+            except Exception as e:
+                print(str(e) + ' didnt work')
+            return JsonResponse({'message': 'Verification email has been sent'}, status=200)
+        else:
+            return JsonResponse({'error': 'Email address not associated with an account'}, status=400)
+    return render(request, 'resend_verification.html')
 def change_password_view(request):
     if request.method == 'POST':
         try: 

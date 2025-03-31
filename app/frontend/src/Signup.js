@@ -5,6 +5,12 @@ import Header from './Header';
 import Footer from './Footer';
 import Cookies from 'js-cookie'; 
 
+let backend_url = "";
+if (process.env.REACT_APP_DJANGO_ENV == "production"){ backend_url = "https://www.archaeovault.com/api/";}
+else{ backend_url = "http://localhost:8000/api/";}
+
+
+
 const Signup = () => {
   const [formData, setFormData] = useState({
     firstName: '',
@@ -26,14 +32,14 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Check if CSRF token is in cookies
+    // Check if CSRF token is in cookies :)
     let token = Cookies.get('csrftoken');
     console.log('Initial CSRF Token:', token);
 
     // If token isn't in cookies, fetch it from the server
     if (!token) {
       try {
-        const response = await fetch('http://localhost:8000/get-csrf-token/');
+        const response = await fetch(backend_url+"get-csrf-token/");
         const data = await response.json();
         token = data.csrfToken;
         console.log('Fetched CSRF Token from server:', token); 
@@ -69,7 +75,8 @@ const Signup = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:8000/api/create_user/', {
+      console.log("Creating user: " + backend_url);
+      const response = await fetch(backend_url+"create_user/", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -85,12 +92,16 @@ const Signup = () => {
         credentials: 'include',  // Ensure cookies are sent with the request
       });
 
-      const responseData = await response.json();
-      console.log('Response Data:', responseData);
       if (response.ok) {
+        const responseData = await response.json();
+        console.log('Response Data:', responseData);
+        // if (response.ok) {
         alert('Sign up successful!');
       } else {
-        alert('Error: ' + (responseData.error || 'Something went wrong.'));
+        const errorText = await response.text(); // Read the response as text
+        console.error('Error Response:', errorText);
+        alert('Error: ' + errorText);
+        // alert('Error: ' + (responseData.error || 'Something went wrong.'));
       }
     } catch (error) {
       console.error('There was an error during sign up:', error);

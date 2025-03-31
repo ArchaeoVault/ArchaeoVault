@@ -5,24 +5,24 @@ import './Header.css';
 const Header = () => {
   // Add a state to store the search input
   const [isOpen, setIsOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  // const [searchQuery, setSearchQuery] = useState('');
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
     document.body.classList.toggle('blur', !isOpen);
   };
 
-  // Handle change in the search input
-  const handleSearchChange = (event) => {
-    setSearchQuery(event.target.value);
-  };
+  // // Handle change in the search input
+  // const handleSearchChange = (event) => {
+  //   setSearchQuery(event.target.value);
+  // };
 
-  // Handle form submission for the search
-  const handleSearchSubmit = (event) => {
-    event.preventDefault();
-    // Add your search logic here (e.g., redirect to search results page or filter data)
-    alert(`Searching for: ${searchQuery}`);
-  };
+  // // Handle form submission for the search
+  // const handleSearchSubmit = (event) => {
+  //   event.preventDefault();
+  //   // Add your search logic here (e.g., redirect to search results page or filter data)
+  //   alert(`Searching for: ${searchQuery}`);
+  // };
 
   useEffect(() => {
     const handleResize = () => {
@@ -55,11 +55,11 @@ const Header = () => {
         </form> */}
         
         <Link to="/Artifacts">Artifacts</Link>
+        <Link to="/Artifacts2" className="Artifacts2">3D Scans</Link>
         <Link to="/Contact">Contact</Link>
         <Link to="/About">About Us</Link>
         <Link to="/Login" className="login-link">Login</Link>
-        <Link to="/Artifacts2" className="Artifacts2">3D Scans</Link>
-        <Link to="/list" className="list">List/Filter</Link>
+        {/* <Link to="/list" className="list">List/Filter</Link> */}
       </nav>
         
         {/* Search bar */}

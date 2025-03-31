@@ -43,10 +43,17 @@ const Login = () => {
         body: JSON.stringify({ email, password }),
       });
       const result = await response.json();
+<<<<<<< HEAD
       if (result.status === 'ok') {
         alert('Login successful!');
         localStorage.setItem('isAuthenticated', true); // Store authentication status
         navigate('/artifacts'); // Redirect to the homepage
+=======
+
+      if (result.status === 'ok') {
+        alert('Login successful!');
+        navigate('/'); // Redirect to the homepage
+>>>>>>> c152b40989ea953b53abfc6765b0da1e067f9621
       } else {
         alert(result.message); // Show error message from the backend
       }

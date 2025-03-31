@@ -4,15 +4,18 @@ import './Login.css';
 import Header from './Header';
 import Footer from './Footer';
 
+let backend_url = '';
+if (process.env.REACT_APP_DJANGO_ENV == 'production'){ backend_url = 'https://www.archaeovault.com/api/';}
+else{ backend_url = 'http://localhost:8000/api/';}
+
 const Login = () => {
   const [csrfToken, setCsrfToken] = useState('');
   const navigate = useNavigate(); // React Router's hook for navigation
-
   // Fetch CSRF token when the component loads
   useEffect(() => {
     const fetchCsrfToken = async () => {
       try {
-        const response = await fetch('http://localhost:8000/api/get_csrf_token/', {
+        const response = await fetch(backend_url+'get_csrf_token/', {
           method: 'GET',
           credentials: 'include', // Ensures cookies are included
         });
@@ -22,18 +25,15 @@ const Login = () => {
         console.error('Error fetching CSRF token:', error);
       }
     };
-
     fetchCsrfToken();
   }, []);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     const form = e.target;
     const email = form.elements[0].value;
     const password = form.elements[1].value;
-
     try {
-      const response = await fetch('http://localhost:8000/api/login/', {
+      const response = await fetch(backend_url+'login/', {
         method: 'POST',
         credentials: 'include', // Ensures cookies are sent with the request
         headers: {
@@ -42,12 +42,11 @@ const Login = () => {
         },
         body: JSON.stringify({ email, password }),
       });
-
       const result = await response.json();
-
       if (result.status === 'ok') {
         alert('Login successful!');
-        navigate('/'); // Redirect to the homepage
+        localStorage.setItem('isAuthenticated', true); // Store authentication status
+        navigate('/artifacts'); // Redirect to the homepage
       } else {
         alert(result.message); // Show error message from the backend
       }
@@ -56,7 +55,6 @@ const Login = () => {
       alert('An error occurred. Please try again.');
     }
   };
-
   return (
     <>
       <Header />
@@ -83,5 +81,4 @@ const Login = () => {
     </>
   );
 };
-
 export default Login;

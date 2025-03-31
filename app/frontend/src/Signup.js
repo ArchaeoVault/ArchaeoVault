@@ -5,9 +5,9 @@ import Header from './Header';
 import Footer from './Footer';
 import Cookies from 'js-cookie'; 
 
-let backend_url = "";
-if (process.env.REACT_APP_DJANGO_ENV == "production"){ backend_url = "https://www.archaeovault.com/api/";}
-else{ backend_url = "http://localhost:8000/api/";}
+let backend_url = '';
+if (process.env.REACT_APP_DJANGO_ENV == 'production'){ backend_url = 'https://www.archaeovault.com/api/';}
+else{ backend_url = 'http://localhost:8000/api/';}
 
 
 
@@ -39,7 +39,7 @@ const Signup = () => {
     // If token isn't in cookies, fetch it from the server
     if (!token) {
       try {
-        const response = await fetch(backend_url+"get-csrf-token/");
+        const response = await fetch(backend_url+'get_csrf_token/');
         const data = await response.json();
         token = data.csrfToken;
         console.log('Fetched CSRF Token from server:', token); 
@@ -76,7 +76,7 @@ const Signup = () => {
 
     try {
       console.log("Creating user: " + backend_url);
-      const response = await fetch(backend_url+"create_user/", {
+      const response = await fetch(backend_url+'create_user/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -7,7 +7,7 @@ from django.core.exceptions import ValidationError
 from myapp.forms import *
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import Http404
-from myapp.models import Artifact
+from myapp.models import your_table
 
 from django.http import JsonResponse
 from django.contrib.auth.hashers import check_password
@@ -127,7 +127,7 @@ def create_user_view(request):
 
 def all_artifacts_view(request):
 
-    artifacts = Artifact.objects.all()
+    artifacts = your_table.objects.all()
 
 
     artifact_data = [
@@ -141,17 +141,13 @@ def all_artifacts_view(request):
             'printed_3d': artifact.printed_3d.id,
             'scanned_by': artifact.scanned_by,
             'date_excavated': artifact.date_excavated.isoformat(),
-            'object_dated_to': {
-                'id': artifact.object_dated_to.id,
-                'from_date': artifact.object_dated_to.from_date.isoformat(),
-                'to_date': artifact.object_dated_to.to_date.isoformat()
-            },
+            'object_dated_to': artifact.object_dated_to,
             'object_description': artifact.object_description,
             'organic_inorganic': artifact.organic_inorganic.id,
             'species': artifact.species.id,
             'material_of_manufacture': artifact.material_of_manufacture.id,
             'form_object_type': artifact.form_object_type.id,
-            'quantitiy': artifact.quantitiy,
+            'quantity': artifact.quantity,
             'measurement_diameter': artifact.measurement_diameter,
             'length': artifact.length,
             'width': artifact.width,
@@ -171,9 +167,9 @@ def all_artifacts_view(request):
             'latitude': artifact.latitude,
             'distance_from_datum': artifact.distance_from_datum,
             'found_in_grid': artifact.found_in_grid.id,
-            'exacavator': artifact.exacavator,
+            'excavator': artifact.excavator,
             'notes': artifact.notes,
-            'images': artifact.images.id,
+            'images': artifact.images,
             'data_double_checked_by': artifact.data_double_checked_by,
             'qsconcerns': artifact.qsconcerns,
             'druhlcheck': artifact.druhlcheck,

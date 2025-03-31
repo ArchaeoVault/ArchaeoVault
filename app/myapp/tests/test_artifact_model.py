@@ -3,16 +3,16 @@ from django.utils import timezone
 from django.urls import reverse
 from datetime import datetime
 from myapp.models import (
-    Address, Scanned3d, Printed3d, GridNames, Permissions, Users, ObjDatedTo, 
-    OrganicType, SpeciesType, MaterialType, FormType, ConservationType, 
-    PicturePath, Artifact
+    address, threedscannedtable, threedprintedtable, gridnames, permissions, users, 
+    organicinorganic, speciestype, materialtype, formtype, conservationtype, 
+    your_table
 )
 
 class test_artifact_model(TestCase):
 
     def setUp(self):
-        # Address
-        self.address = Address.objects.create(
+        # address
+        self.address = address.objects.create(
             id=1,
             street_number="123",
             street_name="Main St",
@@ -21,83 +21,70 @@ class test_artifact_model(TestCase):
             site="Site A"
         )
 
-        # Scanned3d
-        self.scanned_3d = Scanned3d.objects.create(
+        # threedscannedtable
+        self.scanned_3d = threedscannedtable.objects.create(
             id=1,
             type="Scan"
         )
 
-        # Printed3d
-        self.printed_3d = Printed3d.objects.create(
+        # threedprintedtable
+        self.printed_3d = threedprintedtable.objects.create(
             id=1,
             type="Print"
         )
 
-        # GridNames
-        self.grid_name = GridNames.objects.create(
+        # gridnames
+        self.grid_name = gridnames.objects.create(
             id=1,
             type_name="Grid A"
         )
 
-        # Permissions
-        self.permission = Permissions.objects.create(
+        # permissions
+        self.permission = permissions.objects.create(
             numVal=1,
             role="Admin"
         )
 
-        # Users
-        self.user = Users.objects.create(
+        # users
+        self.user = users.objects.create(
             email="testuser@example.com",
             upassword="securepassword123",
             upermission=self.permission,
             active_flag=True
         )
 
-        # ObjDatedTo
-        self.obj_dated_to = ObjDatedTo.objects.create(
-            id=1,
-            from_date=datetime(2025, 1, 1),
-            to_date=datetime(2025, 12, 31)
-        )
-
-        # OrganicType
-        self.organic_type = OrganicType.objects.create(
+        # organicinorganic
+        self.organic_type = organicinorganic.objects.create(
             id=1,
             type_name="Organic"
         )
 
-        # SpeciesType
-        self.species_type = SpeciesType.objects.create(
+        # speciestype
+        self.species_type = speciestype.objects.create(
             id=1,
             type_name="Canine"
         )
 
-        # MaterialType
-        self.material_type = MaterialType.objects.create(
+        # materialtype
+        self.material_type = materialtype.objects.create(
             id=1,
             type_name="Metal"
         )
 
-        # FormType
-        self.form_type = FormType.objects.create(
+        # formtype
+        self.form_type = formtype.objects.create(
             id=1,
             type_name="Vessel"
         )
 
-        # ConservationType
-        self.conservation_type = ConservationType.objects.create(
+        # conservationtype
+        self.conservation_type = conservationtype.objects.create(
             id=1,
             type_name="Good"
         )
 
-        # PicturePath
-        self.picture_path = PicturePath.objects.create(
-            id=1,
-            type_name="Path A"
-        )
-
         # Artifact
-        self.artifact = Artifact.objects.create(
+        self.artifact = your_table.objects.create(
             address=self.address,
             owner="John Doe",
             date_collected=datetime(2025, 2, 1),
@@ -107,7 +94,7 @@ class test_artifact_model(TestCase):
             printed_3d=self.printed_3d,
             scanned_by="Scanner X",
             date_excavated=datetime(2025, 1, 15),
-            object_dated_to=self.obj_dated_to,
+            object_dated_to="Object dated to",
             object_description="Sample Description",
             organic_inorganic=self.organic_type,
             species=self.species_type,
@@ -135,7 +122,7 @@ class test_artifact_model(TestCase):
             found_in_grid=self.grid_name,
             exacavator="Archeologist Y",
             notes="Some notes",
-            images=self.picture_path,
+            images="Image (add column for each additional image)",
             data_double_checked_by="Checker Z",
             qsconcerns="None",
             druhlcheck="Passed",
@@ -174,7 +161,7 @@ class test_artifact_model(TestCase):
 
     def test_no_artifacts_in_database(self):
         # Clean up the database and test empty response
-        Artifact.objects.all().delete()
+        your_table.objects.all().delete()
         response = self.client.get(reverse('all_artifacts_view'))
         self.assertEqual(response.status_code, 200)
         data = response.json()

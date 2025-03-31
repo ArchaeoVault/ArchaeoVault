@@ -38,11 +38,15 @@ const Login = () => {
         body: JSON.stringify({ email, password }),
       });
       const result = await response.json();
-      if (result.status === 'ok') {
-        alert('Login successful!');
-        localStorage.setItem('isAuthenticated', true); // Store authentication status
-        navigate('/artifacts'); // Redirect to the homepage
-      } else {
+        if (result.status === 'ok') {
+          alert('Login successful!');
+          const fullName = `${result.user.first_name} ${result.user.last_name}`;
+          localStorage.setItem('isAuthenticated', true);
+          localStorage.setItem('userName', fullName);
+          alert('Login successful!');
+          navigate('/artifacts');
+        }
+       else {
         alert(result.message); // Show error message from the backend
       }
     } catch (error) {

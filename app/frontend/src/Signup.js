@@ -73,7 +73,7 @@ const Signup = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-CSRFToken': token,  // Pass CSRF token in headers
+          'X-CSRFToken': token,
         },
         body: JSON.stringify({
           first_name: firstName,
@@ -82,24 +82,29 @@ const Signup = () => {
           password: password,
           confirm_password: confirmPassword
         }),
-        credentials: 'include',  // Ensure cookies are sent with the request
+        credentials: 'include',
       });
-
+    
       if (response.ok) {
         const responseData = await response.json();
         console.log('Response Data:', responseData);
-        // if (response.ok) {
+    
+        const fullName = `${formData.firstName} ${formData.lastName}`;
+        localStorage.setItem('isAuthenticated', true);
+        localStorage.setItem('userName', fullName);
+    
         alert('Sign up successful!');
+        window.location.href = '/artifacts'; // Force redirect so header updates properly
       } else {
-        const errorText = await response.text(); // Read the response as text
+        const errorText = await response.text();
         console.error('Error Response:', errorText);
         alert('Error: ' + errorText);
-        // alert('Error: ' + (responseData.error || 'Something went wrong.'));
       }
     } catch (error) {
       console.error('There was an error during sign up:', error);
       alert('Error: Something went wrong.');
     }
+    
   };
 
   return (

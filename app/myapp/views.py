@@ -39,7 +39,14 @@ def login_view(request):
 
                 if user is not None:
                     login(request, user)
-                    return JsonResponse({"status": "ok"}, status=200)
+                    return JsonResponse({
+                        "status": "ok",
+                        "user": {
+                            "first_name": user.first_name,
+                            "last_name": user.last_name,
+                            "email": user.email
+                        }
+                    }, status=200)
                 else:
                     return JsonResponse({"status": "error", "message": "Invalid credentials"}, status=400)
             except User.DoesNotExist:

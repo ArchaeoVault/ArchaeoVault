@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
+from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseServerError, JsonResponse
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
@@ -32,7 +33,6 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 import os
 
-@csrf_protect
 def login_view(request):
     print(request.body)
     if request.method == 'POST':
@@ -54,8 +54,7 @@ def login_view(request):
 
                 if user is not None:
                     login(request, user)
-                    return JsonResponse({"status": "ok", "redirect_url": "/homepage.js"}, status=200)
-                    
+                    return JsonResponse({"status": "ok"}, status=200)
                 else:
                     return JsonResponse({"status": "error", "message": "Invalid credentials"}, status=400)
             except User.DoesNotExist:
@@ -66,6 +65,27 @@ def login_view(request):
 
     return JsonResponse({"status": "error", "message": "Invalid request method."}, status=400)
   
+@csrf_exempt
+def signup(request):
+    if request.methof == 'POST':
+        try:
+            data = json.loads(request.body)
+            username = data.get('username')
+            password = data.get('password')
+            email = data.get('email')
+
+            if not username or not password or not email:
+                return JsonResponse({'error': 'Missing fields'}, status=400)
+
+            if User.objects.filter(username=username).exists():
+                return JsonResponse({'error': 'Username already exists'}, status=400)
+
+            user = User.objects.create_user(username=username, password=password, email=email)
+            return JsonResponse({'message': 'User created successfully'}, status=201)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
 def home(request):
     return redirect('http://localhost:3000')
 

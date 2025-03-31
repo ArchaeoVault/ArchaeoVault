@@ -33,8 +33,15 @@ const List = () => {
               const rawDate = artifact["Date excavated (field bag date)"];
               let year = "";
               if (rawDate) {
-                const match = rawDate.match(/\b(20\d{2})\b/);
-                year = match ? match[1] : "";
+                const parts = rawDate.split("/");
+                if (parts.length === 3) {
+                  let parsedYear = parts[2];
+                  // Convert 2-digit year to 4-digit year
+                  if (parsedYear.length === 2) {
+                    parsedYear = parseInt(parsedYear) < 50 ? "20" + parsedYear : "19" + parsedYear;
+                  }
+                  year = parsedYear;
+                }
               }
 
               return {

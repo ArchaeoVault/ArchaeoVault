@@ -195,9 +195,10 @@ def activate(request, uidb64, token):
     #put boolean that sets user active to true
     uid = urlsafe_base64_decode(uidb64)
     user = User.objects.get(email = uid)
-    user.activated = True
-    user.save()
-    return render(request, 'home.html')
+    if user is not None and account_activation_token.check_token(user, token):
+        user.activated = True
+        user.save()
+        return render(request, 'home.html')
 
 def resend_verification_view(request):
     if(request.method == 'POST'):

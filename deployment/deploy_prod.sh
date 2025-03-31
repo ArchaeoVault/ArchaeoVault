@@ -3,7 +3,7 @@
 ssh root@152.42.155.23 <<EOF
 cd /var/www/html/ArchaeoVault
 git pull
-source /var/www/html/ArchaeoVault/myprojectenv
+source /var/www/html/ArchaeoVault/myprojectenv/bin/activate
 pip install -r requirements.txt
 cd app
 chmod +x manage.py

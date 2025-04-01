@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './Signup.css';
 import Header from './Header';
 import Footer from './Footer';
@@ -10,6 +10,7 @@ if (process.env.REACT_APP_DJANGO_ENV == 'production'){ backend_url = 'https://ww
 else{ backend_url = 'http://localhost:8000/api/';}
 
 const Signup = () => {
+  const navigate = useNavigate(); // React Router's hook for navigation
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -98,7 +99,7 @@ const Signup = () => {
         localStorage.setItem('userName', fullName);
     
         alert('Sign up successful!');
-        window.location.href = '/artifacts'; // Force redirect so header updates properly
+        navigate('/artifacts'); // Force redirect so header updates properly
       } else {
         const errorText = await response.text();
         console.error('Error Response:', errorText);

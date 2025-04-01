@@ -4,9 +4,9 @@ import './Login.css';
 import Header from './Header';
 import Footer from './Footer';
 
-let backend_url = "";
-if (process.env.REACT_APP_DJANGO_ENV == "production"){ backend_url = "https://www.archaeovault.com/api/";}
-else{ backend_url = "http://localhost:8000/api/";}
+let backend_url = '';
+if (process.env.REACT_APP_DJANGO_ENV == 'production'){ backend_url = 'https://www.archaeovault.com/api/';}
+else{ backend_url = 'http://localhost:8000/api/';}
 
 const Login = () => {
   const [csrfToken, setCsrfToken] = useState('');
@@ -15,7 +15,7 @@ const Login = () => {
   useEffect(() => {
     const fetchCsrfToken = async () => {
       try {
-        const response = await fetch(backend_url+"get-csrf-token/", {
+        const response = await fetch(backend_url+'get_csrf_token/', {
           method: 'GET',
           credentials: 'include', // Ensures cookies are included
         });
@@ -33,7 +33,7 @@ const Login = () => {
     const email = form.elements[0].value;
     const password = form.elements[1].value;
     try {
-      const response = await fetch(backend_url+"login/", {
+      const response = await fetch(backend_url+'login/', {
         method: 'POST',
         credentials: 'include', // Ensures cookies are sent with the request
         headers: {

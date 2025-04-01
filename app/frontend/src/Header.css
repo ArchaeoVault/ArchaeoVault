@@ -265,3 +265,57 @@ html, body {
     font-size: 0.9rem;
   }
 }
+
+
+.account-section {
+  position: relative;
+  display: inline-block;
+}
+
+.account-bubble {
+  background-color: #4b4b4b;
+  color: white;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.account-dropdown {
+  position: absolute;
+  top: 45px;
+  right: 0;
+  background-color: white;
+  box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+  border-radius: 8px;
+  padding: 10px;
+  width: 180px;
+  z-index: 999;
+}
+
+.account-dropdown p {
+  margin: 0 0 10px;
+  font-weight: 600;
+}
+
+.account-dropdown a,
+.account-dropdown button {
+  display: block;
+  width: 100%;
+  padding: 8px 0;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.account-dropdown a:hover,
+.account-dropdown button:hover {
+  background-color: #f0f0f0;
+}

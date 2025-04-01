@@ -22,84 +22,84 @@ class test_artifact_model(TestCase):
         )
 
         # threedscannedtable
-        self.scanned_3d = threedscannedtable.objects.create(
+        self.threedscannedtable = threedscannedtable.objects.create(
             id=1,
             type="Scan"
         )
 
         # threedprintedtable
-        self.printed_3d = threedprintedtable.objects.create(
+        self.threedprintedtable = threedprintedtable.objects.create(
             id=1,
             type="Print"
         )
 
         # gridnames
-        self.grid_name = gridnames.objects.create(
+        self.gridnames = gridnames.objects.create(
             id=1,
             type_name="Grid A"
         )
 
         # permissions
-        self.permission = permissions.objects.create(
+        self.permissions = permissions.objects.create(
             numVal=1,
             role="Admin"
         )
 
         # users
-        self.user = users.objects.create(
+        self.users = users.objects.create(
             email="testuser@example.com",
             upassword="securepassword123",
-            upermission=self.permission,
-            active_flag=True
+            upermission=self.permissions,
+            activated=True
         )
 
         # organicinorganic
-        self.organic_type = organicinorganic.objects.create(
+        self.organicinorganic = organicinorganic.objects.create(
             id=1,
             type_name="Organic"
         )
 
         # speciestype
-        self.species_type = speciestype.objects.create(
+        self.speciestype = speciestype.objects.create(
             id=1,
             type_name="Canine"
         )
 
         # materialtype
-        self.material_type = materialtype.objects.create(
+        self.materialtype = materialtype.objects.create(
             id=1,
             type_name="Metal"
         )
 
         # formtype
-        self.form_type = formtype.objects.create(
+        self.formtype = formtype.objects.create(
             id=1,
             type_name="Vessel"
         )
 
         # conservationtype
-        self.conservation_type = conservationtype.objects.create(
+        self.conservationtype = conservationtype.objects.create(
             id=1,
             type_name="Good"
         )
 
-        # Artifact
-        self.artifact = your_table.objects.create(
+        # Artifact (your_table)
+        self.your_table = your_table.objects.create(
             address=self.address,
             owner="John Doe",
             date_collected=datetime(2025, 2, 1),
             catalog_number="CAT12345",
             object_name="Artifact Sample",
-            scanned_3d=self.scanned_3d,
-            printed_3d=self.printed_3d,
+            scanned_3d=self.threedscannedtable,
+            printed_3d=self.threedprintedtable,
             scanned_by="Scanner X",
             date_excavated=datetime(2025, 1, 15),
             object_dated_to="Object dated to",
             object_description="Sample Description",
-            organic_inorganic=self.organic_type,
-            species=self.species_type,
-            material_of_manufacture=self.material_type,
-            form_object_type=self.form_type,
+            organic_inorganic=self.organicinorganic,
+            species=self.speciestype,
+            material_of_manufacture=self.materialtype,
+            form_object_type=self.formtype,
             quantitiy=5,
             measurement_diameter=12.5,
             length=25.0,
@@ -110,8 +110,8 @@ class test_artifact_model(TestCase):
             weight_notes="Weight Note",
             sivilich_diameter=8.0,
             deformation_index=2.1,
-            conservation_condition=self.conservation_type,
-            cataloguer_name=self.user,
+            conservation_condition=self.conservationtype,
+            cataloguer_name=self.users,
             date_catalogued=datetime(2025, 3, 1),
             location_in_repository="Shelf A",
             platlot="Platlot A",
@@ -119,7 +119,7 @@ class test_artifact_model(TestCase):
             longitude=42.5,
             latitude=-71.2,
             distance_from_datum="10m",
-            found_in_grid=self.grid_name,
+            found_in_grid=self.gridnames,
             exacavator="Archeologist Y",
             notes="Some notes",
             images="Image (add column for each additional image)",

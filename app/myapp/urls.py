@@ -20,7 +20,7 @@ from . import views
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path('all_artifacts/', views.all_artifacts_view, name = 'all_artifacts_view'),
+    path('api/all_artifacts/', views.all_artifacts_view, name = 'all_artifacts_view'),
     path('api/create_user/', views.create_user_view, name = 'create_user_view'),
     path('api/login/', views.login_view, name = 'login_view'),
     path('api/resend_verification',views.resend_verification_view, name = 'resend_verification_view'),

@@ -1,0 +1,45 @@
+.artifacts-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding-top: 0; 
+  padding-bottom: 0;
+}
+  
+  main {
+    flex: 1;
+    padding: 20px;
+    text-align: center;
+  }
+  
+  #infoSection {
+    margin: 40px auto;
+    max-width: 800px;
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 2; /* Ensure it's above the 3D container */
+    position: relative; /* Add position relative */
+  }
+  
+  #container3D {
+    width: 100%;
+    height: 600px;
+    background: #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1; /* Lower than #infoSection */
+    position: relative; /* Add position relative */
+  }
+  
+  .header {
+    position: relative;
+    z-index: 10; /* Ensure it stays above */
+  }
+
+  .footer {
+    position: relative;
+    z-index: 10; /* Ensure it stays above */
+  }

@@ -1,26 +1,67 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import './Login.css';
 import Header from './Header';
 import Footer from './Footer';
 
-const clientId = 'YOUR_GOOGLE_CLIENT_ID_HERE'; // Replace with actual Google Client ID
+let backend_url = '';
+if (process.env.REACT_APP_DJANGO_ENV == 'production'){ backend_url = 'https://www.archaeovault.com/api/';}
+else{ backend_url = 'http://localhost:8000/api/';}
 
 const Login = () => {
-  const handleSubmit = (e) => {
+  const [csrfToken, setCsrfToken] = useState('');
+  const navigate = useNavigate(); // React Router's hook for navigation
+  const location = useLocation();
+  const from = location.state?.from?.pathname || '/'; // Redirect to the page user was trying to access before login, or default to '/'
+
+  // Fetch CSRF token when the component loads
+  useEffect(() => {
+    const fetchCsrfToken = async () => {
+      try {
+        const response = await fetch(backend_url+'get_csrf_token/', {
+          method: 'GET',
+          credentials: 'include', // Ensures cookies are included
+        });
+        const data = await response.json();
+        setCsrfToken(data.csrfToken);
+      } catch (error) {
+        console.error('Error fetching CSRF token:', error);
+      }
+    };
+    fetchCsrfToken();
+  }, []);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert('Login successful!');
-  };
+    const form = e.target;
+    const email = form.elements[0].value;
+    const password = form.elements[1].value;
+    try {
+      const response = await fetch(backend_url+'login/', {
+        method: 'POST',
+        credentials: 'include', // Ensures cookies are sent with the request
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrfToken, // Include the CSRF token
+        },
+        body: JSON.stringify({ email, password }),
+      });
+      const result = await response.json();
+      if (result.status === 'ok') {
+        alert('Login successful!');
+        
+        localStorage.setItem('isAuthenticated', true); // Store authentication status
+        localStorage.setItem('userName', result.user.first_name);
 
-  const handleGoogleSuccess = (response) => {
-    console.log('Google Sign-In Success:', response);
+        navigate('/artifacts'); // Redirect to the homepage
+      } else {
+        alert(result.message); // Show error message from the backend
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('An error occurred. Please try again.');
+    }
   };
-
-  const handleGoogleFailure = (error) => {
-    console.error('Google Sign-In Failure:', error);
-  };
-
   return (
     <>
       <Header />
@@ -32,23 +73,6 @@ const Login = () => {
             <input type="password" placeholder="Password" required />
             <button type="submit">Log In</button>
           </form>
-
-          <div className="google-login-container">
-            <GoogleOAuthProvider clientId={clientId}>
-              <GoogleLogin
-                onSuccess={handleGoogleSuccess}
-                onError={handleGoogleFailure}
-                width="100%"
-                size="medium"
-                theme="outline"
-                type="standard"
-                logo_alignment="left"
-                shape="pill"
-                text="signin_with"
-              />
-            </GoogleOAuthProvider>
-          </div>
-
           <div className="toggle-text">
             Don't have an account?{' '}
             <Link to="/signup" className="toggle-link">
@@ -64,5 +88,4 @@ const Login = () => {
     </>
   );
 };
-
 export default Login;

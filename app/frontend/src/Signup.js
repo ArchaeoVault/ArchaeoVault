@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './Signup.css';
 import Header from './Header';
 import Footer from './Footer';
 import Cookies from 'js-cookie'; 
 
 let backend_url = '';
+
 if (process.env.REACT_APP_DJANGO_ENV === 'production'){ backend_url = 'https://www.archaeovault.com/api/';}
 else{ backend_url = 'http://localhost:8000/api/';}
 
-
-
 const Signup = () => {
+  const navigate = useNavigate(); // React Router's hook for navigation
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -76,6 +76,7 @@ const Signup = () => {
 
     try {
       console.log("Creating user: " + backend_url);
+
       const response = await fetch(backend_url+'create_user/', {
         method: 'POST',
         headers: {
@@ -101,7 +102,7 @@ const Signup = () => {
         localStorage.setItem('userName', formData.firstName);
     
         alert('Sign up successful!');
-        window.location.href = '/artifacts'; // Force redirect so header updates properly
+        navigate('/artifacts'); // Force redirect so header updates properly
       } else {
         const errorText = await response.text();
         console.error('Error Response:', errorText);

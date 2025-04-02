@@ -133,23 +133,27 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CORS_ALLOW_ALL_ORIGINS = True
+# CORS_ALLOW_ALL_ORIGINS = True
 
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:3000',  # Add your frontend's URL here
     'http://localhost:8000/',
     'http://127.0.0.1:3000/',
     'http://127.0.0.1:8000/',
-    'https://www.archaeovault.com'
+    'https://www.archaeovault.com',
+    'https://archaeovault.com',
 ]
 CORS_ALLOWED_ORIGINS = [
-        'http://localhost:3000',
+    'http://localhost:3000',
+    'https://archaeovault.com',
+    'https://www.archaeovault.com',
     ]
 
 CORS_ALLOW_CREDENTIALS = True  # If you're using cookies or authentication headers
 
 CSRF_COOKIE_NAME = 'csrftoken'  # This is the default cookie name
 CSRF_COOKIE_HTTPONLY = False  # Allow JavaScript to read the CSRF cookie
-CSRF_COOKIE_SAMESITE = 'Lax'  # or 'Strict' based on your needs
+CSRF_COOKIE_SAMESITE = 'None'  # or 'Strict' based on your needs
 CSRF_COOKIE_SECURE = True  # Set to True if you're running over HTTPS
 SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_SAMESITE = 'None'

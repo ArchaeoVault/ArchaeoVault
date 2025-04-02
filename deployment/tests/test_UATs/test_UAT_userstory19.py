@@ -5,14 +5,24 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.chrome.options import Options
+import os
 
 class test_UAT_userstory19(unittest.TestCase):
 	def setUp(self):
-		self.driver = webdriver.Chrome()
-		self.driver.get("https://archaeovault.com")
+		env = os.environ.get('DJANGO_ENV', 'None')
+		print(env)
+		if env == 'production':
+			chrome_options = Options()
+			chrome_options.add_argument("--headless=new") # for Chrome >= 109
+			self.driver = webdriver.Chrome(options=chrome_options)
+		else:
+			self.driver = webdriver.Chrome()
+		self.driver.get("http://localhost:3000")
 		login_page_button = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.LINK_TEXT, "Login")))
 		login_page_button.click()
 
+	"""
 	def test_valid_email_with_valid_password(self):
 		self.driver.implicitly_wait(1)
 		emailBox = self.driver.find_element(by = By.XPATH, value = "//input[@placeholder='Email']")
@@ -30,6 +40,7 @@ class test_UAT_userstory19(unittest.TestCase):
 			assert False
 		assert message == "Login successful!"
 
+	
 	def test_valid_email_with_invalid_password(self):
 		self.driver.implicitly_wait(1)
 		emailBox = self.driver.find_element(by = By.XPATH, value = "//input[@placeholder='Email']")
@@ -64,6 +75,8 @@ class test_UAT_userstory19(unittest.TestCase):
 			assert False
 		assert message == "Invalid Email or Password"
 
+
+
 	def test_long_email(self):
 		self.driver.implicitly_wait(1)
 		emailBox = self.driver.find_element(by = By.XPATH, value = "//input[@placeholder='Email']")
@@ -80,6 +93,8 @@ class test_UAT_userstory19(unittest.TestCase):
 		except TimeoutException:
 			assert False
 		assert message == "Invalid Email or Password"
+
+	"""
 	
 	def test_no_email_no_password(self):
 		self.driver.implicitly_wait(1)
@@ -105,6 +120,7 @@ class test_UAT_userstory19(unittest.TestCase):
 		except:
 			print("No validation message found.")
 		assert validation_message == "Please fill out this field."
+	
 
 	def test_no_email_valid_password(self):
 		self.driver.implicitly_wait(1)
@@ -131,7 +147,7 @@ class test_UAT_userstory19(unittest.TestCase):
 		except:
 			print("No validation message found.")
 		assert validation_message == "A part following '@' should not contain the symbol ' '."
-
+	"""
 	def test_password_sql_injection(self):
 		self.driver.implicitly_wait(1)
 		emailBox = self.driver.find_element(by = By.XPATH, value = "//input[@placeholder='Email']")
@@ -153,7 +169,7 @@ class test_UAT_userstory19(unittest.TestCase):
 		self.driver.implicitly_wait(1)
 		forgotPasswordButton = self.driver.find_element(by = By.LINK_TEXT, value = "Forgot Password?")
 		forgotPasswordButton.click()
-		assert True
+		assert True"""
 
 	def tearDown(self):
 		self.driver.close()

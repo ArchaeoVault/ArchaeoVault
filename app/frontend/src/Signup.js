@@ -6,7 +6,7 @@ import Footer from './Footer';
 import Cookies from 'js-cookie'; 
 
 let backend_url = '';
-if (process.env.REACT_APP_DJANGO_ENV == 'production'){ backend_url = 'https://www.archaeovault.com/api/';}
+if (process.env.REACT_APP_DJANGO_ENV === 'production'){ backend_url = 'https://www.archaeovault.com/api/';}
 else{ backend_url = 'http://localhost:8000/api/';}
 
 
@@ -80,7 +80,7 @@ const Signup = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-CSRFToken': token,
+          'X-CSRFToken': Cookies.get('csrftoken'),
         },
         body: JSON.stringify({
           first_name: firstName,

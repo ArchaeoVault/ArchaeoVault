@@ -1,13 +1,14 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
+from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseServerError, JsonResponse
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from myapp.forms import *
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import Http404
-from myapp.models import Artifact
+from myapp.models import your_table
 
 from django.http import JsonResponse
 from django.contrib.auth.hashers import check_password
@@ -32,7 +33,6 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 import os
 
-@csrf_protect
 def login_view(request):
     print(request.body)
     if request.method == 'POST':
@@ -54,8 +54,14 @@ def login_view(request):
 
                 if user is not None:
                     login(request, user)
-                    return JsonResponse({"status": "ok", "redirect_url": "/homepage.js"}, status=200)
-                    
+                    return JsonResponse({
+                        "status": "ok",
+                        "user": {
+                            "first_name": user.first_name,
+                            "last_name": user.last_name,
+                            "email": user.email
+                        }
+                    }, status=200)
                 else:
                     return JsonResponse({"status": "error", "message": "Invalid credentials"}, status=400)
             except User.DoesNotExist:
@@ -66,6 +72,27 @@ def login_view(request):
 
     return JsonResponse({"status": "error", "message": "Invalid request method."}, status=400)
   
+@csrf_exempt
+def signup(request):
+    if request.methof == 'POST':
+        try:
+            data = json.loads(request.body)
+            username = data.get('username')
+            password = data.get('password')
+            email = data.get('email')
+
+            if not username or not password or not email:
+                return JsonResponse({'error': 'Missing fields'}, status=400)
+
+            if User.objects.filter(username=username).exists():
+                return JsonResponse({'error': 'Username already exists'}, status=400)
+
+            user = User.objects.create_user(username=username, password=password, email=email)
+            return JsonResponse({'message': 'User created successfully'}, status=201)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
 def home(request):
     return redirect('http://localhost:3000')
 
@@ -127,7 +154,7 @@ def create_user_view(request):
 
 def all_artifacts_view(request):
 
-    artifacts = Artifact.objects.all()
+    artifacts = your_table.objects.all()
 
 
     artifact_data = [
@@ -141,17 +168,13 @@ def all_artifacts_view(request):
             'printed_3d': artifact.printed_3d.id,
             'scanned_by': artifact.scanned_by,
             'date_excavated': artifact.date_excavated.isoformat(),
-            'object_dated_to': {
-                'id': artifact.object_dated_to.id,
-                'from_date': artifact.object_dated_to.from_date.isoformat(),
-                'to_date': artifact.object_dated_to.to_date.isoformat()
-            },
+            'object_dated_to': artifact.object_dated_to,
             'object_description': artifact.object_description,
             'organic_inorganic': artifact.organic_inorganic.id,
             'species': artifact.species.id,
             'material_of_manufacture': artifact.material_of_manufacture.id,
             'form_object_type': artifact.form_object_type.id,
-            'quantitiy': artifact.quantitiy,
+            'quantity': artifact.quantity,
             'measurement_diameter': artifact.measurement_diameter,
             'length': artifact.length,
             'width': artifact.width,
@@ -171,9 +194,9 @@ def all_artifacts_view(request):
             'latitude': artifact.latitude,
             'distance_from_datum': artifact.distance_from_datum,
             'found_in_grid': artifact.found_in_grid.id,
-            'exacavator': artifact.exacavator,
+            'excavator': artifact.excavator,
             'notes': artifact.notes,
-            'images': artifact.images.id,
+            'images': artifact.images,
             'data_double_checked_by': artifact.data_double_checked_by,
             'qsconcerns': artifact.qsconcerns,
             'druhlcheck': artifact.druhlcheck,
@@ -195,9 +218,10 @@ def activate(request, uidb64, token):
     #put boolean that sets user active to true
     uid = urlsafe_base64_decode(uidb64)
     user = User.objects.get(email = uid)
-    user.activated = True
-    user.save()
-    return render(request, 'home.html')
+    if user is not None and account_activation_token.check_token(user, token):
+        user.activated = True
+        user.save()
+        return render(request, 'home.html')
 
 def resend_verification_view(request):
     if(request.method == 'POST'):

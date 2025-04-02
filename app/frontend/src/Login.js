@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import './Login.css';
 import Header from './Header';
 import Footer from './Footer';
@@ -11,6 +11,9 @@ else{ backend_url = 'http://localhost:8000/api/';}
 const Login = () => {
   const [csrfToken, setCsrfToken] = useState('');
   const navigate = useNavigate(); // React Router's hook for navigation
+  const location = useLocation();
+  const from = location.state?.from?.pathname || '/'; // Redirect to the page user was trying to access before login, or default to '/'
+
   // Fetch CSRF token when the component loads
   useEffect(() => {
     const fetchCsrfToken = async () => {
@@ -27,6 +30,7 @@ const Login = () => {
     };
     fetchCsrfToken();
   }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const form = e.target;
@@ -45,10 +49,10 @@ const Login = () => {
       const result = await response.json();
       if (result.status === 'ok') {
         alert('Login successful!');
-        const firstName = result.user.first_name;
-
+        
         localStorage.setItem('isAuthenticated', true); // Store authentication status
-        localStorage.setItem('userName', firstName);
+        localStorage.setItem('userName', result.user.first_name);
+
         navigate('/artifacts'); // Redirect to the homepage
       } else {
         alert(result.message); // Show error message from the backend

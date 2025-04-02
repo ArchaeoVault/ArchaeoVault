@@ -6,7 +6,8 @@ import Footer from './Footer';
 import Cookies from 'js-cookie'; 
 
 let backend_url = '';
-if (process.env.REACT_APP_DJANGO_ENV == 'production'){ backend_url = 'https://www.archaeovault.com/api/';}
+
+if (process.env.REACT_APP_DJANGO_ENV === 'production'){ backend_url = 'https://www.archaeovault.com/api/';}
 else{ backend_url = 'http://localhost:8000/api/';}
 
 const Signup = () => {
@@ -74,11 +75,13 @@ const Signup = () => {
     }
 
     try {
+      console.log("Creating user: " + backend_url);
+
       const response = await fetch(backend_url+'create_user/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-CSRFToken': token,
+          'X-CSRFToken': Cookies.get('csrftoken'),
         },
         body: JSON.stringify({
           first_name: firstName,
@@ -94,9 +97,9 @@ const Signup = () => {
         const responseData = await response.json();
         console.log('Response Data:', responseData);
     
-        const fullName = `${formData.firstName} ${formData.lastName}`;
+        // const fullName = `${formData.firstName} ${formData.lastName}`;
         localStorage.setItem('isAuthenticated', true);
-        localStorage.setItem('userName', fullName);
+        localStorage.setItem('userName', formData.firstName);
     
         alert('Sign up successful!');
         navigate('/artifacts'); // Force redirect so header updates properly

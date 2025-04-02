@@ -151,4 +151,5 @@ CORS_ALLOW_CREDENTIALS = True  # If you're using cookies or authentication heade
 CSRF_COOKIE_NAME = 'csrftoken'  # This is the default cookie name
 CSRF_COOKIE_HTTPONLY = False  # Allow JavaScript to read the CSRF cookie
 CSRF_COOKIE_SAMESITE = 'Lax'  # or 'Strict' based on your needs
-CSRF_COOKIE_SECURE = False  # Set to True if you're running over HTTPS
+CSRF_COOKIE_SECURE = True  # Set to True if you're running over HTTPS
+SESSION_COOKIE_SECURE = True

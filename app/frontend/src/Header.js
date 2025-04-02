@@ -57,7 +57,7 @@ const Header = () => {
             </div>
             {dropdownOpen && (
               <div className="account-dropdown">
-                <p>Hi, {userName.split(' ')[0]}!</p>
+                <p>Hi, {userName}!</p>
                 <button onClick={handleSignOut}>Sign Out</button>
               </div>
             )}

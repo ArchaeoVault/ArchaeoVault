@@ -141,7 +141,7 @@ def create_user_view(request):
                 email=email,
                 password=password
             )
-            print(user)
+            print(user.username)
             return JsonResponse({'message': 'User created successfully'}, status=200)
 
         except json.JSONDecodeError:

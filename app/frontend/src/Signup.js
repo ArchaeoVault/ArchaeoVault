@@ -96,9 +96,9 @@ const Signup = () => {
         const responseData = await response.json();
         console.log('Response Data:', responseData);
     
-        const fullName = `${formData.firstName} ${formData.lastName}`;
+        // const fullName = `${formData.firstName} ${formData.lastName}`;
         localStorage.setItem('isAuthenticated', true);
-        localStorage.setItem('userName', fullName);
+        localStorage.setItem('userName', formData.firstName);
     
         alert('Sign up successful!');
         window.location.href = '/artifacts'; // Force redirect so header updates properly

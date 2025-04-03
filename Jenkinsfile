@@ -33,8 +33,8 @@ pipeline {
         }
         stage('Unit Tests'){
             steps{
-                sh 'chmod +x env/bin/activate'
-                sh  '. env/bin/activate'
+                sh 'chmod +x myprojectenv/bin/activate'
+                sh  '. myprojectenv/bin/activate'
                 sh 'myprojectenv/bin/pip install -r requirements.txt'
                 sh 'chmod +x ./app/manage.py'
                 sh 'myprojectenv/bin/python ./app/manage.py test app/myapp > test_results.log 2>&1'

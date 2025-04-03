@@ -46,7 +46,7 @@ pipeline {
                 //sh 'pwd'
                 dir('app'){
                     sh 'pwd'
-                    sh 'env/bin/python manage.py test ../deployment/tests'
+                    sh 'python manage.py test ../deployment/tests'
                 }
                 
                 

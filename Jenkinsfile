@@ -44,10 +44,8 @@ pipeline {
                 //sh 'cd ..'
                 //sh 'cd ..'
                 //sh 'pwd'
-                dir('app'){
-                    sh 'pwd'
-                    sh 'python manage.py test ../deployment/tests'
-                }
+                sh 'pwd'
+                sh 'env/bin/python ./app/manage.py test ./deployment/tests'
                 
                 
                 sh 'fuser -k 8000/tcp'

@@ -21,7 +21,7 @@ pipeline {
                 slackSend color: "warning", message: "Started `${env.JOB_NAME}#${env.BUILD_NUMBER}`\n"
             }
         }
-        stage('Test'){
+        stage('Unit Tests'){
             steps{
                 sh 'python3 -m venv env'
                 sh 'chmod +x env/bin/activate'
@@ -29,15 +29,6 @@ pipeline {
                 sh 'env/bin/pip install -r requirements.txt'
                 sh 'chmod +x ./app/manage.py'
                 sh 'env/bin/python ./app/manage.py test app/myapp/tests > test_results.log 2>&1'
-            }
-        }
-        stage('Unit Tests'){
-            steps{
-                sh 'chmod +x myprojectenv/bin/activate'
-                sh  '. myprojectenv/bin/activate'
-                sh 'myprojectenv/bin/pip install -r requirements.txt'
-                sh 'chmod +x ./app/manage.py'
-                sh 'myprojectenv/bin/python ./app/manage.py test app/myapp > test_results.log 2>&1'
             }
         }
         stage('Selenium Tests'){

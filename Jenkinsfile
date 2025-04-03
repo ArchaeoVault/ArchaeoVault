@@ -30,7 +30,7 @@ pipeline {
                 sh 'env/bin/python ./app/manage.py test app/myapp > test_results.log 2>&1'
             }
         }
-        stage('End User Tests'){
+        stage('Unit Tests'){
             steps{
                 sh 'chmod +x env/bin/activate'
                 sh  '. env/bin/activate'
@@ -52,7 +52,7 @@ pipeline {
                 sh 'cd ..'
                 sh 'env/bin/python ./app/manage.py test ../deployment/tests > test_results.log 2>&1'
                 sh 'fuser -k 8000/tcp'
-                sh 'fuser -k 8000/tcp'
+                sh 'fuser -k 3000/tcp'
             }
         }
 

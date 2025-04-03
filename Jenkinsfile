@@ -30,6 +30,31 @@ pipeline {
                 sh 'env/bin/python ./app/manage.py test app/myapp > test_results.log 2>&1'
             }
         }
+        stage('End User Tests'){
+            steps{
+                sh 'chmod +x env/bin/activate'
+                sh  '. env/bin/activate'
+                sh 'myprojectenv/bin/pip install -r requirements.txt'
+                sh 'chmod +x ./app/manage.py'
+                sh 'myprojectenv/bin/python ./app/manage.py test app/myapp > test_results.log 2>&1'
+            }
+        }
+        stage('Selenium Tests'){
+            steps{
+                sh 'chmod +x env/bin/activate'
+                sh  '. env/bin/activate'
+                sh 'env/bin/bin/pip install -r requirements.txt'
+                sh 'chmod +x ./app/manage.py'
+                sh 'env/bin/python manage.py runserver > /dev/null 2>&1 &'
+                sh 'cd ./app/frontend' 
+                sh 'npm start > /dev/null 2>&1 &'
+                sh 'cd ..'
+                sh 'cd ..'
+                sh 'env/bin/python ./app/manage.py test ../deployment/tests > test_results.log 2>&1'
+                sh 'fuser -k 8000/tcp'
+                sh 'fuser -k 8000/tcp'
+            }
+        }
 
         stage('Deploy'){
             when { branch 'main' }

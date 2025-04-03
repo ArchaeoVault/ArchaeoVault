@@ -12,6 +12,7 @@ pipeline {
         ARCHAEODB_PORT = credentials('ARCHAEODB_PORT')
         DJANGO_ALLOWED_HOST_1 = credentials('DJANGO_ALLOWED_HOST_1')
         DJANGO_ALLOWED_HOST_2 = credentials('DJANGO_ALLOWED_HOST_2')
+        DJANGO_ENV = credentials('DJANGO_ENV')
     }
     stages{ 
           

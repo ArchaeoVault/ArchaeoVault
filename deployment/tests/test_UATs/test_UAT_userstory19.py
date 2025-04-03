@@ -105,7 +105,7 @@ class test_UAT_userstory19(unittest.TestCase):
 			validation_message = emailBox.get_attribute("validationMessage")
 		except:
 			print("No validation message found.")
-		assert validation_message == "Please fill out this field."
+		assert 1==2
 
 
 	def test_valid_email_no_password(self):

@@ -12,7 +12,7 @@ class test_UAT_userstory19(unittest.TestCase):
 	def setUp(self):
 		env = os.environ.get('DJANGO_ENV', 'None')
 		if env == 'production':
-			chrome_options = Options()
+			chrome_options = webdriver.ChromeOptions()
 			chrome_options.add_argument("--headless=new") # for Chrome >= 109
 			self.driver = webdriver.Chrome(options=chrome_options)
 		else:

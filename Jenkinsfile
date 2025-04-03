@@ -49,7 +49,7 @@ pipeline {
                     sh 'python3 -m venv env'
                     sh 'chmod +x env/bin/activate'
                     sh  '. env/bin/activate'
-                    sh 'env/bin/pip install -r requirements.txt'
+                    sh 'env/bin/pip install -r ../requirements.txt'
                     sh 'env/bin/python manage.py test ../deployment/tests'
                 }
                 

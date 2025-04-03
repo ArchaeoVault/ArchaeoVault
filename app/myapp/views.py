@@ -101,6 +101,7 @@ def index(request):
     return redirect('http://localhost:3000')
 
 def get_csrf_token(request):
+    #Returns CSRF token to the frontend for client-side use
     csrf_token = get_token(request)
     print('Cookie: ', csrf_token)
     return JsonResponse({'csrfToken': csrf_token}, safe=False)
@@ -140,7 +141,7 @@ def create_user_view(request):
                 email=email,
                 password=password
             )
-            print(user)
+            print(user.username)
             return JsonResponse({'message': 'User created successfully'}, status=200)
 
         except json.JSONDecodeError:
@@ -256,6 +257,7 @@ def resend_verification_view(request):
         else:
             return JsonResponse({'error': 'Email address not associated with an account'}, status=400)
     return render(request, 'resend_verification.html')
+
 def change_password_view(request):
     if request.method == 'POST':
         try: 

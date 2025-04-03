@@ -33,9 +33,10 @@ pipeline {
         }
         stage('Selenium Tests'){
             steps{
+                sh 'python3 -m venv env'
                 sh 'chmod +x env/bin/activate'
                 sh  '. env/bin/activate'
-                sh 'env/bin/bin/pip install -r requirements.txt'
+                sh 'env/bin/pip install -r requirements.txt'
                 sh 'chmod +x ./app/manage.py'
                 sh 'env/bin/python manage.py runserver > /dev/null 2>&1 &'
                 sh 'cd ./app/frontend' 

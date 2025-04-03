@@ -1,8 +1,6 @@
 from django.db import models
 
 
-
-
 class address(models.Model):
     id = models.IntegerField(primary_key=True)
     streetnumber = models.CharField(max_length=900)

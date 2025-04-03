@@ -5,7 +5,7 @@ from django.contrib.auth.models import User #imports django user model if we dec
 from django.core.mail import send_mail
 import json
 
-class CreateUserTests(TestCase):
+class test_create_user(TestCase):
 
     def test_user_create_success(self):        
         response = self.client.post(

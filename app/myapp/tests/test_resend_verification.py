@@ -5,7 +5,7 @@ from django.contrib.auth.models import User #imports django user model if we dec
 from django.core.mail import send_mail
 import json
 
-class ResendVerificationTests(TestCase):
+class test_resend_verification(TestCase):
 
     def setUp(self):
         self.user = User.objects.create_user(

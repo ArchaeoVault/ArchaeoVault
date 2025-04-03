@@ -137,25 +137,26 @@ class test_artifact_model(TestCase):
     def test_all_artifacts_view_success(self):
         # Ensure the endpoint returns status code 200
         response = self.client.get(reverse('all_artifacts_view'))
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 200, "Failed to load page")
 
     
 
     def test_artifact_list_content(self):
         # Ensure the view returns the correct JSON data
         response = self.client.get(reverse('all_artifacts_view'))
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response['Content-Type'], 'application/json')
+        self.assertEqual(response.status_code, 200, "Failed to load page")
+        self.assertEqual(response['Content-Type'], 'application/json', "request did not load a json file")
 
         # Parse JSON response
         data = response.json()
-        self.assertIn('artifacts', data)
-        self.assertEqual(len(data['artifacts']), 1)  # We created 1 artifacts in setUp()
+        self.assertIn('artifacts', data, "json does not contain artifacts")
+
+        self.assertEqual(len(data['artifacts']), 1, f"Number of artifacts is not 1, instead there are {len(data['artifacts'])} artifacts")  # We created 1 artifacts in setUp()
 
         # Check the content of the first artefact
         artifact_1 = data['artifacts'][0]
-        self.assertEqual(artifact_1['object_name'], "Artifact Sample")
-        self.assertEqual(artifact_1['owner'], "John Doe")
+        self.assertEqual(artifact_1['object_name'], "Artifact Sample", f"Artifact name {artifact_1['object_name']} does not match expected artifact name Artifact Sample")
+        self.assertEqual(artifact_1['owner'], "John Doe", f"Owner name {artifact_1['owner']} does not match expected owner name John Doe")
     
 
 
@@ -163,10 +164,12 @@ class test_artifact_model(TestCase):
         # Clean up the database and test empty response
         your_table.objects.all().delete()
         response = self.client.get(reverse('all_artifacts_view'))
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 200, "Failed to load page")
+        self.assertEqual(response['Content-Type'], 'application/json', "request did not load a json file")
+
         data = response.json()
-        self.assertIn('artifacts', data)
-        self.assertEqual(len(data['artifacts']), 0)  # No artefacts in the database
+        self.assertIn('artifacts', data, "json does not contain artifacts")
+        self.assertEqual(len(data['artifacts']), 0, f"Number of artifacts is not 1, instead there are {len(data['artifacts'])} artifacts")  # No artefacts in the database
 
 
     

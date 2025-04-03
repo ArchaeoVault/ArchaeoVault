@@ -44,8 +44,14 @@ pipeline {
                 //sh 'cd ..'
                 //sh 'cd ..'
                 //sh 'pwd'
-                sh 'pwd'
-                sh 'env/bin/python ./app/manage.py test ./deployment/tests'
+                dir('app'){
+                    sh 'pwd'
+                    sh 'python3 -m venv env'
+                    sh 'chmod +x env/bin/activate'
+                    sh  '. env/bin/activate'
+                    sh 'env/bin/pip install -r requirements.txt'
+                    sh 'env/bin/python manage.py test ../deployment/tests'
+                }
                 
                 
                 sh 'fuser -k 8000/tcp'

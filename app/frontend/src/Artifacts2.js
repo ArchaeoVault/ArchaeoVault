@@ -106,6 +106,19 @@ const Artifacts2 = () => {
         `./models/${modelName}/scene.gltf`,
         (gltf) => {
           objectRef.current = gltf.scene;
+          if (["stonewaresurfacefind", "fort"].includes(modelName)) {
+            const box = new THREE.Box3().setFromObject(gltf.scene);
+            const size = new THREE.Vector3();
+            box.getSize(size);
+            const center = new THREE.Vector3();
+            box.getCenter(center);
+            gltf.scene.position.sub(center);
+      
+            const maxDim = Math.max(size.x, size.y, size.z);
+            const desiredSize = 20; // adjust this to fit your preferred size
+            const scale = desiredSize / maxDim;
+            gltf.scene.scale.setScalar(scale);
+          }
           scene.add(gltf.scene);
           console.log(`Model "${modelName}" loaded successfully.`);
         },
@@ -122,9 +135,10 @@ const Artifacts2 = () => {
       <Header />
       <main>
         <div id="infoSection">
-          <label htmlFor="modelSelect">Select Artifact:</label>
+          <label htmlFor="modelSelect"></label>
           <select
             id="modelSelect"
+            className="dropdown-select"
             value={selectedArtifact}
             onChange={(e) => setSelectedArtifact(e.target.value)}>
             <option value="stonewaresurfacefind">stonewaresurfacefind</option>
@@ -146,6 +160,8 @@ const Artifacts2 = () => {
             <option value="musketball">Musket Ball</option>
             <option value="fort">Fort</option>
           </select>
+          <br />
+          <br />
           <p id="modelDescription">{descriptions[selectedArtifact]}</p>
         </div>
         <div id="container3D" ref={containerRef}></div>

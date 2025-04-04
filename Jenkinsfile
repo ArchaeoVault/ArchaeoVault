@@ -51,7 +51,7 @@ pipeline {
                     sh 'chmod +x env/bin/activate'
                     sh  '. env/bin/activate'
                     sh 'env/bin/pip install -r ./requirements.txt'
-                    sh 'env/bin/python ./app/manage.py test ../deployment/tests'
+                    sh 'env/bin/python ./app/manage.py test ./deployment/tests'
                // }
                 
                 

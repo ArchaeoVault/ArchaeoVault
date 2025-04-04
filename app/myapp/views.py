@@ -74,7 +74,7 @@ def login_view(request):
   
 @csrf_exempt
 def signup(request):
-    if request.methof == 'POST':
+    if request.method == 'POST':
         try:
             data = json.loads(request.body)
             username = data.get('username')

@@ -61,6 +61,14 @@ const Artifacts2 = () => {
       const ambientLight = new THREE.AmbientLight(0x333333, 3);
       scene.add(ambientLight);
 
+      const backLight = new THREE.DirectionalLight(0xffffff, 2);
+      backLight.position.set(-500, -500, -500);
+      scene.add(backLight);
+
+      const sideLight = new THREE.DirectionalLight(0xffffff, 1.5);
+      sideLight.position.set(500, -500, 500);
+      scene.add(sideLight);
+
       // Store references
       sceneRef.current = scene;
       cameraRef.current = camera;

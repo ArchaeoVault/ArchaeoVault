@@ -8,7 +8,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.chrome.options import Options
 import os
 
-class test_UAT_userstory19(unittest.TestCase):
+class test_UAT_userstory8(unittest.TestCase):
 	def setUp(self):
 		env = os.environ.get('DJANGO_ENV', 'None')
 		if env == 'production':
@@ -42,10 +42,20 @@ class test_UAT_userstory19(unittest.TestCase):
 		self.driver.implicitly_wait(1)
 		self.driver.find_element(by = By.LINK_TEXT, value = "Newport, RI").click()
 		self.driver.implicitly_wait(1)
-		first_artifact = self.driver.find_element(by = By.CLASS_NAME, value = "artifact")
-		print(first_artifact.text)
+		first_artifact = self.driver.find_element(by = By.CLASS_NAME, value = "artifact-item")
+		self.assertIn("Tooth", first_artifact.text, f"Tooth not in {first_artifact.text}")
 		artifact_list = self.driver.find_elements(by = By.CLASS_NAME, value = "artifact-item")
 		self.assertGreater(len(artifact_list),0, "Length of artifacts was 0 or less")
+		
+	def test_can_see_artifacts_portsmouth(self):
+		self.driver.implicitly_wait(1)
+		self.driver.find_element(by = By.LINK_TEXT, value = "Portsmouth, RI").click()
+		self.driver.implicitly_wait(1)
+		first_artifact = self.driver.find_element(by = By.CLASS_NAME, value = "artifact-item")
+		self.assertIn("Lead", first_artifact.text, f"Lead not in artifact text {first_artifact.text}")
+		artifact_list = self.driver.find_elements(by = By.CLASS_NAME, value = "artifact-item")
+		self.assertGreater(len(artifact_list),0, "Length of artifacts was 0 or less")
+
 
 	def tearDown(self):
 		self.driver.close()

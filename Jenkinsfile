@@ -36,6 +36,7 @@ pipeline {
                 sh 'python3 -m venv env'
                 sh 'chmod +x env/bin/activate'
                 sh  '. env/bin/activate'
+                sh 'export PYTHONPATH=$(pwd)/app'
                 sh 'env/bin/pip install -r requirements.txt'
                 sh 'chmod +x ./app/manage.py'
                 //sh 'env/bin/python manage.py runserver > /dev/null 2>&1 &'
@@ -44,14 +45,14 @@ pipeline {
                 //sh 'cd ..'
                 //sh 'cd ..'
                 //sh 'pwd'
-                dir('app'){
+                //dir('app'){
                     sh 'pwd'
                     sh 'python3 -m venv env'
                     sh 'chmod +x env/bin/activate'
                     sh  '. env/bin/activate'
                     sh 'env/bin/pip install -r ../requirements.txt'
                     sh 'env/bin/python manage.py test ../deployment/tests'
-                }
+               // }
                 
                 
                 sh 'fuser -k 8000/tcp'

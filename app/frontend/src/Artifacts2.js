@@ -16,10 +16,24 @@ const Artifacts2 = () => {
   const controlsRef = useRef(null);
 
   const descriptions = {
-    bridalboss: "description1",
-    key: "description2",
-    musketball: "description3",
-    fort: "description4",
+    stonewaresurfacefind: "Stoneware; brown salt glaze; rim; with various rows of lines",
+    tibiawhole: "description2",
+    tibiasmallpiece: "description3",
+    tibiamediumpiece: "description4",
+    tibialargepiece: "description5",
+    stonewarehandlepiece: "Curved handle piece",
+    rhenishstone: "Salt glazed Rhenish Stoneware",
+    pipestem: "Brown smoking stem",
+    pigtooth: "Pig; Molar 1; develops at 4-6 months; permenant; less wear; partially broken",
+    leftwhitetaileddeermandible: "description10",
+    largetooth: "Pre-molar; 2nd tooth; bovine; 18-30 months for the growth of said tooth",
+    glassbottletop: "description12",
+    earthenware: "A floral motif printed underglazed earthenware (deep blue with white accents) with the makers mark ADA",
+
+    bridalboss: "description14",
+    key: "description15",
+    musketball: "description16",
+    fort: "description17",
   };
 
   useEffect(() => {
@@ -40,11 +54,11 @@ const Artifacts2 = () => {
       containerRef.current.appendChild(renderer.domElement);
 
       // Lights
-      const topLight = new THREE.DirectionalLight(0xffffff, 10);
+      const topLight = new THREE.DirectionalLight(0xffffff, 4);
       topLight.position.set(500, 500, 500);
       scene.add(topLight);
 
-      const ambientLight = new THREE.AmbientLight(0x333333, 5);
+      const ambientLight = new THREE.AmbientLight(0x333333, 3);
       scene.add(ambientLight);
 
       // Store references
@@ -113,6 +127,20 @@ const Artifacts2 = () => {
             id="modelSelect"
             value={selectedArtifact}
             onChange={(e) => setSelectedArtifact(e.target.value)}>
+            <option value="stonewaresurfacefind">stonewaresurfacefind</option>
+            <option value="tibiawhole">tibiawhole</option>
+            <option value="tibiasmallpiece">tibiasmallpiece</option>
+            <option value="tibiamediumpiece">tibiamediumpiece</option>
+            <option value="tibialargepiece">tibialargepiece</option>
+            <option value="stonewarehandlepiece">stonewarehandlepiece</option>
+            <option value="rhenishstone">rhenishstone</option>
+            <option value="pipestem">pipestem</option>
+            <option value="pigtooth">pigtooth</option>
+            <option value="leftwhitetaileddeermandible">leftwhitetaileddeermandible</option>
+            <option value="largetooth">largetooth</option> 
+            <option value="glassbottletop">glassbottletop</option>
+            <option value="earthenware">earthenware</option>
+
             <option value="bridalboss">Bridal Boss</option>
             <option value="key">Key</option>
             <option value="musketball">Musket Ball</option>

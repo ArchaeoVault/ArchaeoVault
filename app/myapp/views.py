@@ -1,13 +1,14 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
+from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseServerError, JsonResponse
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from myapp.forms import *
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import Http404
-from myapp.models import Artifact
+from myapp.models import your_table
 
 from django.http import JsonResponse
 from django.contrib.auth.hashers import check_password
@@ -32,7 +33,6 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 import os
 
-@csrf_protect
 def login_view(request):
     # print(request.body)
     if request.method == 'POST':
@@ -49,20 +49,23 @@ def login_view(request):
 
             try:
                 # Get user by email
-                user = Users.objects.get(email=email)
+                user = users.objects.get(email=email)
+
                 # Now authenticate using the user's username and password
                 if check_password(password, user.upassword):  # Compare hashed password
                     return user
             
                 if user is not None:
-                    if user.upassword != password:
-                        return JsonResponse({'error':'Incorrect Password'}, status = 400)
                     login(request, user)
-                    return JsonResponse({"status": "ok", "redirect_url": "/homepage.js"}, status=200)
-                    
+                    return JsonResponse({
+                        "status": "ok",
+                        "user": {
+                            "email": user.email
+                        }
+                    }, status=200)
                 else:
                     return JsonResponse({"status": "error", "message": "Invalid credentials"}, status=400)
-            except Users.DoesNotExist:
+            except users.DoesNotExist:
                 return JsonResponse({"status": "error", "message": "Invalid credentials"}, status=400)
 
         except json.JSONDecodeError:
@@ -70,6 +73,27 @@ def login_view(request):
 
     return JsonResponse({"status": "error", "message": "Invalid request method."}, status=400)
   
+@csrf_exempt
+def signup(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            username = data.get('username')
+            password = data.get('password')
+            email = data.get('email')
+
+            if not username or not password or not email:
+                return JsonResponse({'error': 'Missing fields'}, status=400)
+
+            if User.objects.filter(username=username).exists():
+                return JsonResponse({'error': 'Username already exists'}, status=400)
+
+            user = User.objects.create_user(username=username, password=password, email=email)
+            return JsonResponse({'message': 'User created successfully'}, status=201)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
 def home(request):
     return redirect('http://localhost:3000')
 
@@ -78,7 +102,7 @@ def index(request):
     return redirect('http://localhost:3000')
 
 def get_csrf_token(request):
-    """Returns CSRF token to the frontend for client-side use"""
+    #Returns CSRF token to the frontend for client-side use
     csrf_token = get_token(request)
     print('Cookie: ', csrf_token)
     return JsonResponse({'csrfToken': csrf_token}, safe=False)
@@ -102,7 +126,7 @@ def create_user_view(request):
             if password != confirm_password:
                 return JsonResponse({'error': 'Passwords do not match'}, status=400)
             print('checking if object already exists')
-            if Users.objects.filter(email=email).exists():
+            if users.objects.filter(email=email).exists():
                 print('object already exists')
                 return JsonResponse({'error': 'User with this email already exists'}, status=400)
             print('validating email')
@@ -113,15 +137,15 @@ def create_user_view(request):
 
             # Create the user
             print('Creating user')
-            permission = Permissions.objects.create(numVal = 4, role = 'GeneralPublic')
-            user = Users.objects.create(
+            permission = permissions.objects.create(numVal = 4, role = 'GeneralPublic')
+            user = users.objects.create(
                 email=email,
                 upassword=password,
                 upermission = permission,
-                active_flag = False
+                activated = False
             )
             print('after creating user')
-            print(user)
+            print(user.email)
             return JsonResponse({'message': 'User created successfully'}, status=200)
 
         except json.JSONDecodeError:
@@ -134,7 +158,7 @@ def create_user_view(request):
 
 def all_artifacts_view(request):
 
-    artifacts = Artifact.objects.all()
+    artifacts = your_table.objects.all()
 
 
     artifact_data = [
@@ -148,17 +172,13 @@ def all_artifacts_view(request):
             'printed_3d': artifact.printed_3d.id,
             'scanned_by': artifact.scanned_by,
             'date_excavated': artifact.date_excavated.isoformat(),
-            'object_dated_to': {
-                'id': artifact.object_dated_to.id,
-                'from_date': artifact.object_dated_to.from_date.isoformat(),
-                'to_date': artifact.object_dated_to.to_date.isoformat()
-            },
+            'object_dated_to': artifact.object_dated_to,
             'object_description': artifact.object_description,
             'organic_inorganic': artifact.organic_inorganic.id,
             'species': artifact.species.id,
             'material_of_manufacture': artifact.material_of_manufacture.id,
             'form_object_type': artifact.form_object_type.id,
-            'quantitiy': artifact.quantitiy,
+            'quantity': artifact.quantity,
             'measurement_diameter': artifact.measurement_diameter,
             'length': artifact.length,
             'width': artifact.width,
@@ -178,9 +198,9 @@ def all_artifacts_view(request):
             'latitude': artifact.latitude,
             'distance_from_datum': artifact.distance_from_datum,
             'found_in_grid': artifact.found_in_grid.id,
-            'exacavator': artifact.exacavator,
+            'excavator': artifact.excavator,
             'notes': artifact.notes,
-            'images': artifact.images.id,
+            'images': artifact.images,
             'data_double_checked_by': artifact.data_double_checked_by,
             'qsconcerns': artifact.qsconcerns,
             'druhlcheck': artifact.druhlcheck,
@@ -201,16 +221,19 @@ def all_artifacts_view(request):
 def activate(request, uidb64, token):
     #put boolean that sets user active to true
     uid = urlsafe_base64_decode(uidb64)
-    user = Users.objects.get(email = uid)
-    user.activated = True
-    user.save()
-    return render(request, 'home.html')
+    user = User.objects.get(email = uid)
+    if user is not None and account_activation_token.check_token(user, token):
+        user.activated = True
+        user.save()
+        return render(request, 'home.html')
+
+    
 
 def resend_verification_view(request):
     if(request.method == 'POST'):
         data = json.loads(request.body)
         email = data.get('email')
-        if(Users.objects.filter(email = email).exists()):
+        if(users.objects.filter(email = email).exists()):
             #generates the uid and token
             user = User.objects.get(email = email)
             uid = urlsafe_base64_encode(force_bytes(user.email))
@@ -248,11 +271,11 @@ def change_password_view(request):
             email = data.get('email')
             newPassword = data.get('newPassword')
             confirmPassword = data.get('confirmPassword')
-            if not Users.objects.filter(email=email).exists():
+            if not users.objects.filter(email=email).exists():
                 return JsonResponse({'error':'User with this email does not exist'}, status = 400)
             if newPassword != confirmPassword:
                 return JsonResponse({'error':'Passwords do not match'}, status = 400)
-            user = Users.objects.get(email = email)
+            user = users.objects.get(email = email)
             if newPassword == user.upassword:
                 return JsonResponse({'error':'New Password can not be the same as the old password'}, status = 400)
             try:

@@ -1,0 +1,161 @@
+{
+    "asset": {
+        "generator": "https://3dviewer.net",
+        "version": "2.0"
+    },
+    "scene": 0,
+    "scenes": [
+        {
+            "nodes": [
+                0
+            ]
+        }
+    ],
+    "nodes": [
+        {
+            "mesh": 0,
+            "matrix": [
+                0.9999999403953552,
+                0,
+                0,
+                0,
+                0,
+                -1.1920928244535389e-7,
+                -0.9999998211860657,
+                0,
+                0,
+                0.9999998211860657,
+                -1.1920928244535389e-7,
+                0,
+                0,
+                0.03516809642314911,
+                -4.192364233546186e-9,
+                1
+            ]
+        }
+    ],
+    "materials": [
+        {
+            "name": "Material",
+            "pbrMetallicRoughness": {
+                "baseColorFactor": [
+                    1,
+                    1,
+                    1,
+                    1
+                ],
+                "baseColorTexture": {
+                    "index": 0
+                },
+                "metallicFactor": 0,
+                "roughnessFactor": 1
+            },
+            "emissiveFactor": [
+                0,
+                0,
+                0
+            ],
+            "doubleSided": true,
+            "alphaMode": "OPAQUE"
+        }
+    ],
+    "meshes": [
+        {
+            "name": "Mesh",
+            "primitives": [
+                {
+                    "attributes": {
+                        "POSITION": 1,
+                        "NORMAL": 2,
+                        "TEXCOORD_0": 3
+                    },
+                    "mode": 4,
+                    "material": 0,
+                    "indices": 0
+                }
+            ]
+        }
+    ],
+    "buffers": [
+        {
+            "uri": "model.bin",
+            "byteLength": 10165824
+        }
+    ],
+    "bufferViews": [
+        {
+            "buffer": 0,
+            "byteOffset": 0,
+            "byteLength": 1129536,
+            "target": 34963
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 1129536,
+            "byteLength": 3388608,
+            "target": 34962
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 4518144,
+            "byteLength": 3388608,
+            "target": 34962
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 7906752,
+            "byteLength": 2259072,
+            "target": 34962
+        }
+    ],
+    "accessors": [
+        {
+            "bufferView": 0,
+            "byteOffset": 0,
+            "componentType": 5125,
+            "count": 282384,
+            "type": "SCALAR"
+        },
+        {
+            "bufferView": 1,
+            "byteOffset": 0,
+            "componentType": 5126,
+            "count": 282384,
+            "min": [
+                -0.06492060422897339,
+                -0.03691680356860161,
+                -0.03516810014843941
+            ],
+            "max": [
+                0.03503740206360817,
+                0.03746870160102844,
+                0.03900040313601494
+            ],
+            "type": "VEC3"
+        },
+        {
+            "bufferView": 2,
+            "byteOffset": 0,
+            "componentType": 5126,
+            "count": 282384,
+            "type": "VEC3"
+        },
+        {
+            "bufferView": 3,
+            "byteOffset": 0,
+            "componentType": 5126,
+            "count": 282384,
+            "type": "VEC2"
+        }
+    ],
+    "images": [
+        {
+            "uri": "Binary_0.jpeg"
+        }
+    ],
+    "textures": [
+        {
+            "source": 0
+        }
+    ]
+}

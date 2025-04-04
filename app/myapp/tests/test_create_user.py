@@ -6,7 +6,7 @@ from django.core.mail import send_mail
 from myapp.models import Users
 import json
 
-class CreateUserTests(TestCase):
+class test_create_user(TestCase):
 
     def test_user_create_success(self):        
         response = self.client.post(

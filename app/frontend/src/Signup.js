@@ -1,11 +1,20 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import './Signup.css';
 import Header from './Header';
 import Footer from './Footer';
 import Cookies from 'js-cookie'; 
 
+let backend_url = '';
+
+if (process.env.REACT_APP_DJANGO_ENV === 'production'){
+  backend_url = 'https://www.archaeovault.com/api/';
+} else {
+  backend_url = 'http://localhost:8000/api/';
+}
+
 const Signup = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -15,6 +24,27 @@ const Signup = () => {
   });
 
   const [csrfToken, setCsrfToken] = useState(null);
+
+  useEffect(() => {
+    const fetchCsrfToken = async () => {
+      try {
+        const response = await fetch(backend_url + 'get_csrf_token/', {
+          method: 'GET',
+          credentials: 'include', // Ensure cookies are included in request
+        });
+        const data = await response.json();
+        if (data.csrfToken) {
+          Cookies.set('csrftoken', data.csrfToken);
+          setCsrfToken(data.csrfToken);
+        }
+      } catch (error) {
+        console.error('Error fetching CSRF token:', error);
+      }
+    };
+    
+    // Fetch CSRF token on component mount
+    fetchCsrfToken();
+  }, []);
 
   const handleChange = (e) => {
     setFormData({
@@ -26,38 +56,14 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Check if CSRF token is in cookies
-    let token = Cookies.get('csrftoken');
-    console.log('Initial CSRF Token:', token);
-
-    // If token isn't in cookies, fetch it from the server
+    const token = Cookies.get('csrftoken');
     if (!token) {
-      try {
-        const response = await fetch('http://localhost:8000/get-csrf-token/');
-        const data = await response.json();
-        token = data.csrfToken;
-        console.log('Fetched CSRF Token from server:', token); 
-        Cookies.set('csrftoken', token);  // Set CSRF token in cookies
-        setCsrfToken(token);  // Set CSRF token in component state
-      } catch (error) {
-        console.error('Error fetching CSRF token:', error);
-        alert('Error fetching CSRF token');
-        return;
-      }
-    } else {
-      // If CSRF token is found in cookies, set it in state
-      setCsrfToken(token);
-    }
-
-    // Proceed with form submission if token is available
-    if (!csrfToken && !token) {
-      alert('CSRF token is not available. Please try again.');
+      alert('CSRF token is missing. Please try again.');
       return;
     }
 
     const { firstName, lastName, email, password, confirmPassword } = formData;
 
-    // Basic client-side validation
     if (!firstName || !lastName || !email || !password || !confirmPassword) {
       alert('Please fill in all fields.');
       return;
@@ -69,11 +75,11 @@ const Signup = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:8000/api/create_user/', {
+      const response = await fetch(backend_url + 'create_user/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-CSRFToken': token,  // Pass CSRF token in headers
+          'X-CSRFToken': token,
         },
         body: JSON.stringify({
           first_name: firstName,
@@ -82,15 +88,18 @@ const Signup = () => {
           password: password,
           confirm_password: confirmPassword
         }),
-        credentials: 'include',  // Ensure cookies are sent with the request
+        credentials: 'include',
       });
 
-      const responseData = await response.json();
-      console.log('Response Data:', responseData);
       if (response.ok) {
+        localStorage.setItem('isAuthenticated', true);
+        localStorage.setItem('userName', firstName);
         alert('Sign up successful!');
+        navigate('/artifacts');
       } else {
-        alert('Error: ' + (responseData.error || 'Something went wrong.'));
+        const errorText = await response.text();
+        console.error('Error Response:', errorText);
+        alert('Error: ' + errorText);
       }
     } catch (error) {
       console.error('There was an error during sign up:', error);
@@ -105,46 +114,11 @@ const Signup = () => {
         <div className="auth-card">
           <h2>Sign Up</h2>
           <form onSubmit={handleSubmit}>
-            <input
-              type="text"
-              placeholder="First Name"
-              name="firstName"
-              value={formData.firstName}
-              onChange={handleChange}
-              required
-            />
-            <input
-              type="text"
-              placeholder="Last Name"
-              name="lastName"
-              value={formData.lastName}
-              onChange={handleChange}
-              required
-            />
-            <input
-              type="email"
-              placeholder="Email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
-            <input
-              type="password"
-              placeholder="Password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-            />
-            <input
-              type="password"
-              placeholder="Confirm Password"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              required
-            />
+            <input type="text" placeholder="First Name" name="firstName" value={formData.firstName} onChange={handleChange} required />
+            <input type="text" placeholder="Last Name" name="lastName" value={formData.lastName} onChange={handleChange} required />
+            <input type="email" placeholder="Email" name="email" value={formData.email} onChange={handleChange} required />
+            <input type="password" placeholder="Password" name="password" value={formData.password} onChange={handleChange} required />
+            <input type="password" placeholder="Confirm Password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} required />
             <button type="submit">Sign Up</button>
           </form>
 

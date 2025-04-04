@@ -8,7 +8,7 @@ import test_artifact_model
 import test_change_password
 import test_resend_verification
 sys.path.append("..")
-print("Current working directory:", os.getcwd())
+#print("Current working directory:", os.getcwd())
 
 sys.path.append("../../deployment/tests/UAT_tests")
 def load_tests(loader, standard_tests, pattern):

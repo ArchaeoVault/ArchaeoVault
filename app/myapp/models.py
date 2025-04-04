@@ -55,11 +55,11 @@ class conservationtype(models.Model):
     typename = models.CharField(max_length=100)
     
 
-class your_table(models.Model):
+class your_table_test(models.Model):
     address = models.ForeignKey(address, on_delete=models.CASCADE) #foriegn key
     owner = models.CharField(max_length=255)
     date_collected = models.DateTimeField()
-    catalog_number = models.CharField(max_length=25, primary_key=True)
+    catalog_number = models.CharField(max_length=25)
     object_name = models.CharField(max_length=255)
     scanned_3d = models.ForeignKey(threedscannedtable, on_delete=models.CASCADE)  #foriegn key
     printed_3d = models.ForeignKey(threedprintedtable, on_delete=models.CASCADE)  #foriegn key
@@ -101,5 +101,6 @@ class your_table(models.Model):
     location = models.CharField(max_length=100)
     storage_location = models.CharField(max_length=50)
     uhlflages = models.CharField(max_length=250)
+    id = models.IntegerField(primary_key=True)
 
 

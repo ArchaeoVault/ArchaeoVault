@@ -1,7 +1,9 @@
 import unittest
 import sys
+import os
 
-sys.path.append("./app/myapp/tests")
+#sys.path.append("./app/myapp/tests")
+sys.path.append(os.path.abspath("./app/myapp/tests"))
 import test_create_user
 import test_artifact_model
 import test_change_password

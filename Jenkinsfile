@@ -45,6 +45,7 @@ pipeline {
                     sh 'npm start > /dev/null 2>&1 &'
                 } 
                 sh 'pwd'
+                sh 'ps aux'
                 sh 'env/bin/python ./app/manage.py test ./deployment/tests'
                 sh 'fuser -k 8000/tcp'
                 sh 'fuser -k 3000/tcp'

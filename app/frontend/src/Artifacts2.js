@@ -145,29 +145,31 @@ const Artifacts2 = () => {
         <div id="infoSection">
           <label htmlFor="modelSelect"></label>
           <select
-            id="modelSelect"
-            className="dropdown-select"
-            value={selectedArtifact}
-            onChange={(e) => setSelectedArtifact(e.target.value)}>
-            <option value="stonewaresurfacefind">stonewaresurfacefind</option>
-            <option value="tibiawhole">tibiawhole</option>
-            <option value="tibiasmallpiece">tibiasmallpiece</option>
-            <option value="tibiamediumpiece">tibiamediumpiece</option>
-            <option value="tibialargepiece">tibialargepiece</option>
-            <option value="stonewarehandlepiece">stonewarehandlepiece</option>
-            <option value="rhenishstone">rhenishstone</option>
-            <option value="pipestem">pipestem</option>
-            <option value="pigtooth">pigtooth</option>
-            <option value="leftwhitetaileddeermandible">leftwhitetaileddeermandible</option>
-            <option value="largetooth">largetooth</option> 
-            <option value="glassbottletop">glassbottletop</option>
-            <option value="earthenware">earthenware</option>
+  id="modelSelect"
+  className="dropdown-select"
+  value={selectedArtifact}
+  onChange={(e) => setSelectedArtifact(e.target.value)}
+>
+  <option value="" disabled hidden>Select An Artifact!</option>
+  <option value="stonewaresurfacefind">stonewaresurfacefind</option>
+  <option value="tibiawhole">tibiawhole</option>
+  <option value="tibiasmallpiece">tibiasmallpiece</option>
+  <option value="tibiamediumpiece">tibiamediumpiece</option>
+  <option value="tibialargepiece">tibialargepiece</option>
+  <option value="stonewarehandlepiece">stonewarehandlepiece</option>
+  <option value="rhenishstone">rhenishstone</option>
+  <option value="pipestem">pipestem</option>
+  <option value="pigtooth">pigtooth</option>
+  <option value="leftwhitetaileddeermandible">leftwhitetaileddeermandible</option>
+  <option value="largetooth">largetooth</option> 
+  <option value="glassbottletop">glassbottletop</option>
+  <option value="earthenware">earthenware</option>
+  <option value="bridalboss">Bridal Boss</option>
+  <option value="key">Key</option>
+  <option value="musketball">Musket Ball</option>
+  <option value="fort">Fort</option>
+</select>
 
-            <option value="bridalboss">Bridal Boss</option>
-            <option value="key">Key</option>
-            <option value="musketball">Musket Ball</option>
-            <option value="fort">Fort</option>
-          </select>
           <br />
           <br />
           <p id="modelDescription">{descriptions[selectedArtifact]}</p>

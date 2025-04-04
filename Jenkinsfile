@@ -39,22 +39,12 @@ pipeline {
                 sh 'export PYTHONPATH=$(pwd)/app'
                 sh 'env/bin/pip install -r requirements.txt'
                 sh 'chmod +x ./app/manage.py'
-                //sh 'env/bin/python manage.py runserver > /dev/null 2>&1 &'
-                //sh 'cd ./app/frontend' 
-                //sh 'npm start > /dev/null 2>&1 &'
-                //sh 'cd ..'
-                //sh 'cd ..'
-                //sh 'pwd'
-                //dir('app'){
-                    sh 'pwd'
-                    sh 'python3 -m venv env'
-                    sh 'chmod +x env/bin/activate'
-                    sh  '. env/bin/activate'
-                    sh 'env/bin/pip install -r ./requirements.txt'
-                    sh 'env/bin/python ./app/manage.py test ./deployment/tests'
-               // }
-                
-                
+                sh 'env/bin/python ./app/manage.py runserver > /dev/null 2>&1 &'
+                dir('/app/frontend'){
+                    sh 'npm start > /dev/null 2>&1 &'
+                } 
+                sh 'pwd'
+                sh 'env/bin/python ./app/manage.py test ./deployment/tests'
                 sh 'fuser -k 8000/tcp'
                 sh 'fuser -k 3000/tcp'
             }

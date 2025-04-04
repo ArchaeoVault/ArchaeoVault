@@ -41,6 +41,7 @@ pipeline {
                 sh 'chmod +x ./app/manage.py'
                 sh 'env/bin/python ./app/manage.py runserver > /dev/null 2>&1 &'
                 dir('/app/frontend'){
+                    sh'pwd'
                     sh 'npm start > /dev/null 2>&1 &'
                 } 
                 sh 'pwd'

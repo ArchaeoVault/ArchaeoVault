@@ -1,11 +1,11 @@
 import unittest
 import sys
 
-sys.path.append("myapp/tests")
-from app.myapp.tests import test_create_user
-from app.myapp.tests import test_artifact_model
-from app.myapp.tests import test_change_password
-from app.myapp.tests import test_resend_verification
+sys.path.append("app/myapp/tests")
+import test_create_user
+import test_artifact_model
+import test_change_password
+import test_resend_verification
 sys.path.append("..")
 
 

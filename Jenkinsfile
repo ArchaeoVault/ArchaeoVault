@@ -40,7 +40,7 @@ pipeline {
                 sh 'env/bin/pip install -r requirements.txt'
                 sh 'chmod +x ./app/manage.py'
                 sh 'env/bin/python ./app/manage.py runserver > /dev/null 2>&1 &'
-                dir('/app/frontend'){
+                dir('app/frontend'){
                     sh'pwd'
                     sh 'npm start > /dev/null 2>&1 &'
                 } 

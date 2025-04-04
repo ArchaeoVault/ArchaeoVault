@@ -1,0 +1,51 @@
+.admin-container {
+    padding: 2rem;
+  }
+  
+  .add-artifact-form {
+    margin-bottom: 2rem;
+  }
+  
+  .add-artifact-form input,
+  .add-artifact-form textarea {
+    display: block;
+    width: 100%;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .add-artifact-form button {
+    padding: 0.5rem 1rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .add-artifact-form button:hover {
+    background-color: #0056b3;
+  }
+  
+  .artifact-list .artifact-item {
+    border: 1px solid #ccc;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 5px;
+  }
+  
+  .artifact-list .artifact-item button {
+    margin-right: 1rem;
+    padding: 0.5rem 1rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .artifact-list .artifact-item button:hover {
+    background-color: #0056b3;
+  }

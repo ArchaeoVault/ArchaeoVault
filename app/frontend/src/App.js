@@ -24,16 +24,15 @@ const App = () => {
     const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true'; // Check authentication state
     const location = useLocation(); // Move useLocation inside PrivateRoute
 
-    // useEffect(() => {
-    //   if (!isAuthenticated && location.pathname !== '/login') {
-    //     setRedirectPath(location.pathname);  // Keep track of the attempted location
-    //   }
-    // }, [location]);  // Only depend on location
-
     if (!isAuthenticated) {
       return <Navigate to="/login" state={{ from: location }} />;
     }
     return element;
+  };
+
+  const PrivateAdminRoute = ({ element }) => {
+    const isAdmin = localStorage.getItem('isAdmin') === 'true';
+    return isAdmin ? element : <Navigate to="/login" />;
   };
 
   return (
@@ -63,6 +62,8 @@ const App = () => {
         {/* <Route path="/" element={showLogin ? <Login setIsAuthenticated={setIsAuthenticated} /> : <HomePage setShowLogin={setShowLogin} />} /> */}
 
         <Route path="/" element={<HomePage />} />
+
+        <Route path="/adminpage" element={<PrivateAdminRoute element={<AdminPage />} />} />
       </Routes>
     </Router>
   );

@@ -12,7 +12,7 @@ class test_UAT_userstory19(unittest.TestCase):
 	def setUp(self):
 		env = os.environ.get('DJANGO_ENV', 'None')
 		if env == 'production':
-			chrome_options = Options()
+			chrome_options = webdriver.ChromeOptions()
 			chrome_options.add_argument("--headless=new") # for Chrome >= 109
 			self.driver = webdriver.Chrome(options=chrome_options)
 		else:
@@ -105,7 +105,8 @@ class test_UAT_userstory19(unittest.TestCase):
 			validation_message = emailBox.get_attribute("validationMessage")
 		except:
 			print("No validation message found.")
-		assert validation_message == "Please fill out this field."
+		assert 1==2
+		self.driver.quit()
 
 
 	def test_valid_email_no_password(self):
@@ -119,6 +120,7 @@ class test_UAT_userstory19(unittest.TestCase):
 		except:
 			print("No validation message found.")
 		assert validation_message == "Please fill out this field."
+		self.driver.quit()
 	
 
 	def test_no_email_valid_password(self):
@@ -132,6 +134,7 @@ class test_UAT_userstory19(unittest.TestCase):
 		except:
 			print("No validation message found.")
 		assert validation_message == "Please fill out this field."
+		self.driver.quit()
 
 	def test_email_sql_injection(self):
 		self.driver.implicitly_wait(1)
@@ -146,6 +149,7 @@ class test_UAT_userstory19(unittest.TestCase):
 		except:
 			print("No validation message found.")
 		assert validation_message == "A part following '@' should not contain the symbol ' '."
+		self.driver.quit()
 	"""
 	def test_password_sql_injection(self):
 		self.driver.implicitly_wait(1)

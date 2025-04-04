@@ -52,7 +52,11 @@ const Login = () => {
         
         localStorage.setItem('isAuthenticated', true); // Store authentication status
         localStorage.setItem('userName', result.user.first_name);
-
+        if (email === "archaeovault77@gmail.com" && password === "abc1") {
+          navigate('/adminpage'); // Redirect to the homepage
+        } else {
+          navigate('/artifacts'); // Redirect to the homepage
+        }
         navigate('/artifacts'); // Redirect to the homepage
       } else {
         alert(result.message); // Show error message from the backend

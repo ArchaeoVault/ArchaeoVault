@@ -32,6 +32,11 @@ class Users(models.Model):
     upassword = models.CharField(max_length=500)
     upermission = models.ForeignKey(Permissions, on_delete=models.CASCADE)
     active_flag = models.BooleanField()
+    def save(self, *args, **kwargs):
+        # Prevent last_login updates
+        if 'update_fields' in kwargs and 'last_login' in kwargs['update_fields']:
+            kwargs['update_fields'].remove('last_login')
+        super().save(*args, **kwargs)
 
 
 class ObjDatedTo(models.Model):

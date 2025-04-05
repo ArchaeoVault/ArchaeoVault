@@ -31,7 +31,7 @@ pipeline {
         //         sh 'env/bin/python ./app/manage.py test app/myapp/tests > test_results.log 2>&1'
         //     }
         // }
-        stage('Selenium Tests'){
+        stage('Tests'){
             steps{
                 sh 'python3 -m venv env'
                 sh 'chmod +x env/bin/activate'
@@ -45,7 +45,7 @@ pipeline {
                     sh 'npm start > /dev/null 2>&1 &'
                 } 
                 sh 'pwd'
-                sh 'ps aux'
+                sh 'curl http://localhost:8000'
                 sh 'env/bin/python ./app/manage.py test ./deployment/tests'
                 sh 'fuser -k 8000/tcp'
                 sh 'fuser -k 3000/tcp'

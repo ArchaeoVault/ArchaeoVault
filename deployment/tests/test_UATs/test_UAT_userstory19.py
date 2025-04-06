@@ -10,6 +10,7 @@ from pyvirtualdisplay import Display
 from selenium.webdriver.chrome.service import Service
 import chromedriver_autoinstaller
 import os
+import subprocess
 
 class test_UAT_userstory19(unittest.TestCase):
 	def setUp(self):
@@ -19,6 +20,11 @@ class test_UAT_userstory19(unittest.TestCase):
 			chrome_options = webdriver.ChromeOptions()
 			chrome_options.add_argument("--headless=new") # for Chrome >= 109
 			chrome_options.binary_location = "/usr/bin/google-chrome"
+			
+
+			result = subprocess.run(["/usr/bin/google-chrome", "--version"], capture_output=True, text=True)
+			print(result.stdout)
+			print(result.stderr)
 			chrome_options.add_argument("--no-sandbox")
 			chrome_options.add_argument("--disable-blink-features=AutomationControlled")
 			chrome_options.add_argument("--disable-dev-shm-usage")

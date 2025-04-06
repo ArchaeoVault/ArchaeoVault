@@ -3,18 +3,18 @@ from django.utils import timezone
 from django.urls import reverse
 from django.contrib.auth.models import User #imports django user model if we decide to just use that
 from django.core.mail import send_mail
-from myapp.models import Users, Permissions
+from myapp.models import users, permissions
 import json
 
 class test_resend_verification(TestCase):
 
     def setUp(self):
-        self.permission = Permissions.objects.create(numVal = 4, role = 'GeneralPublic')
-        self.user = Users.objects.create(
+        self.permission = permissions.objects.create(numVal = 4, role = 'GeneralPublic')
+        self.user = users.objects.create(
             email = 'temp@email.com',
-            password = 'password123',
+            upassword = 'password123',
             upermission = self.permission,
-            active_flag = False
+            activated = False
         )
     
     def test_verify_nonexistent_account(self):

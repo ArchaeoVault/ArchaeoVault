@@ -52,8 +52,8 @@ def login_view(request):
                 user = users.objects.get(email=email)
 
                 # Now authenticate using the user's username and password
-                if check_password(password, user.upassword):  # Compare hashed password
-                    return user
+                if password != user.upassword:  # Compare hashed password
+                    return JsonResponse({'status':'error','message':'Passwords do not match'}, status = 400)
             
                 if user is not None:
                     login(request, user)
@@ -235,7 +235,7 @@ def resend_verification_view(request):
         email = data.get('email')
         if(users.objects.filter(email = email).exists()):
             #generates the uid and token
-            user = User.objects.get(email = email)
+            user = users.objects.get(email = email)
             uid = urlsafe_base64_encode(force_bytes(user.email))
             token = account_activation_token.make_token(user)
             verification_link = request.build_absolute_uri(

@@ -3,20 +3,20 @@ from django.utils import timezone
 from django.urls import reverse
 from django.contrib.auth.models import User #imports django user model if we decide to just use that
 from django.core.mail import send_mail
-from myapp.models import Users, Permissions
+from myapp.models import users, permissions
 import json
 
 class LoginUserTests(TestCase):
 
     def setUp(self):
         
-        permission = Permissions.objects.create(numVal = 4, role = 'GeneralPublic')
+        permission = permissions.objects.create(numVal = 4, role = 'GeneralPublic')
         
-        self.user = Users.objects.create(
+        self.user = users.objects.create(
             email = 'temp@email.com',
             upassword = 'password123',
             upermission = permission,
-            active_flag = True
+            activated = True
         )
 
     def test_user_login_success(self): 

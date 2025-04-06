@@ -29,7 +29,12 @@ class users(models.Model):
     email = models.CharField(max_length=255, primary_key=True)
     upassword = models.CharField(max_length=500)
     upermission = models.ForeignKey(permissions, on_delete=models.CASCADE)
-    active_flag = models.BooleanField()
+    activated = models.BooleanField()
+    def save(self, *args, **kwargs):
+        # Prevent last_login updates
+        if 'update_fields' in kwargs and 'last_login' in kwargs['update_fields']:
+            kwargs['update_fields'].remove('last_login')
+        super().save(*args, **kwargs)
 
 class organicinorganic(models.Model):
     id = models.IntegerField(primary_key=True)

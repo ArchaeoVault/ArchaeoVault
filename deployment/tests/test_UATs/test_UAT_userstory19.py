@@ -18,7 +18,8 @@ class test_UAT_userstory19(unittest.TestCase):
 			# service = Service(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install())
 			chrome_options = webdriver.ChromeOptions()
 			chrome_options.add_argument("--headless=new") # for Chrome >= 109
-			self.driver = webdriver.Chrome('/snap/bin/chromium.chromedriver', options=chrome_options)
+			chrome_options.binary_location = '/snap/bin/chromium.chromedriver'
+			self.driver = webdriver.Chrome(options=chrome_options)
 		else:
 			self.driver = webdriver.Chrome()
 		self.driver.get("http://localhost:3000")

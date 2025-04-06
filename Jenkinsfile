@@ -72,6 +72,7 @@ pipeline {
                 sh 'google-chrome --version'
                 sh 'which chromedriver'
                 sh 'ls -l /usr/bin/chromedriver'
+                sh 'chromedriver --no-sandbox --version'
                 //sh 'chmod +x /usr/bin/chromedriver'
                 //sh '/usr/bin/chromedriver --version'
                 //sh 'ls -l /usr/bin/chromedriver'

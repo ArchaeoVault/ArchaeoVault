@@ -16,6 +16,7 @@ class test_UAT_userstory19(unittest.TestCase):
 		if env == 'production':
 			chrome_options = webdriver.ChromeOptions()
 			chrome_options.add_argument("--headless=new") # for Chrome >= 109
+			chrome_options.add_argument("--no-sandbox")
 			chrome_options.add_argument("--disable-blink-features=AutomationControlled")
 			service = Service(executable_path="/usr/bin/google-chrome")
 			self.driver = webdriver.Chrome(options=chrome_options)

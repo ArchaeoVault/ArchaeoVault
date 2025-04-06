@@ -8,20 +8,21 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.chrome.options import Options
 from pyvirtualdisplay import Display
 from selenium.webdriver.chrome.service import Service
+import chromedriver_autoinstaller
 import os
 
 class test_UAT_userstory19(unittest.TestCase):
 	def setUp(self):
 		env = os.environ.get('DJANGO_ENV', 'None')
 		if env == 'production':
+			chromedriver_autoinstaller.install()
 			chrome_options = webdriver.ChromeOptions()
 			chrome_options.add_argument("--headless=new") # for Chrome >= 109
 			chrome_options.add_argument("--no-sandbox")
 			chrome_options.add_argument("--disable-blink-features=AutomationControlled")
 			chrome_options.add_argument("--disable-dev-shm-usage")
-			chrome_options.binary_location = '/usr/bin/google-chrome'
-			service = Service(executable_path="/usr/bin/chromedriver") #drievr
-			self.driver = webdriver.Chrome(service=service, options=chrome_options)
+			chrome_options.add_argument("--disable-gpu")
+			self.driver = webdriver.Chrome(options=chrome_options)
 		else:
 			self.driver = webdriver.Chrome()
 		self.driver.get("http://localhost:3000")

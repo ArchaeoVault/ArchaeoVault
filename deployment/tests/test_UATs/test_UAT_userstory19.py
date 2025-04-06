@@ -33,9 +33,9 @@ class test_UAT_userstory19(unittest.TestCase):
 			chrome_options.add_argument("--disable-gpu")
 
 			chrome_options.binary_location = "/usr/bin/google-chrome"
-			chrome_driver_binary = "/usr/bin/chromedriver"
+			service = Service("/usr/bin/chromedriver")  # or wherever it is on your system
+			self.driver = webdriver.Chrome(options=chrome_options, service=service)
 
-			self.driver = webdriver.Chrome(executable_path='/usr/bin/chromedriver', options=chrome_options, service_args=['--verbose', '--log-path=/tmp/chromedriver.log'])
 			# self.driver = webdriver.Chrome(options=chrome_options)
 		else:
 			self.driver = webdriver.Chrome()

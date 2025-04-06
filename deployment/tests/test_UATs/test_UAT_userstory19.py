@@ -14,6 +14,9 @@ import subprocess
 
 class test_UAT_userstory19(unittest.TestCase):
 	def setUp(self):
+		print("sub process")
+		print(result.stdout)
+		print(result.stderr)
 		env = os.environ.get('DJANGO_ENV', 'None')
 		if env == 'production':
 			chromedriver_autoinstaller.install()
@@ -23,9 +26,7 @@ class test_UAT_userstory19(unittest.TestCase):
 			
 
 			result = subprocess.run(["/usr/bin/google-chrome", "--version"], capture_output=True, text=True)
-			print("sub process")
-			print(result.stdout)
-			print(result.stderr)
+			
 			chrome_options.add_argument("--no-sandbox")
 			chrome_options.add_argument("--disable-blink-features=AutomationControlled")
 			chrome_options.add_argument("--disable-dev-shm-usage")

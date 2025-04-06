@@ -45,6 +45,7 @@ pipeline {
                     sh 'npm start > /dev/null 2>&1 &'
                 } 
                 sh 'pwd'
+
                 // Wait for servers to be ready
                 sh '''
                 until curl --output /dev/null --silent --head --fail http://localhost:8000; do
@@ -59,6 +60,7 @@ pipeline {
                     sleep 2
                 done
                 '''
+                
                 sh 'curl http://localhost:8000'
                 sh 'env/bin/python ./app/manage.py test ./deployment/tests'
                 sh 'fuser -k 8000/tcp'

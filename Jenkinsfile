@@ -65,6 +65,13 @@ pipeline {
                 sh 'curl http://localhost:8000'
                 sh 'env/bin/python ./app/manage.py test ./deployment/tests'
                 */
+                sh 'echo "---- ENVIRONMENT ----"'
+                sh 'echo "PATH: $PATH"'
+                sh 'which google-chrome'
+                sh 'ls -l /usr/bin/google-chrome'
+                sh 'google-chrome --version'
+
+
                 sh 'chmod +x ./deployment/run_dev_servers.sh'
                 sh './deployment/run_dev_servers.sh'
                 sh 'ps aux'

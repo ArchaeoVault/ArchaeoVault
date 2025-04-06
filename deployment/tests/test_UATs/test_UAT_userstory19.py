@@ -14,7 +14,7 @@ class test_UAT_userstory19(unittest.TestCase):
 	def setUp(self):
 		env = os.environ.get('DJANGO_ENV', 'None')
 		if env == 'production':
-			service = Service(ChromeDriverManager().install())
+			service = Service(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install())
 			chrome_options = webdriver.ChromeOptions()
 			chrome_options.add_argument("--headless=new") # for Chrome >= 109
 			self.driver = webdriver.Chrome(service=service, options=chrome_options)

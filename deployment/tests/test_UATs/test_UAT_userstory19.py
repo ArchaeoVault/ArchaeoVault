@@ -22,7 +22,7 @@ class test_UAT_userstory19(unittest.TestCase):
 			chromedriver_autoinstaller.install()
 			chrome_options = webdriver.ChromeOptions()
 			chrome_options.add_argument("--headless=new") # for Chrome >= 109
-			chrome_options.binary_location = "/usr/bin/google-chrome"
+			
 			
 
 			result = subprocess.run(["/usr/bin/google-chrome", "--version"], capture_output=True, text=True)
@@ -31,7 +31,12 @@ class test_UAT_userstory19(unittest.TestCase):
 			chrome_options.add_argument("--disable-blink-features=AutomationControlled")
 			chrome_options.add_argument("--disable-dev-shm-usage")
 			chrome_options.add_argument("--disable-gpu")
-			self.driver = webdriver.Chrome(options=chrome_options)
+
+			chrome_options.binary_location = "/usr/bin/google-chrome"
+			chrome_driver_binary = "/usr/bin/chromedriver"
+			
+			self.driver = webdriver.Chrome(chrome_driver_binary, options=chrome_options)
+			# self.driver = webdriver.Chrome(options=chrome_options)
 		else:
 			self.driver = webdriver.Chrome()
 		self.driver.get("http://localhost:3000")

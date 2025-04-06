@@ -34,8 +34,8 @@ class test_UAT_userstory19(unittest.TestCase):
 
 			chrome_options.binary_location = "/usr/bin/google-chrome"
 			chrome_driver_binary = "/usr/bin/chromedriver"
-			
-			self.driver = webdriver.Chrome(chrome_driver_binary, options=chrome_options)
+
+			self.driver = webdriver.Chrome(executable_path='/usr/bin/chromedriver', options=chrome_options, service_args=['--verbose', '--log-path=/tmp/chromedriver.log'])
 			# self.driver = webdriver.Chrome(options=chrome_options)
 		else:
 			self.driver = webdriver.Chrome()

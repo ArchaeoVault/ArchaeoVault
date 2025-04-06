@@ -65,6 +65,7 @@ pipeline {
                 sh 'curl http://localhost:8000'
                 sh 'env/bin/python ./app/manage.py test ./deployment/tests'
                 */
+                sh 'chmod +x ./deployment/run_dev_servers.sh'
                 sh './deployment/run_dev_servers.sh'
                 sh 'ps aux'
                 sh 'fuser -k 8000/tcp'

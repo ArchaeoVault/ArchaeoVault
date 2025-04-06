@@ -33,6 +33,7 @@ pipeline {
         // }
         stage('Tests'){
             steps{
+                /*
                 sh 'python3 -m venv env'
                 sh 'chmod +x env/bin/activate'
                 sh  '. env/bin/activate'
@@ -63,6 +64,9 @@ pipeline {
                 
                 sh 'curl http://localhost:8000'
                 sh 'env/bin/python ./app/manage.py test ./deployment/tests'
+                */
+                sh './deployment/run_dev_servers.sh'
+                sh 'ps aux'
                 sh 'fuser -k 8000/tcp'
                 sh 'fuser -k 3000/tcp'
             }

@@ -35,7 +35,7 @@ pipeline {
             steps{
                 sh 'python3 -m venv env'
                 sh 'chmod +x env/bin/activate'
-                sh 'chmod +x usr/bin/google-chrome'
+                sh 'sudo chmod +x usr/bin/google-chrome'
                 sh  '. env/bin/activate'
                 sh 'export PYTHONPATH=$(pwd)/app'
                 sh 'env/bin/pip install -r requirements.txt'

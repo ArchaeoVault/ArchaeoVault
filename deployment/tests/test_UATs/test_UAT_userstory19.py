@@ -9,6 +9,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.core.os_manager import ChromeType
+from pyvirtualdisplay import Display
 import os
 
 class test_UAT_userstory19(unittest.TestCase):
@@ -17,6 +18,8 @@ class test_UAT_userstory19(unittest.TestCase):
 		if env == 'production':
 			service = Service(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install())
 			chrome_options = webdriver.ChromeOptions()
+			display = Display(visible=0, size=(800, 800))  
+			display.start()
 			chrome_options.add_argument("--headless=new") # for Chrome >= 109
 			chrome_options.binary_location = '/snap/bin/chromium.chromedriver'
 			self.driver = webdriver.Chrome(service=service, options=chrome_options)

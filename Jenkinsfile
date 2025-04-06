@@ -70,8 +70,9 @@ pipeline {
                 sh 'which google-chrome'
                 sh 'ls -l /usr/bin/google-chrome'
                 sh 'google-chrome --version'
-                sh '/usr/bin/chromedriver --version'
-                sh 'ls -l /usr/bin/chromedriver'
+                sh 'chmod +x /usr/bin/chromedriver'
+                //sh '/usr/bin/chromedriver --version'
+                //sh 'ls -l /usr/bin/chromedriver'
 
 
                 sh 'chmod +x ./deployment/run_dev_servers.sh'

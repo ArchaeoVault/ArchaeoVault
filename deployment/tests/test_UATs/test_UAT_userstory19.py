@@ -20,7 +20,7 @@ class test_UAT_userstory19(unittest.TestCase):
 			chrome_options.add_argument("--disable-blink-features=AutomationControlled")
 			chrome_options.add_argument("--disable-dev-shm-usage")
 			chrome_options.binary_location = '/usr/bin/google-chrome'
-			service = Service(executable_path="/usr/bin/chromedriver")
+			service = Service(executable_path="/usr/bin/chromedriver") #drievr
 			self.driver = webdriver.Chrome(service=service, options=chrome_options)
 		else:
 			self.driver = webdriver.Chrome()

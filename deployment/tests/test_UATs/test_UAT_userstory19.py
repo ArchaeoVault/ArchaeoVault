@@ -18,6 +18,7 @@ class test_UAT_userstory19(unittest.TestCase):
 			chrome_options.add_argument("--headless=new") # for Chrome >= 109
 			chrome_options.add_argument("--no-sandbox")
 			chrome_options.add_argument("--disable-blink-features=AutomationControlled")
+			chrome_options.add_argument("--disable-dev-shm-usage")
 			chrome_options.binary_location = '/usr/bin/google-chrome'
 			service = Service(executable_path="/usr/bin/google-chrome")
 			self.driver = webdriver.Chrome(service=service, options=chrome_options)

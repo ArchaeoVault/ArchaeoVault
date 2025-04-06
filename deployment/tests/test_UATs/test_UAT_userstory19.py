@@ -16,13 +16,13 @@ class test_UAT_userstory19(unittest.TestCase):
 	def setUp(self):
 		env = os.environ.get('DJANGO_ENV', 'None')
 		if env == 'production':
-			service = Service(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install())
+			# service = Service(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install())
 			chrome_options = webdriver.ChromeOptions()
 			display = Display(visible=0, size=(800, 800))  
 			display.start() # Should start a Display in order to run Chromium
 			chrome_options.add_argument("--headless=new") # for Chrome >= 109
-			chrome_options.binary_location = '/usr/bin/google-chrome-stable'
-			self.driver = webdriver.Chrome(service=service, options=chrome_options)
+			chrome_options.binary_location = '/usr/bin/google-chrome'
+			self.driver = webdriver.Chrome(options=chrome_options)
 		else:
 			self.driver = webdriver.Chrome()
 		self.driver.get("http://localhost:3000")

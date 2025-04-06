@@ -71,6 +71,7 @@ pipeline {
                 sh 'ls -l /usr/bin/google-chrome'
                 sh 'google-chrome --version'
                 sh 'which chromedriver'
+                sh 'ls -l /usr/bin/chromedriver'
                 //sh 'chmod +x /usr/bin/chromedriver'
                 //sh '/usr/bin/chromedriver --version'
                 //sh 'ls -l /usr/bin/chromedriver'

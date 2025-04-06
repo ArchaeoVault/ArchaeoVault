@@ -6,9 +6,6 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
-from webdriver_manager.core.os_manager import ChromeType
 from pyvirtualdisplay import Display
 import os
 
@@ -16,11 +13,9 @@ class test_UAT_userstory19(unittest.TestCase):
 	def setUp(self):
 		env = os.environ.get('DJANGO_ENV', 'None')
 		if env == 'production':
-			# service = Service(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install())
 			chrome_options = webdriver.ChromeOptions()
-			# display = Display(visible=0, size=(800, 800))  
-			# display.start() # Should start a Display in order to run Chromium
 			chrome_options.add_argument("--headless=new") # for Chrome >= 109
+			chrome_options.add_argument("--disable-blink-features=AutomationControlled")
 			chrome_options.binary_location = '/usr/bin/google-chrome'
 			self.driver = webdriver.Chrome(options=chrome_options)
 		else:

@@ -45,6 +45,20 @@ pipeline {
                     sh 'npm start > /dev/null 2>&1 &'
                 } 
                 sh 'pwd'
+                // Wait for servers to be ready
+                sh '''
+                until curl --output /dev/null --silent --head --fail http://localhost:8000; do
+                    echo "Waiting for Django..."
+                    sleep 2
+                done
+                '''
+
+                sh '''
+                until curl --output /dev/null --silent --head --fail http://localhost:3000; do
+                    echo "Waiting for frontend..."
+                    sleep 2
+                done
+                '''
                 sh 'curl http://localhost:8000'
                 sh 'env/bin/python ./app/manage.py test ./deployment/tests'
                 sh 'fuser -k 8000/tcp'

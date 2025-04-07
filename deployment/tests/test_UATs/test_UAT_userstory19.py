@@ -14,6 +14,7 @@ import tempfile
 import shutil
 import subprocess
 
+
 class test_UAT_userstory19(unittest.TestCase):
 	def kill_chrome_processes(self):	
 		try:
@@ -29,6 +30,7 @@ class test_UAT_userstory19(unittest.TestCase):
 			self.kill_chrome_processes()
 			chromedriver_autoinstaller.install()
 			chrome_options = webdriver.ChromeOptions()
+			raise ValueError('$$$$$$$$$$$' + chrome_options.userDataDir)
 			chrome_options.add_argument("--headless=new") # for Chrome >= 109
 			
 			chrome_options.add_argument("--no-sandbox")

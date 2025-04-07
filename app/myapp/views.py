@@ -204,6 +204,7 @@ def all_artifacts_view(request):
             'location': artifact.location,
             'storage_location': artifact.storage_location,
             'uhlflages': artifact.uhlflages,
+            'id': artifact.id
             
             
         } for artifact in artifacts

@@ -79,13 +79,13 @@ pipeline {
 
                 sh 'chmod +x ./deployment/run_dev_servers.sh'
                 sh './deployment/run_dev_servers.sh'
-                sh 'ps aux'
 
                 sh 'python3 -m venv env'
                 sh 'chmod +x env/bin/activate'
                 sh  '. env/bin/activate'
                 sh 'env/bin/pip install -r requirements.txt'
                 sh 'chmod +x ./app/manage.py'
+                sh 'curl "http://localhost:3000"'
                 sh 'env/bin/python ./app/manage.py test ./deployment/tests'
 
                 sh 'fuser -k 8000/tcp'

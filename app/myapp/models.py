@@ -19,21 +19,21 @@ class threedprintedtable(models.Model):
 
 class gridnames(models.Model):
     id = models.IntegerField(primary_key=True)
-    typename = models.CharField(max_length=900)
+    typename = models.CharField(max_length=900) #changed
 
 class permissions(models.Model):
     numVal = models.IntegerField(primary_key=True)
-    role = models.CharField(max_length=30)
+    givenrole = models.CharField(max_length=30) #changed
 
 class users(models.Model):
     email = models.CharField(max_length=255, primary_key=True)
     upassword = models.CharField(max_length=500)
-    upermission = models.ForeignKey(permissions, on_delete=models.CASCADE)
     activated = models.BooleanField() #activated
+    upermission = models.ForeignKey(permissions, on_delete=models.CASCADE)
 
 class organicinorganic(models.Model):
     id = models.IntegerField(primary_key=True)
-    type = models.CharField(max_length=20)
+    type = models.CharField(max_length=20) #changed
 
 class speciestype(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -59,7 +59,7 @@ class your_table(models.Model):
     address = models.ForeignKey(address, on_delete=models.CASCADE) #foriegn key
     owner = models.CharField(max_length=255)
     date_collected = models.DateTimeField()
-    catalog_number = models.CharField(max_length=25, primary_key=True)
+    catalog_number = models.CharField(max_length=25)
     object_name = models.CharField(max_length=255)
     scanned_3d = models.ForeignKey(threedscannedtable, on_delete=models.CASCADE)  #foriegn key
     printed_3d = models.ForeignKey(threedprintedtable, on_delete=models.CASCADE)  #foriegn key
@@ -101,5 +101,5 @@ class your_table(models.Model):
     location = models.CharField(max_length=100)
     storage_location = models.CharField(max_length=50)
     uhlflages = models.CharField(max_length=250)
-
+    id = models.IntegerField(primary_key=True)
 

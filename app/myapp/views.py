@@ -216,47 +216,53 @@ def all_artifacts_view(request):
 
 def activate(request, uidb64, token):
     #put boolean that sets user active to true
-    uid = urlsafe_base64_decode(uidb64)
-    user = User.objects.get(email = uid)
-    if user is not None and account_activation_token.check_token(user, token):
-        user.activated = True
-        user.save()
-        return render(request, 'home.html')
+    try:
+        uid = urlsafe_base64_decode(uidb64)
+        user = User.objects.get(email = uid)
+        if user is not None and account_activation_token.check_token(user, token):
+            user.activated = True
+            user.save()
+            return JsonResponse({'message': 'Account is now activated'}, status=200)
+        else:
+            return JsonResponse({'error': 'Email is not associated with an account or token is invalid'}, status=400)
+    except Exception as e:
+        return JsonResponse({'error':'Error activating account'},status = 400)
 
 def resend_verification_view(request):
     if(request.method == 'POST'):
-        data = json.loads(request.body)
-        email = data.get('email')
-        if(User.objects.filter(email = email).exists()):
-            #generates the uid and token
-            user = User.objects.get(email = email)
-            uid = urlsafe_base64_encode(force_bytes(user.email))
-            token = account_activation_token.make_token(user)
-            verification_link = request.build_absolute_uri(
-                reverse('activate', kwargs={'uidb64': uid, 'token': token})
-            )
-            message = Mail(
-                from_email='noreply@archaeovault.com',
-                to_emails=user.email,
-                subject='Welcome to ArchaeoVault!',
-                html_content=(
-                    f'<h2>Thank you for registering for ArchaeoVault, we really hope you enjoy!'
-                    f'Click on the link below to verify your email address.</h2>'
-                    f'<a href="{verification_link}">Verify your email address</a>'
+        try:
+            data = json.loads(request.body)
+            email = data.get('email')
+            if(User.objects.filter(email = email).exists()):
+                #generates the uid and token
+                user = User.objects.get(email = email)
+                uid = urlsafe_base64_encode(force_bytes(user.email))
+                token = account_activation_token.make_token(user)
+                verification_link = request.build_absolute_uri(
+                    reverse('activate', kwargs={'uidb64': uid, 'token': token})
                 )
-            )
-            try:
+                message = Mail(
+                    from_email='noreply@archaeovault.com',
+                    to_emails=user.email,
+                    subject='Welcome to ArchaeoVault!',
+                    html_content=(
+                        f'<h2>Thank you for registering for ArchaeoVault, we really hope you enjoy!'
+                        f'Click on the link below to verify your email address.</h2>'
+                        f'<a href="{verification_link}">Verify your email address</a>'
+                    )
+                )
                 sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
                 response = sg.send(message)
-                print(response.status_code)
-                #print(response.body)
-                # #print(response.headers)
-            except Exception as e:
-                print(str(e) + ' didnt work')
-            return JsonResponse({'message': 'Verification email has been sent'}, status=200)
-        else:
-            return JsonResponse({'error': 'Email address not associated with an account'}, status=400)
-    return render(request, 'resend_verification.html')
+                if(response.status_code == 400):
+                    return JsonResponse({'error': 'Verification email could not be sent'}, status=400)
+                else:
+                    return JsonResponse({'message': 'Verification email has been sent'}, status=200)
+            else:
+                return JsonResponse({'error': 'Email address not associated with an account'}, status=400)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 def change_password_view(request):
     if request.method == 'POST':
@@ -282,4 +288,3 @@ def change_password_view(request):
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
         except Exception as e:
             return JsonResponse({'error':'Error changing password'},status = 400)
-

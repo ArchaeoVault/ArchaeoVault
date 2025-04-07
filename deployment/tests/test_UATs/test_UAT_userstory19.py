@@ -28,7 +28,7 @@ class test_UAT_userstory19(unittest.TestCase):
 
 	def setUp(self):
 		env = os.environ.get('DJANGO_ENV', 'None')
-		if env == 'production':
+		if env == 'selenium':
 			self.kill_chrome_processes()
 			chromedriver_autoinstaller.install()
 			chrome_options = webdriver.ChromeOptions()

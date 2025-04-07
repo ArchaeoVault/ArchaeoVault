@@ -11,6 +11,7 @@ from selenium.webdriver.chrome.service import Service
 import chromedriver_autoinstaller
 import os
 import tempfile
+import shutil
 
 class test_UAT_userstory19(unittest.TestCase):
 	def setUp(self):
@@ -24,8 +25,8 @@ class test_UAT_userstory19(unittest.TestCase):
 			chrome_options.add_argument("--disable-blink-features=AutomationControlled")
 			chrome_options.add_argument("--disable-dev-shm-usage")
 			chrome_options.add_argument("--disable-gpu")
-			temp_dir = tempfile.mkdtemp()
-			chrome_options.add_argument(f"--user-data-dir={temp_dir}")
+			self.user_data_dir = tempfile.mkdtemp()
+			chrome_options.add_argument(f"--user-data-dir={self.user_data_dir}")
 
 			chrome_options.binary_location = "/usr/bin/google-chrome"
 			#CHROMEDRIVER_PATH = '/usr/local/bin/chromedriver'
@@ -124,6 +125,7 @@ class test_UAT_userstory19(unittest.TestCase):
 		except:
 			print("No validation message found.")
 		assert 1==2
+		shutil.rmtree(user_data_dir)
 		self.driver.quit()
 
 
@@ -194,6 +196,7 @@ class test_UAT_userstory19(unittest.TestCase):
 
 	def tearDown(self):
 		self.driver.close()
+		shutil.rmtree(self.user_data_dir, ignore_errors=True)
 
 if __name__ == "__main__":
 	unittest.main()

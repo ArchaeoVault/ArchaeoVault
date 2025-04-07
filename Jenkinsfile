@@ -65,29 +65,29 @@ pipeline {
                 sh 'curl http://localhost:8000'
                 sh 'env/bin/python ./app/manage.py test ./deployment/tests'
                 */
-                sh 'echo "---- ENVIRONMENT ----"'
-                sh 'echo "PATH: $PATH"'
-                sh 'which google-chrome'
-                sh 'ls -l /usr/bin/google-chrome'
-                sh 'google-chrome --version'
-                sh 'which chromedriver'
-                //sh 'ls -l /usr/bin/chromedriver'
-                //sh 'chromedriver --no-sandbox --version'
-                //sh 'chmod +x /usr/bin/chromedriver'
-                //sh '/usr/bin/chromedriver --version'
-                //sh 'ls -l /usr/bin/chromedriver'
+                
+                //sh 'chmod +x ./deployment/run_dev_servers.sh'
+                //sh './deployment/run_dev_servers.sh'
 
-                sh 'chmod +x ./deployment/run_dev_servers.sh'
-                sh './deployment/run_dev_servers.sh'
+                //Start front end and check connection
+                sh './app/frontend npm start -- --host 0.0.0.0 > /dev/null 2>&1 &'
+                sh 'curl "http://localhost:3000"'
 
+                //Start virutal environment
                 sh 'python3 -m venv env'
                 sh 'chmod +x env/bin/activate'
                 sh  '. env/bin/activate'
                 sh 'env/bin/pip install -r requirements.txt'
+
+                //Run back end server and test connection
                 sh 'chmod +x ./app/manage.py'
-                sh 'curl "http://localhost:3000"'
+                sh 'env/bin/python ./app/manage.py runserver > /dev/null 2>&1 &'
+                sh 'curl "http://localhost:8000"'
+
+                //Run tests
                 sh 'env/bin/python ./app/manage.py test ./deployment/tests'
 
+                //Kill servers
                 sh 'fuser -k 8000/tcp'
                 sh 'fuser -k 3000/tcp'
             }

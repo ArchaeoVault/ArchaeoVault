@@ -32,11 +32,11 @@ class test_UAT_userstory19(unittest.TestCase):
 			chrome_options.add_argument("--disable-dev-shm-usage")
 			chrome_options.add_argument("--disable-gpu")
 
-			chrome_options.binary_location = "/usr/bin/google-chrome"
-			service = Service("/usr/bin/chromedriver")  # or wherever it is on your system
-			self.driver = webdriver.Chrome(options=chrome_options, service=service)
+			chrome_options.binary_location = "/usr/bin/"
+			#service = Service("/usr/bin/chromedriver")  # or wherever it is on your system
+			#self.driver = webdriver.Chrome(options=chrome_options, service=service)
 
-			# self.driver = webdriver.Chrome(options=chrome_options)
+			self.driver = webdriver.Chrome(options=chrome_options)
 		else:
 			self.driver = webdriver.Chrome()
 		self.driver.get("http://localhost:3000")

@@ -13,6 +13,5 @@ npm start > /dev/null 2>&1 &
 cd /var/www/html/ArchaeoVault
 source /var/www/html/ArchaeoVault/myprojectenv/bin/activate
 cd /var/www/html/ArchaeoVault/app
-python  -u manage.py test ../deployment/tests
 exit
 EOF

@@ -32,7 +32,7 @@ class test_UAT_userstory19(unittest.TestCase):
 			self.kill_chrome_processes()
 			chromedriver_autoinstaller.install()
 			chrome_options = webdriver.ChromeOptions()
-			raise ValueError('$$$$$$$$$$$' + chrome_options.userDataDir)
+			raise ValueError('$$$$$$$$$$$' + chrome_options.user_data_dir)
 			chrome_options.add_argument("--headless=new") # for Chrome >= 109
 			
 			chrome_options.add_argument("--no-sandbox")
@@ -51,7 +51,6 @@ class test_UAT_userstory19(unittest.TestCase):
 			#self.driver = webdriver.Chrome(service=s, options=chrome_options)
 			self.driver = webdriver.Chrome(options=chrome_options)
 		else:
-			raise ValueError('$$$$$$$$$$$' + chrome_options.userDataDir)
 			self.driver = webdriver.Chrome()
 		self.driver.get("https://www.python.org")
 		login_page_button = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.LINK_TEXT, "Login")))

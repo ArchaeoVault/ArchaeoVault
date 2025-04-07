@@ -77,6 +77,8 @@ pipeline {
                 //sh '/usr/bin/chromedriver --version'
                 //sh 'ls -l /usr/bin/chromedriver'
 
+                sh 'pkill google-chrome'
+                sh 'pkill chromedriver'
 
                 sh 'chmod +x ./deployment/run_dev_servers.sh'
                 sh './deployment/run_dev_servers.sh'

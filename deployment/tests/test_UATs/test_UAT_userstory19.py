@@ -12,11 +12,21 @@ import chromedriver_autoinstaller
 import os
 import tempfile
 import shutil
+import subprocess
 
 class test_UAT_userstory19(unittest.TestCase):
+	def kill_chrome_processes(self):	
+		try:
+            # This works on most Unix systems
+			subprocess.run(["pkill", "-f", "chrome"], check=False)
+			subprocess.run(["pkill", "-f", "chromium"], check=False)
+		except Exception as e:
+			print(f"[Warning] Failed to kill chrome processes: {e}")
+
 	def setUp(self):
 		env = os.environ.get('DJANGO_ENV', 'None')
 		if env == 'production':
+			self.kill_chrome_processes()
 			chromedriver_autoinstaller.install()
 			chrome_options = webdriver.ChromeOptions()
 			chrome_options.add_argument("--headless=new") # for Chrome >= 109

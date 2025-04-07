@@ -140,6 +140,7 @@ class test_UAT_userstory19(unittest.TestCase):
 			validation_message = emailBox.get_attribute("validationMessage")
 		except:
 			print("No validation message found.")
+		self.driver.quit()
 		assert 1==2
 		shutil.rmtree(user_data_dir)
 		self.driver.quit()

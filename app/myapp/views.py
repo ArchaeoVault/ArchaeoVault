@@ -159,7 +159,7 @@ def all_artifacts_view(request):
 
     artifact_data = [
         {
-            'address': artifact.address.id,
+            'address': artifact.address.id, #removed .id
             'owner': artifact.owner,
             'date_collected': artifact.date_collected.isoformat(),
             'catalog_number': artifact.catalog_number,

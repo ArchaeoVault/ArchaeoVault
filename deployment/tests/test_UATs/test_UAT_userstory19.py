@@ -52,7 +52,7 @@ class test_UAT_userstory19(unittest.TestCase):
 			self.driver = webdriver.Chrome(options=chrome_options)
 		else:
 			self.driver = webdriver.Chrome()
-		self.driver.get("https://www.python.org")
+		self.driver.get("http://localhost:3000")
 		login_page_button = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.LINK_TEXT, "Login")))
 		login_page_button.click()
 

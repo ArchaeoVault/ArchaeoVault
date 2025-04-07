@@ -207,6 +207,7 @@ class test_UAT_userstory19(unittest.TestCase):
 
 	def tearDown(self):
 		self.driver.close()
+		self.driver.quit()
 		shutil.rmtree(self.user_data_dir, ignore_errors=True)
 
 if __name__ == "__main__":

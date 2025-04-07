@@ -10,7 +10,7 @@ sys.path.append("..")
 
 
 sys.path.append("../../deployment/tests/UAT_tests")
-def load_tests(loader, standard_tests, pattern):
+"""def load_tests(loader, standard_tests, pattern):
     test_suite = unittest.TestSuite()
     test_suite.addTests(loader.loadTestsFromModule(test_create_user))
     test_suite.addTests(loader.loadTestsFromModule(test_artifact_model))
@@ -18,6 +18,7 @@ def load_tests(loader, standard_tests, pattern):
     test_suite.addTests(loader.loadTestsFromModule(test_resend_verification))
 
     return test_suite
+"""
 
-if __name__ == '__main__':
-    unittest.main()
+#if __name__ == '__main__':
+#    unittest.main()

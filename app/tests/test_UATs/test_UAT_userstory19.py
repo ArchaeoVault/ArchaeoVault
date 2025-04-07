@@ -6,10 +6,20 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.chrome.options import Options
+from django.test import LiveServerTestCase
+from django.contrib.auth.models import User
 import os
 
-class test_UAT_userstory19(unittest.TestCase):
+class TestUATUserstory19(LiveServerTestCase):
+	@classmethod
+	def setUpTestData(cls):
+		print("RUNNING setUpTestData")
+		cls.user = User.objects.create_user(
+		username='temp@email.com', password='password123'
+		)
+
 	def setUp(self):
+		print("RUNNING setup")
 		env = os.environ.get('DJANGO_ENV', 'None')
 		if env == 'production':
 			chrome_options = Options()
@@ -17,11 +27,13 @@ class test_UAT_userstory19(unittest.TestCase):
 			self.driver = webdriver.Chrome(options=chrome_options)
 		else:
 			self.driver = webdriver.Chrome()
-		self.driver.get("http://localhost:3000")
+		self.driver.get(self.live_server_url)
 		login_page_button = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.LINK_TEXT, "Login")))
 		login_page_button.click()
+		self.user = User.objects.create_user(
+		username='temp@email.com', password='password123'
+		)
 
-	"""
 	def test_valid_email_with_valid_password(self):
 		self.driver.implicitly_wait(1)
 		emailBox = self.driver.find_element(by = By.XPATH, value = "//input[@placeholder='Email']")
@@ -37,9 +49,9 @@ class test_UAT_userstory19(unittest.TestCase):
 			alert.accept()
 		except TimeoutException:
 			assert False
-		assert message == "Login successful!"
+		self.assertEqual(message, "Login successful!", f"{message} does not equal login successful")
 
-	
+	"""
 	def test_valid_email_with_invalid_password(self):
 		self.driver.implicitly_wait(1)
 		emailBox = self.driver.find_element(by = By.XPATH, value = "//input[@placeholder='Email']")
@@ -172,6 +184,3 @@ class test_UAT_userstory19(unittest.TestCase):
 
 	def tearDown(self):
 		self.driver.close()
-
-if __name__ == "__main__":
-	unittest.main()

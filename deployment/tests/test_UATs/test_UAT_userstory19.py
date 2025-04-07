@@ -10,7 +10,7 @@ from pyvirtualdisplay import Display
 from selenium.webdriver.chrome.service import Service
 import chromedriver_autoinstaller
 import os
-import subprocess
+import tempfile
 
 class test_UAT_userstory19(unittest.TestCase):
 	def setUp(self):
@@ -24,6 +24,8 @@ class test_UAT_userstory19(unittest.TestCase):
 			chrome_options.add_argument("--disable-blink-features=AutomationControlled")
 			chrome_options.add_argument("--disable-dev-shm-usage")
 			chrome_options.add_argument("--disable-gpu")
+			temp_dir = tempfile.mkdtemp()
+			chrome_options.add_argument(f"--user-data-dir={temp_dir}")
 
 			chrome_options.binary_location = "/usr/bin/google-chrome"
 			#CHROMEDRIVER_PATH = '/usr/local/bin/chromedriver'

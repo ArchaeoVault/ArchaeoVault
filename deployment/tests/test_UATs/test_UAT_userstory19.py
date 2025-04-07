@@ -14,18 +14,11 @@ import subprocess
 
 class test_UAT_userstory19(unittest.TestCase):
 	def setUp(self):
-		print("sub process")
-		print(result.stdout)
-		print(result.stderr)
 		env = os.environ.get('DJANGO_ENV', 'None')
 		if env == 'production':
 			chromedriver_autoinstaller.install()
 			chrome_options = webdriver.ChromeOptions()
 			chrome_options.add_argument("--headless=new") # for Chrome >= 109
-			
-			
-
-			result = subprocess.run(["/usr/bin/google-chrome", "--version"], capture_output=True, text=True)
 			
 			chrome_options.add_argument("--no-sandbox")
 			chrome_options.add_argument("--disable-blink-features=AutomationControlled")
@@ -33,14 +26,14 @@ class test_UAT_userstory19(unittest.TestCase):
 			chrome_options.add_argument("--disable-gpu")
 
 			chrome_options.binary_location = "/usr/bin/google-chrome"
-			CHROMEDRIVER_PATH = '/usr/local/bin/chromedriver'
-			s = Service(CHROMEDRIVER_PATH)
+			#CHROMEDRIVER_PATH = '/usr/local/bin/chromedriver'
+			#s = Service(CHROMEDRIVER_PATH)
 			#self.driver = webdriver.Chrome(options=chrome_options, service=service)
 
-			self.driver = webdriver.Chrome(service=s, options=chrome_options)
+			self.driver = webdriver.Chrome(options=chrome_options)
 		else:
 			self.driver = webdriver.Chrome()
-		self.driver.get("http://localhost:3000")
+		self.driver.get("https://www.python.org")
 		login_page_button = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.LINK_TEXT, "Login")))
 		login_page_button.click()
 

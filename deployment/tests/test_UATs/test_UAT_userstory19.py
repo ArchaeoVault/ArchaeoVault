@@ -40,11 +40,11 @@ class test_UAT_userstory19(unittest.TestCase):
 			#chrome_options.add_argument(f"--user-data-dir={self.user_data_dir}")
 
 			chrome_options.binary_location = "/usr/bin/google-chrome"
-			#CHROMEDRIVER_PATH = '/usr/local/bin/chromedriver'
-			#s = Service(CHROMEDRIVER_PATH)
+			CHROMEDRIVER_PATH = '/usr/bin/chromedriver'
+			s = Service(CHROMEDRIVER_PATH)
 			#self.driver = webdriver.Chrome(options=chrome_options, service=service)
 
-			self.driver = webdriver.Chrome(options=chrome_options)
+			self.driver = webdriver.Chrome(service=s, options=chrome_options)
 		else:
 			self.driver = webdriver.Chrome()
 		self.driver.get("https://www.python.org")

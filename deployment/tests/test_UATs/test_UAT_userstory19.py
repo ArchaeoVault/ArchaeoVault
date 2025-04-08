@@ -12,6 +12,7 @@ import chromedriver_autoinstaller
 import os
 import tempfile
 import shutil
+import time
 import subprocess
 
 
@@ -52,6 +53,7 @@ class test_UAT_userstory19(unittest.TestCase):
 			self.driver = webdriver.Chrome(options=chrome_options)
 		else:
 			self.driver = webdriver.Chrome()
+		time.sleep(1000)
 		self.driver.get("http://152.42.155.23:3000/")
 		login_page_button = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.LINK_TEXT, "Login")))
 		login_page_button.click()

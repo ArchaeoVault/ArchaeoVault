@@ -14,10 +14,10 @@ class test_artifact_model(TestCase):
         # address
         self.address = address.objects.create(
             id=1,
-            street_number="123",
-            street_name="Main St",
+            streetnumber="123",
+            streetname="Main St",
             state="Massachusetts",
-            county_or_city="Middlesex",
+            countyorcity="Middlesex",
             site="Site A"
         )
 
@@ -36,13 +36,13 @@ class test_artifact_model(TestCase):
         # gridnames
         self.gridnames = gridnames.objects.create(
             id=1,
-            type_name="Grid A"
+            typename="Grid A"
         )
 
         # permissions
         self.permissions = permissions.objects.create(
-            numVal=1,
-            role="Admin"
+            numval=1,
+            givenrole="Admin"
         )
 
         # users
@@ -56,31 +56,31 @@ class test_artifact_model(TestCase):
         # organicinorganic
         self.organicinorganic = organicinorganic.objects.create(
             id=1,
-            type_name="Organic"
+            type="Organic"
         )
 
         # speciestype
         self.speciestype = speciestype.objects.create(
             id=1,
-            type_name="Canine"
+            typename="Canine"
         )
 
         # materialtype
         self.materialtype = materialtype.objects.create(
             id=1,
-            type_name="Metal"
+            typename="Metal"
         )
 
         # formtype
         self.formtype = formtype.objects.create(
             id=1,
-            type_name="Vessel"
+            typename="Vessel"
         )
 
         # conservationtype
         self.conservationtype = conservationtype.objects.create(
             id=1,
-            type_name="Good"
+            typename="Good"
         )
 
         # Artifact (your_table)
@@ -100,7 +100,7 @@ class test_artifact_model(TestCase):
             species=self.speciestype,
             material_of_manufacture=self.materialtype,
             form_object_type=self.formtype,
-            quantitiy="5",
+            quantity="5",
             measurement_diameter=12.5,
             length=25.0,
             width=15.0,
@@ -120,7 +120,7 @@ class test_artifact_model(TestCase):
             latitude="-71.2",
             distance_from_datum="10m",
             found_in_grid=self.gridnames,
-            exacavator="Archeologist Y",
+            excavator="Archeologist Y",
             notes="Some notes",
             images="Image (add column for each additional image)",
             data_double_checked_by="Checker Z",
@@ -129,7 +129,8 @@ class test_artifact_model(TestCase):
             sources_for_id="Source A",
             location="Room B",
             storage_location="Box 1",
-            uhlflages="None"
+            uhlflages="None",
+            id = 1
         )
 
 
@@ -137,25 +138,26 @@ class test_artifact_model(TestCase):
     def test_all_artifacts_view_success(self):
         # Ensure the endpoint returns status code 200
         response = self.client.get(reverse('all_artifacts_view'))
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 200, "Failed to load page")
 
     
 
     def test_artifact_list_content(self):
         # Ensure the view returns the correct JSON data
         response = self.client.get(reverse('all_artifacts_view'))
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response['Content-Type'], 'application/json')
+        self.assertEqual(response.status_code, 200, "Failed to load page")
+        self.assertEqual(response['Content-Type'], 'application/json', "request did not load a json file")
 
         # Parse JSON response
         data = response.json()
-        self.assertIn('artifacts', data)
-        self.assertEqual(len(data['artifacts']), 1)  # We created 1 artifacts in setUp()
+        self.assertIn('artifacts', data, "json does not contain artifacts")
+
+        self.assertEqual(len(data['artifacts']), 1, f"Number of artifacts is not 1, instead there are {len(data['artifacts'])} artifacts")  # We created 1 artifacts in setUp()
 
         # Check the content of the first artefact
         artifact_1 = data['artifacts'][0]
-        self.assertEqual(artifact_1['object_name'], "Artifact Sample")
-        self.assertEqual(artifact_1['owner'], "John Doe")
+        self.assertEqual(artifact_1['object_name'], "Artifact Sample", f"Artifact name {artifact_1['object_name']} does not match expected artifact name Artifact Sample")
+        self.assertEqual(artifact_1['owner'], "John Doe", f"Owner name {artifact_1['owner']} does not match expected owner name John Doe")
     
 
 
@@ -163,10 +165,12 @@ class test_artifact_model(TestCase):
         # Clean up the database and test empty response
         your_table.objects.all().delete()
         response = self.client.get(reverse('all_artifacts_view'))
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 200, "Failed to load page")
+        self.assertEqual(response['Content-Type'], 'application/json', "request did not load a json file")
+
         data = response.json()
-        self.assertIn('artifacts', data)
-        self.assertEqual(len(data['artifacts']), 0)  # No artefacts in the database
+        self.assertIn('artifacts', data, "json does not contain artifacts")
+        self.assertEqual(len(data['artifacts']), 0, f"Number of artifacts is not 1, instead there are {len(data['artifacts'])} artifacts")  # No artefacts in the database
 
 
     

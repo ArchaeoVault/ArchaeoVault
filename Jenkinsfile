@@ -71,7 +71,6 @@ pipeline {
 
                 // Start front end and check connection
                 sh './app/frontend npm start -- --host 0.0.0.0:3000 > /dev/null 2>&1 &'
-                // sh 'curl "http://localhost:3000"'
 
                 //Start virutal environment
                 sh 'python3 -m venv env'
@@ -83,6 +82,7 @@ pipeline {
                 sh 'chmod +x ./app/manage.py'
                 sh 'env/bin/python ./app/manage.py runserver > /dev/null 2>&1 &'
                 // sh 'curl "http://127.0.0.1:8000/"'
+                sh 'curl "http://localhost:3000"'
 
                 //Run tests
                 sh 'env/bin/python ./app/manage.py test ./deployment/tests'

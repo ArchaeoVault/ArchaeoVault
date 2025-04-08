@@ -67,10 +67,10 @@ pipeline {
                 */
                 
                 //sh 'chmod +x ./deployment/run_dev_servers.sh'
-                //sh './deployment/run_dev_servers.sh'
+                sh './deployment/run_dev_servers.sh'
 
                 // Start front end and check connection
-                sh './app/frontend/src npm start --host=0.0.0.0 --port=3000 > /dev/null 2>&1 &'
+                // sh './app/frontend/src npm start --host=0.0.0.0 --port=3000 > /dev/null 2>&1 &'
 
                 //Start virutal environment
                 sh 'python3 -m venv env'
@@ -79,8 +79,8 @@ pipeline {
                 sh 'env/bin/pip install -r requirements.txt'
 
                 //Run back end server and test connection
-                sh 'chmod +x ./app/manage.py'
-                sh 'env/bin/python ./app/manage.py runserver > /dev/null 2>&1 &'
+                // sh 'chmod +x ./app/manage.py'
+                // sh 'env/bin/python ./app/manage.py runserver > /dev/null 2>&1 &'
                 // sh 'curl "http://127.0.0.1:8000/"'
                 sh 'curl "http://localhost:3000"'
 

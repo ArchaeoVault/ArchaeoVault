@@ -8,7 +8,7 @@ python manage.py runserver > /dev/null 2>&1 &
 deactivate
 
 cd /var/www/html/ArchaeoVault/app/frontend
-npm start -- --host 0.0.0.0 > /dev/null 2>&1 &
+npm start --host=0.0.0.0 --port=3000 > /dev/null 2>&1 &
 
 cd /var/www/html/ArchaeoVault
 source /var/www/html/ArchaeoVault/myprojectenv/bin/activate

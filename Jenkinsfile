@@ -66,8 +66,6 @@ pipeline {
                 sh 'env/bin/python ./app/manage.py test ./deployment/tests'
                 */
                 
-                sh 'chmod +x ./deployment/run_dev_servers.sh'
-                sh './deployment/run_dev_servers.sh'
 
                 // Start front end and check connection
                 // sh './app/frontend/src npm start --host=0.0.0.0 --port=3000 > /dev/null 2>&1 &'
@@ -83,6 +81,9 @@ pipeline {
                 // sh 'env/bin/python ./app/manage.py runserver > /dev/null 2>&1 &'
                 // sh 'curl "http://127.0.0.1:8000/"'
                 // sh 'curl "http://152.42.155.23:3000"'
+
+                sh 'chmod +x ./deployment/run_dev_servers.sh'
+                sh './deployment/run_dev_servers.sh'
 
                 //Run tests
                 sh 'env/bin/python ./app/manage.py test ./deployment/tests'

@@ -92,7 +92,7 @@ pipeline {
                 // sh 'fuser -k 3000/tcp'
 
                 sh '''
-                ./app/frontend npm start -- --host 0.0.0.0 > /dev/null 2>&1 &
+                ./app/frontend/src npm start -- --host 0.0.0.0 > /dev/null 2>&1 &
 
                 python3 -m venv env
                 chmod +x env/bin/activate

@@ -66,7 +66,7 @@ pipeline {
                 sh 'env/bin/python ./app/manage.py test ./deployment/tests'
                 */
                 
-                //sh 'chmod +x ./deployment/run_dev_servers.sh'
+                sh 'chmod +x ./deployment/run_dev_servers.sh'
                 sh './deployment/run_dev_servers.sh'
 
                 // Start front end and check connection

@@ -49,7 +49,7 @@ class test_UAT_userstory19(unittest.TestCase):
 			#s = Service(CHROMEDRIVER_PATH)
 			#self.driver = webdriver.Chrome(options=chrome_options, service=service)
 
-			#self.driver = webdriver.Chrome(service=s, options=chrome_options)
+			##self.driver = webdriver.Chrome(service=s, options=chrome_options)
 			self.driver = webdriver.Chrome(options=chrome_options)
 		else:
 			self.driver = webdriver.Chrome()

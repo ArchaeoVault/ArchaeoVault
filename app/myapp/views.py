@@ -137,12 +137,12 @@ def create_user_view(request):
 
             # Create the user
             print('Creating user')
-            permission = permissions.objects.create(numVal = 4, role = 'GeneralPublic')
+            permission = permissions.objects.get(numval = 4, givenrole = 'GeneralPublic')
             user = users.objects.create(
                 email=email,
                 upassword=password,
-                upermission = permission,
-                activated = False
+                activated = False,
+                upermission = permission
             )
             print('after creating user')
             print(user.email)
@@ -189,7 +189,8 @@ def all_artifacts_view(request):
             'sivilich_diameter': artifact.sivilich_diameter,
             'deformation_index': artifact.deformation_index,
             'conservation_condition': artifact.conservation_condition.id,
-            'cataloguer_name': artifact.cataloguer_name.email,
+            'cataloguer_name': artifact.cataloguer_name,
+            #'cataloguer_name': artifact.cataloguer_name.email,
             'date_catalogued': artifact.date_catalogued.isoformat(),
             'location_in_repository': artifact.location_in_repository,
             'platlot': artifact.platlot,

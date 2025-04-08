@@ -10,7 +10,7 @@ class LoginUserTests(TestCase):
 
     def setUp(self):
         
-        permission = permissions.objects.create(numVal = 4, role = 'GeneralPublic')
+        permission = permissions.objects.create(numval = 4, givenrole = 'GeneralPublic')
         
         self.user = users.objects.create(
             email = 'temp@email.com',
@@ -23,7 +23,6 @@ class LoginUserTests(TestCase):
               
         response = self.client.post(
             reverse('login_view'),
-            #data = json.dumps({'first_name':'test','last_name':'user','email': 'temp@email.com','password': 'password123', 'confirm_password':'password123'}),
             data = json.dumps({'email':'temp@email.com','password':'password123'}),
             content_type='application/json'
             )
@@ -33,7 +32,6 @@ class LoginUserTests(TestCase):
     def test_login_user_missing_value(self):        
         response = self.client.post(
             reverse('login_view'),
-            #data = json.dumps({'first_name':'','last_name':'','email': '','password': '','confirm_password':''}),
             data = json.dumps({'email':'','password':''}),
             content_type='application/json'
             )
@@ -42,7 +40,6 @@ class LoginUserTests(TestCase):
     def test_mismatch_password(self):        
         response = self.client.post(
             reverse('login_view'),
-            #data = ({'first_name':'test','last_name':'user','email':'temp@email.com','password':'password123','confirm_password':'password12'}),
             data = json.dumps({'email':'temp@email.com','password':'password1234'}),
             content_type='application/json'
             )
@@ -51,7 +48,6 @@ class LoginUserTests(TestCase):
     def test_login_user_with_incorrect_email(self):        
         response = self.client.post(
             reverse('login_view'),
-            #data = json.dumps({'first_name':'test','last_name':'user','email': 'temp@email.com','password': 'password123','confirm_password':'password123'}),
             data = json.dumps({'email':'temp@email.con','password':'password123'}),
             content_type='application/json'
             )

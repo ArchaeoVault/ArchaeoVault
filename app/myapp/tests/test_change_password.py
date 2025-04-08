@@ -9,7 +9,7 @@ import json
 class test_change_password(TestCase):
 
     def setUp(self):
-        permission = permissions.objects.create(numVal = 4, role = 'GeneralPublic')
+        permission = permissions.objects.create(numval = 4, givenrole = 'GeneralPublic')
         
         self.user = users.objects.create(
             email = 'temp@email.com',

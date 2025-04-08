@@ -70,7 +70,7 @@ pipeline {
                 //sh './deployment/run_dev_servers.sh'
 
                 // Start front end and check connection
-                sh './app/frontend npm start -- --host 0.0.0.0:3000 > /dev/null 2>&1 &'
+                sh './app/frontend/src npm start > /dev/null 2>&1 &'
 
                 //Start virutal environment
                 sh 'python3 -m venv env'

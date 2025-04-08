@@ -41,8 +41,8 @@ class test_artifact_model(TestCase):
 
         # permissions
         self.permissions = permissions.objects.create(
-            numVal=1,
-            role="Admin"
+            numval=1,
+            givenrole="Admin"
         )
 
         # users
@@ -129,7 +129,8 @@ class test_artifact_model(TestCase):
             sources_for_id="Source A",
             location="Room B",
             storage_location="Box 1",
-            uhlflages="None"
+            uhlflages="None",
+            id = 1
         )
 
 

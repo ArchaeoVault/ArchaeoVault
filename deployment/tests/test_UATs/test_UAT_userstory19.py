@@ -33,8 +33,9 @@ class test_UAT_userstory19(unittest.TestCase):
 			chromedriver_autoinstaller.install()
 			chrome_options = webdriver.ChromeOptions()
 			# raise ValueError('$$$$$$$$$$$' + chrome_options.user_data_dir)
-			chrome_options.add_argument("--headless=new") # for Chrome >= 109
+			#chrome_options.add_argument("--headless=new") # for Chrome >= 109
 			
+			chrome_options.add_argument("headless")
 			chrome_options.add_argument("--no-sandbox")
 			chrome_options.add_argument("--disable-blink-features=AutomationControlled")
 			chrome_options.add_argument("--disable-dev-shm-usage")

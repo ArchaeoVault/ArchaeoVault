@@ -70,26 +70,47 @@ pipeline {
                 //sh './deployment/run_dev_servers.sh'
 
                 //Start front end and check connection
-                sh './app/frontend npm start -- --host 0.0.0.0 > /dev/null 2>&1 &'
-                sh 'curl "http://localhost:3000"'
+                // sh './app/frontend npm start -- --host 0.0.0.0 > /dev/null 2>&1 &'
+                // sh 'curl "http://localhost:3000"'
 
-                //Start virutal environment
-                sh 'python3 -m venv env'
-                sh 'chmod +x env/bin/activate'
-                sh  '. env/bin/activate'
-                sh 'env/bin/pip install -r requirements.txt'
+                // //Start virutal environment
+                // sh 'python3 -m venv env'
+                // sh 'chmod +x env/bin/activate'
+                // sh  '. env/bin/activate'
+                // sh 'env/bin/pip install -r requirements.txt'
 
-                //Run back end server and test connection
-                sh 'chmod +x ./app/manage.py'
-                sh 'env/bin/python ./app/manage.py runserver > /dev/null 2>&1 &'
-                sh 'curl "http://127.0.0.1:8000/"'
+                // //Run back end server and test connection
+                // sh 'chmod +x ./app/manage.py'
+                // sh 'env/bin/python ./app/manage.py runserver > /dev/null 2>&1 &'
+                // sh 'curl "http://127.0.0.1:8000/"'
 
-                //Run tests
-                sh 'env/bin/python ./app/manage.py test ./deployment/tests'
+                // //Run tests
+                // sh 'env/bin/python ./app/manage.py test ./deployment/tests'
 
-                //Kill servers
-                sh 'fuser -k 8000/tcp'
-                sh 'fuser -k 3000/tcp'
+                // //Kill servers
+                // sh 'fuser -k 8000/tcp'
+                // sh 'fuser -k 3000/tcp'
+
+                sh '''
+                ./app/frontend npm start -- --host 0.0.0.0 > /dev/null 2>&1 &
+                curl "http://localhost:3000"
+
+                python3 -m venv env
+                chmod +x env/bin/activate
+                . env/bin/activate
+                env/bin/pip install -r requirements.txt
+
+                chmod +x ./app/manage.py
+                env/bin/python ./app/manage.py runserver > /dev/null 2>&1 &
+                curl "http://127.0.0.1:8000/"
+
+                env/bin/python ./app/manage.py test ./deployment/tests
+
+                fuser -k 8000/tcp
+                fuser -k 3000/tcp
+                '''
+
+
             }
         }
 

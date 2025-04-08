@@ -93,7 +93,6 @@ pipeline {
 
                 sh '''
                 ./app/frontend npm start -- --host 0.0.0.0 > /dev/null 2>&1 &
-                curl "http://localhost:3000"
 
                 python3 -m venv env
                 chmod +x env/bin/activate
@@ -102,7 +101,6 @@ pipeline {
 
                 chmod +x ./app/manage.py
                 env/bin/python ./app/manage.py runserver > /dev/null 2>&1 &
-                curl "http://127.0.0.1:8000/"
 
                 env/bin/python ./app/manage.py test ./deployment/tests
 

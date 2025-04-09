@@ -81,6 +81,7 @@ pipeline {
             
         }
         always {
+            
             sh 'fuser -k 8000/tcp || true'
             sh 'fuser -k 3000/tcp || true'
             sh 'env/bin/python ./deployment/tests testTearDown.py'

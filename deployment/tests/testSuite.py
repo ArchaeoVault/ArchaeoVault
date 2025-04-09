@@ -2,7 +2,7 @@ import unittest
 import sys
 import os
 env = os.environ.get('DJANGO_ENV', 'None')
-if env == 'selenium':
+if env == 'production':
     sys.path.append(os.path.abspath("app/myapp/tests"))
 else:
     sys.path.append("myapp/tests")

@@ -34,37 +34,38 @@ import json
 import os
 
 def login_view(request):
-    print(request.body)
+    # print(request.body)
     if request.method == 'POST':
         try:
             # Parse JSON body manually since it's being sent as JSON
             data = json.loads(request.body)
             email = data.get('email')
             password = data.get('password')
+            print('Checking all fields are filled')
             if not email or not password:
                 return JsonResponse({"status": "error", "message": "Email and password are required."}, status=400)
 
             # Try to get the user by email
+
             try:
                 # Get user by email
-                user = User.objects.get(email=email)
+                user = users.objects.get(email=email)
 
                 # Now authenticate using the user's username and password
-                user = authenticate(request, username=user.username, password=password)
-
+                if password != user.upassword:  # Compare hashed password
+                    return JsonResponse({'status':'error','message':'Passwords do not match'}, status = 400)
+            
                 if user is not None:
                     login(request, user)
                     return JsonResponse({
                         "status": "ok",
                         "user": {
-                            "first_name": user.first_name,
-                            "last_name": user.last_name,
                             "email": user.email
                         }
                     }, status=200)
                 else:
                     return JsonResponse({"status": "error", "message": "Invalid credentials"}, status=400)
-            except User.DoesNotExist:
+            except users.DoesNotExist:
                 return JsonResponse({"status": "error", "message": "Invalid credentials"}, status=400)
 
         except json.JSONDecodeError:
@@ -113,35 +114,38 @@ def create_user_view(request):
         try:
             # Parsing the incoming JSON data
             data = json.loads(request.body)
-
-            first_name = data.get('first_name')
-            last_name = data.get('last_name')
             email = data.get('email')
             password = data.get('password')
             confirm_password = data.get('confirm_password')
 
             # Validation logic
-            if not all([first_name, last_name, email, password, confirm_password]):
+            print('checking if all fields filled')
+            if not all([email, password,confirm_password]):
                 return JsonResponse({'error': 'All fields are required'}, status=400)
+            print('checking if password match')
             if password != confirm_password:
                 return JsonResponse({'error': 'Passwords do not match'}, status=400)
-            if User.objects.filter(username=email).exists():
-                return JsonResponse({'error': 'Usa with this email already exists'}, status=400)
-
+            print('checking if object already exists')
+            if users.objects.filter(email=email).exists():
+                print('object already exists')
+                return JsonResponse({'error': 'User with this email already exists'}, status=400)
+            print('validating email')
             try:
                 validate_email(email)
             except ValidationError:
                 return JsonResponse({'error': 'Invalid email address'}, status=400)
 
             # Create the user
-            user = User.objects.create_user(
-                username=email,
-                first_name=first_name,
-                last_name=last_name,
+            print('Creating user')
+            permission = permissions.objects.get(numval = 4, givenrole = 'GeneralPublic')
+            user = users.objects.create(
                 email=email,
-                password=password
+                upassword=password,
+                activated = False,
+                upermission = permission
             )
-            print(user.username)
+            print('after creating user')
+            print(user.email)
             return JsonResponse({'message': 'User created successfully'}, status=200)
 
         except json.JSONDecodeError:
@@ -185,7 +189,8 @@ def all_artifacts_view(request):
             'sivilich_diameter': artifact.sivilich_diameter,
             'deformation_index': artifact.deformation_index,
             'conservation_condition': artifact.conservation_condition.id,
-            'cataloguer_name': artifact.cataloguer_name.email,
+            'cataloguer_name': artifact.cataloguer_name,
+            #'cataloguer_name': artifact.cataloguer_name.email,
             'date_catalogued': artifact.date_catalogued.isoformat(),
             'location_in_repository': artifact.location_in_repository,
             'platlot': artifact.platlot,

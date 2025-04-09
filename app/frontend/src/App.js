@@ -12,7 +12,7 @@ import Artifacts2 from './Artifacts2';
 import AboutUs from "./AboutUs";
 import Contact from "./Contact";
 import ListPage from "./list";
-import AdminPage from "./AdminPage"
+import AdminPage from "./AdminPage";
 
 const App = () => {
   const [showLogin, setShowLogin] = useState(false);
@@ -52,7 +52,7 @@ const App = () => {
         <Route path="/signup" element={<Signup />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset/:uidb64/:token" element={<ResetPassword />} />
-        
+        <Route path="/login" element={<Login />} />
         {/* Private routes with authentication check */}
         <Route path="/newport-artifacts" element={<PrivateRoute element={<NewportArtifacts />} />} />
         <Route path="/portsmouth-artifacts" element={<PrivateRoute element={<PortsmouthArtifacts />} />} />

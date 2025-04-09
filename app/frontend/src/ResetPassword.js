@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Navigate } from 'react-router-dom';
 import './ResetPassword.css';
 import Header from "./Header";
 import Footer from "./Footer";
@@ -15,7 +15,7 @@ const ResetPassword = () => {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [csrfToken, setCsrfToken] = useState('');
-
+  const [redirectToLogin, setRedirectToLogin] = useState('');
   useEffect(() => {
     const fetchCsrfToken = async () => {
       try {
@@ -65,7 +65,7 @@ const ResetPassword = () => {
     
   
     getEmailFromToken();
-  }, []);
+  }, [csrfToken, token, uidb64]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -83,11 +83,16 @@ const ResetPassword = () => {
     });
     if (response.ok) {
       setMessage('Your password has been reset successfully.');
+      setRedirectToLogin(true);
     } else {
-      setMessage('Failed to reset password.');
-    }
+      const data = await response.json();
+      setMessage(data.error || 'Failed to reset password.');
+      }
   };
 
+  if (redirectToLogin) {
+    return <Navigate to="/login" />;
+  }
   return (
     <>
       <Header />

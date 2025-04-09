@@ -248,8 +248,7 @@ def resend_verification_view(request):
                 to_emails=user.email,
                 subject='Welcome to ArchaeoVault!',
                 html_content=(
-                    f'<h2>Thank you for registering for ArchaeoVault, we really hope you enjoy!'
-                    f' Click on the link below to verify your email address.</h2>'
+                    f'<h2>Follow this link below to verify account and reset password.</h2>'
                     f'<a href="{verification_link}">Verify your email address</a>'
                 )
             )

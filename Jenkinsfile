@@ -12,6 +12,7 @@ pipeline {
         ARCHAEODB_PORT = credentials('ARCHAEODB_PORT')
         DJANGO_ALLOWED_HOST_1 = credentials('DJANGO_ALLOWED_HOST_1')
         DJANGO_ALLOWED_HOST_2 = credentials('DJANGO_ALLOWED_HOST_2')
+        DJANGO_ENV = credentials('DJANGO_ENV')
     }
     stages{ 
           
@@ -20,17 +21,39 @@ pipeline {
                 slackSend color: "warning", message: "Started `${env.JOB_NAME}#${env.BUILD_NUMBER}`\n"
             }
         }
-        stage('Test'){
+        // stage('Unit Tests'){
+        //     steps{
+        //         sh 'python3 -m venv env'
+        //         sh 'chmod +x env/bin/activate'
+        //         sh  '. env/bin/activate'
+        //         sh 'env/bin/pip install -r requirements.txt'
+        //         sh 'chmod +x ./app/manage.py'
+        //         sh 'env/bin/python ./app/manage.py test app/myapp/tests > test_results.log 2>&1'
+        //     }
+        // }
+        stage('Tests'){
             steps{
+
+                // Start front end and check connection
+                dir("app/frontend")
+                {
+                    sh 'npm start > /dev/null 2>&1 &'
+                }
+                
+
+                //Start virutal environment
                 sh 'python3 -m venv env'
                 sh 'chmod +x env/bin/activate'
                 sh  '. env/bin/activate'
                 sh 'env/bin/pip install -r requirements.txt'
+
+                //Run back end server
                 sh 'chmod +x ./app/manage.py'
-                sh 'env/bin/python ./app/manage.py test app/myapp/tests > test_results.log 2>&1'
+                sh 'env/bin/python ./app/manage.py runserver > /dev/null 2>&1 &'
+                
+                sh 'env/bin/python ./app/manage.py test ./deployment/tests'
             }
         }
-
         stage('Deploy'){
             when { branch 'main' }
             steps{
@@ -49,6 +72,7 @@ pipeline {
         }
 
         failure{
+            
             script{
                 def file_contents = readFile('test_results.log')
                 slackSend color: "danger", message: "Build failed :face_with_head_bandage: \n`${env.JOB_NAME}#${env.BUILD_NUMBER}` <${env.BUILD_URL}|Open in Jenkins>"
@@ -56,6 +80,13 @@ pipeline {
             }
             
         }
+        always {
+
+            sh 'fuser -k 8000/tcp || true'
+            sh 'fuser -k 3000/tcp || true'
+            
+        }
+        
     }
     
 

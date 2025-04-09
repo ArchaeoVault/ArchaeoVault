@@ -90,7 +90,8 @@ pipeline {
                 //sh 'chmod +x ./deployment/run_dev_servers.sh'
                 //sh './deployment/run_dev_servers.sh'
                 //Run tests
-                sh 'env/bin/python ./app/manage.py test ./deployment/tests > test_results.log 2>&1'
+                //sh 'env/bin/python ./app/manage.py test ./deployment/tests > test_results.log 2>&1'
+                sh 'env/bin/python ./app/manage.py test ./deployment/tests'
                 //sh './deployment/kill_servers.sh'
                 
 

@@ -41,7 +41,7 @@ class test_artifact_model(TestCase):
 
         # permissions
         self.permissions = permissions.objects.create(
-            numVal=1,
+            numval=1,
             givenrole="Admin"
         )
 

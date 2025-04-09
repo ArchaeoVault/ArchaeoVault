@@ -23,7 +23,7 @@ class test_UAT_userstory19(unittest.TestCase):
 
 	def setUp(self):
 		env = os.environ.get('DJANGO_ENV', 'None')
-		if env == 'selenium':
+		if env == 'production':
 			# Start virtual display
 			display = Display(visible=0, size=(1280, 800))
 			display.start()

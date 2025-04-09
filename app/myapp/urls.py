@@ -25,6 +25,7 @@ urlpatterns = [
     path('api/login/', views.login_view, name = 'login_view'),
     path('api/resend_verification',views.resend_verification_view, name = 'resend_verification_view'),
     path('activate/<uidb64>/<token>/', views.activate, name='activate'),
-    path('api/change_password', views.change_password_view, name = 'change_password_view'),
+    path('api/change_password/<uidb64>/<token>/', views.change_password_view, name = 'change_password_view'),
+    path('api/send_change_password_email', views.change_password_view, name = 'send_change_password_email_view'),
     path('api/get_csrf_token/', views.get_csrf_token, name = 'get_csrf_token')
 ]

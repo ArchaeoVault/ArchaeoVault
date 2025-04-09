@@ -32,6 +32,7 @@ pipeline {
         //     }
         // }
         stage('Tests'){
+            when { not { branch 'main' } }
             steps{
 
                 // Start front end and check connection

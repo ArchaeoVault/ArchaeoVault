@@ -68,7 +68,11 @@ pipeline {
                 
 
                 // Start front end and check connection
-                // sh './app/frontend/src npm start --host=0.0.0.0 --port=3000 > /dev/null 2>&1 &'
+                dir("app/frontend")
+                {
+                    sh 'npm start > /dev/null 2>&1 &'
+                }
+                
 
                 //Start virutal environment
                 sh 'python3 -m venv env'
@@ -78,15 +82,18 @@ pipeline {
 
                 //Run back end server and test connection
                 // sh 'chmod +x ./app/manage.py'
-                // sh 'env/bin/python ./app/manage.py runserver > /dev/null 2>&1 &'
+                sh 'env/bin/python ./app/manage.py runserver > /dev/null 2>&1 &'
+                
                 // sh 'curl "http://127.0.0.1:8000/"'
                 // sh 'curl "http://152.42.155.23:3000"'
 
-                sh 'chmod +x ./deployment/run_dev_servers.sh'
+                //sh 'chmod +x ./deployment/run_dev_servers.sh'
                 sh './deployment/run_dev_servers.sh'
                 //Run tests
                 sh 'env/bin/python ./app/manage.py test ./deployment/tests > test_results.log 2>&1'
-                sh './deployment/kill_servers.sh'
+                //sh './deployment/kill_servers.sh'
+                sh 'fuser -k 8000/tcp'
+                sh 'fuser -k 3000/tcp'
 
 
             }

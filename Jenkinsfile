@@ -124,8 +124,8 @@ pipeline {
             
         }
         always {
-            sh 'fuser -k 8000/tcp'
-            sh 'fuser -k 3000/tcp'
+            sh 'fuser -k 8000/tcp || true'
+            sh 'fuser -k 3000/tcp || true'
         }
         
     }

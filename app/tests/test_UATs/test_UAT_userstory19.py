@@ -7,16 +7,24 @@ from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.chrome.options import Options
 from django.test import LiveServerTestCase
+from django.test import TestCase, Client
 from django.contrib.auth.models import User
+from django.urls import reverse
+import json
 import os
 
-class TestUATUserstory19(LiveServerTestCase):
+class TestUATUserstory19(LiveServerTestCase,TestCase):
+	port = 8000
 	@classmethod
 	def setUpTestData(cls):
 		print("RUNNING setUpTestData")
 		cls.user = User.objects.create_user(
-		username='temp@email.com', password='password123'
+    	uemail="temp@email.com", password="password123"
 		)
+		cls.user.is_active = True
+		cls.user.save()
+
+
 
 	def setUp(self):
 		print("RUNNING setup")
@@ -27,12 +35,10 @@ class TestUATUserstory19(LiveServerTestCase):
 			self.driver = webdriver.Chrome(options=chrome_options)
 		else:
 			self.driver = webdriver.Chrome()
-		self.driver.get(self.live_server_url)
+		self.driver.get('http://localhost:3000')
+		print(self.live_server_url)
 		login_page_button = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.LINK_TEXT, "Login")))
 		login_page_button.click()
-		self.user = User.objects.create_user(
-		username='temp@email.com', password='password123'
-		)
 
 	def test_valid_email_with_valid_password(self):
 		self.driver.implicitly_wait(1)
@@ -40,6 +46,7 @@ class TestUATUserstory19(LiveServerTestCase):
 		passwordBox = self.driver.find_element(by = By.XPATH, value = "//input[@placeholder='Password']")
 		emailBox.send_keys("temp@email.com")
 		passwordBox.send_keys("password123")
+		print(User.objects.filter(username ='temp@email.com').exists())
 		submitButton = self.driver.find_element(By.XPATH, "//button[text()='Log In']")
 		submitButton.click()
 		try:

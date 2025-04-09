@@ -112,10 +112,14 @@ pipeline {
     }
     post{
         success{
+            sh 'fuser -k 8000/tcp'
+            sh 'fuser -k 3000/tcp'
             slackSend color: "good", message: "Build successful :man_dancing: `${env.JOB_NAME}#${env.BUILD_NUMBER}` <${env.BUILD_URL}|Open in Jenkins>"
         }
 
         failure{
+            sh 'fuser -k 8000/tcp'
+            sh 'fuser -k 3000/tcp'
             script{
                 def file_contents = readFile('test_results.log')
                 slackSend color: "danger", message: "Build failed :face_with_head_bandage: \n`${env.JOB_NAME}#${env.BUILD_NUMBER}` <${env.BUILD_URL}|Open in Jenkins>"
@@ -123,8 +127,7 @@ pipeline {
             }
             
         }
-        sh 'fuser -k 8000/tcp'
-        sh 'fuser -k 3000/tcp'
+        
     }
     
 

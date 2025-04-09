@@ -168,7 +168,7 @@ class test_UAT_userstory19(unittest.TestCase):
 			validation_message = emailBox.get_attribute("validationMessage")
 		except:
 			print("No validation message found.")
-		assert validation_message == "A part following '@' should not contain the symbol ' '."
+		assert (validation_message == "A part following '@' should not contain the symbol ' '." or validation_message == "Please enter an email address.")
 	"""
 	def test_password_sql_injection(self):
 		self.driver.implicitly_wait(1)

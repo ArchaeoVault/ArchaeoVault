@@ -92,8 +92,7 @@ pipeline {
                 //Run tests
                 sh 'env/bin/python ./app/manage.py test ./deployment/tests > test_results.log 2>&1'
                 //sh './deployment/kill_servers.sh'
-                sh 'fuser -k 8000/tcp'
-                sh 'fuser -k 3000/tcp'
+                
 
 
             }
@@ -124,6 +123,8 @@ pipeline {
             }
             
         }
+        sh 'fuser -k 8000/tcp'
+        sh 'fuser -k 3000/tcp'
     }
     
 

@@ -39,7 +39,7 @@ class test_UAT_userstory19(unittest.TestCase):
 			#chrome_options.add_argument("--disable-dev-shm-usage")
 			#chrome_options.add_argument("--disable-gpu")
 			#chrome_options.add_argument("--remote-debugging-port=9222")
-			#self.user_data_dir = tempfile.mkdtemp()
+			self.user_data_dir = tempfile.mkdtemp()
 			#chrome_options.add_argument(f"--user-data-dir={self.user_data_dir}")
 
 			#chrome_options.binary_location = "/usr/bin/google-chrome"
@@ -50,6 +50,7 @@ class test_UAT_userstory19(unittest.TestCase):
 			##self.driver = webdriver.Chrome(service=s, options=chrome_options)
 			#self.driver = webdriver.Chrome(options=chrome_options)
 			options = Options()
+			options.add_argument(f"--user-data-dir={self.user_data_dir}")
 			options.headless = True
 
 			# Start the browser

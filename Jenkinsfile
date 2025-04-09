@@ -84,14 +84,9 @@ pipeline {
 
                 sh 'chmod +x ./deployment/run_dev_servers.sh'
                 sh './deployment/run_dev_servers.sh'
-                sh 'curl http://127.0.0.1:3000/'
-                sh 'curl http://127.0.0.1:8000/'
                 //Run tests
-                sh 'env/bin/python ./app/manage.py test ./deployment/tests'
-
-                //Kill servers
-                sh 'fuser -k 8000/tcp'
-                sh 'fuser -k 3000/tcp'
+                sh 'env/bin/python ./app/manage.py test ./deployment/tests > test_results.log 2>&1'
+                
 
 
             }

@@ -1,8 +1,12 @@
 import unittest
 import sys
 import os
-#sys.path.append("myapp/tests")
-sys.path.append(os.path.abspath("app/myapp/tests"))
+env = os.environ.get('DJANGO_ENV', 'None')
+if env == 'selenium':
+    sys.path.append(os.path.abspath("app/myapp/tests"))
+else:
+    sys.path.append("myapp/tests")
+
 import test_create_user
 import test_artifact_model
 import test_change_password

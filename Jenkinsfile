@@ -33,39 +33,6 @@ pipeline {
         // }
         stage('Tests'){
             steps{
-                /*
-                sh 'python3 -m venv env'
-                sh 'chmod +x env/bin/activate'
-                sh  '. env/bin/activate'
-                sh 'export PYTHONPATH=$(pwd)/app'
-                sh 'env/bin/pip install -r requirements.txt'
-                sh 'chmod +x ./app/manage.py'
-                sh 'env/bin/python ./app/manage.py runserver > /dev/null 2>&1 &'
-                dir('app/frontend'){
-                    sh'pwd'
-                    sh 'npm start > /dev/null 2>&1 &'
-                } 
-                sh 'pwd'
-
-                // Wait for servers to be ready
-                sh '''
-                until curl --output /dev/null --silent --head --fail http://localhost:8000; do
-                    echo "Waiting for Django..."
-                    sleep 2
-                done
-                '''
-
-                sh '''
-                until curl --output /dev/null --silent --head --fail http://localhost:3000; do
-                    echo "Waiting for frontend..."
-                    sleep 2
-                done
-                '''
-                
-                sh 'curl http://localhost:8000'
-                sh 'env/bin/python ./app/manage.py test ./deployment/tests'
-                */
-                
 
                 // Start front end and check connection
                 dir("app/frontend")
@@ -80,22 +47,11 @@ pipeline {
                 sh  '. env/bin/activate'
                 sh 'env/bin/pip install -r requirements.txt'
 
-                //Run back end server and test connection
-                // sh 'chmod +x ./app/manage.py'
+                //Run back end server
+                sh 'chmod +x ./app/manage.py'
                 sh 'env/bin/python ./app/manage.py runserver > /dev/null 2>&1 &'
                 
-                // sh 'curl "http://127.0.0.1:8000/"'
-                // sh 'curl "http://152.42.155.23:3000"'
-
-                //sh 'chmod +x ./deployment/run_dev_servers.sh'
-                //sh './deployment/run_dev_servers.sh'
-                //Run tests
-                //sh 'env/bin/python ./app/manage.py test ./deployment/tests > test_results.log 2>&1'
                 sh 'env/bin/python ./app/manage.py test ./deployment/tests'
-                ////sh './deployment/kill_servers.sh'
-                
-
-
             }
         }
         stage('Deploy'){

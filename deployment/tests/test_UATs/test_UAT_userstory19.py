@@ -28,27 +28,7 @@ class test_UAT_userstory19(unittest.TestCase):
 			display = Display(visible=0, size=(1280, 800))
 			display.start()
 
-			
-			#chromedriver_autoinstaller.install()
-			#chrome_options = webdriver.ChromeOptions()
-			# raise ValueError('$$$$$$$$$$$' + chrome_options.user_data_dir)
-			#chrome_options.add_argument("--headless=new") # for Chrome >= 109
-
-			#chrome_options.add_argument("--no-sandbox")
-			#chrome_options.add_argument("--disable-blink-features=AutomationControlled")
-			#chrome_options.add_argument("--disable-dev-shm-usage")
-			#chrome_options.add_argument("--disable-gpu")
-			#chrome_options.add_argument("--remote-debugging-port=9222")
 			self.user_data_dir = tempfile.mkdtemp()
-			#chrome_options.add_argument(f"--user-data-dir={self.user_data_dir}")
-
-			#chrome_options.binary_location = "/usr/bin/google-chrome"
-			#CHROMEDRIVER_PATH = '/usr/bin/chromedriver'
-			#s = Service(CHROMEDRIVER_PATH)
-			#self.driver = webdriver.Chrome(options=chrome_options, service=service)
-
-			##self.driver = webdriver.Chrome(service=s, options=chrome_options)
-			#self.driver = webdriver.Chrome(options=chrome_options)
 			options = Options()
 			options.add_argument(f"--user-data-dir={self.user_data_dir}")
 			options.headless = True
@@ -57,9 +37,11 @@ class test_UAT_userstory19(unittest.TestCase):
 			self.driver = webdriver.Firefox(options=options)
 		else:
 			self.driver = webdriver.Chrome()
-		time.sleep(10)
-		#self.driver.get("http://152.42.155.23:3000/")
-		self.driver.get("http://152.42.155.23:3000/")
+		
+		if env == 'selenium':
+			self.driver.get("http://152.42.155.23:3000/")
+		else:
+			self.driver.get("http://localhost:3000")
 		login_page_button = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.LINK_TEXT, "Login")))
 		login_page_button.click()
 
@@ -214,7 +196,6 @@ class test_UAT_userstory19(unittest.TestCase):
 	def tearDown(self):
 		self.driver.close()
 		self.driver.quit()
-		shutil.rmtree(self.user_data_dir, ignore_errors=True)
 
 if __name__ == "__main__":
 	unittest.main()

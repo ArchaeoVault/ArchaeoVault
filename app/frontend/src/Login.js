@@ -69,7 +69,6 @@ const Login = () => {
         <div className="auth-card">
           <h2>Log In</h2>
           <form onSubmit={handleSubmit}>
-            <input type="email" placeholder="Email" required />
             <input type="password" placeholder="Password" required />
             <button type="submit">Log In</button>
           </form>

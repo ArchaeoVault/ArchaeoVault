@@ -88,7 +88,7 @@ pipeline {
                 // sh 'curl "http://152.42.155.23:3000"'
 
                 //sh 'chmod +x ./deployment/run_dev_servers.sh'
-                sh './deployment/run_dev_servers.sh'
+                //sh './deployment/run_dev_servers.sh'
                 //Run tests
                 sh 'env/bin/python ./app/manage.py test ./deployment/tests > test_results.log 2>&1'
                 //sh './deployment/kill_servers.sh'

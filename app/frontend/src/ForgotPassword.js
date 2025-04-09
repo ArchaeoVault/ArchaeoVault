@@ -4,7 +4,7 @@ import Header from "./Header";
 import Footer from "./Footer";
 
 let backend_url = '';
-if (process.env.REACT_APP_DJANGO_ENV == 'production'){ backend_url = 'https://www.archaeovault.com/api/';}
+if (process.env.REACT_APP_DJANGO_ENV === 'production'){ backend_url = 'https://www.archaeovault.com/api/';}
 else{ backend_url = 'http://localhost:8000/api/';}
 
 const ForgotPassword = () => {

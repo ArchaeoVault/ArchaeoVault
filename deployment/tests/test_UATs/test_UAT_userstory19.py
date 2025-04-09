@@ -8,6 +8,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.chrome.options import Options
 from pyvirtualdisplay import Display
 from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.firefox.options import Options
 import chromedriver_autoinstaller
 import os
 import tempfile
@@ -24,18 +25,18 @@ class test_UAT_userstory19(unittest.TestCase):
 		env = os.environ.get('DJANGO_ENV', 'None')
 		if env == 'selenium':
 			# Start virtual display
-			display = Display(visible=0, size=(1280, 800))
-			display.start()
+			#display = Display(visible=0, size=(1280, 800))
+			#display.start()
 
 			
-			chromedriver_autoinstaller.install()
-			chrome_options = webdriver.ChromeOptions()
+			#chromedriver_autoinstaller.install()
+			#chrome_options = webdriver.ChromeOptions()
 			# raise ValueError('$$$$$$$$$$$' + chrome_options.user_data_dir)
 			#chrome_options.add_argument("--headless=new") # for Chrome >= 109
 
-			chrome_options.add_argument("--no-sandbox")
+			#chrome_options.add_argument("--no-sandbox")
 			#chrome_options.add_argument("--disable-blink-features=AutomationControlled")
-			chrome_options.add_argument("--disable-dev-shm-usage")
+			#chrome_options.add_argument("--disable-dev-shm-usage")
 			#chrome_options.add_argument("--disable-gpu")
 			#chrome_options.add_argument("--remote-debugging-port=9222")
 			#self.user_data_dir = tempfile.mkdtemp()
@@ -47,7 +48,12 @@ class test_UAT_userstory19(unittest.TestCase):
 			#self.driver = webdriver.Chrome(options=chrome_options, service=service)
 
 			##self.driver = webdriver.Chrome(service=s, options=chrome_options)
-			self.driver = webdriver.Chrome(options=chrome_options)
+			#self.driver = webdriver.Chrome(options=chrome_options)
+			options = Options()
+			options.headless = True
+
+			# Start the browser
+			self.driver = webdriver.Firefox(options=options)
 		else:
 			self.driver = webdriver.Chrome()
 		time.sleep(10)

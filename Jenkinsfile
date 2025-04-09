@@ -97,12 +97,6 @@ pipeline {
 
             }
         }
-        stage('Stop Test Servers'){
-            steps{
-                sh 'fuser -k 8000/tcp'
-                sh 'fuser -k 3000/tcp'
-            }
-        }
         stage('Deploy'){
             when { branch 'main' }
             steps{
@@ -128,6 +122,10 @@ pipeline {
                 slackSend color: "danger", message: "File Contents:\n\n'''" + file_contents + "'''"
             }
             
+        }
+        always {
+            sh 'fuser -k 8000/tcp'
+            sh 'fuser -k 3000/tcp'
         }
         
     }

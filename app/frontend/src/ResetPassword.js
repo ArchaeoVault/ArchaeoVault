@@ -15,23 +15,7 @@ const ResetPassword = () => {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [csrfToken, setCsrfToken] = useState('');
-  useEffect(() => {
-  
-    const getEmailFromToken = async () => {
-      try {
-        const response = await fetch(`${backend_url}get_email_from_token/${uidb64}/${token}/`);
-  
-        const data = await response.json();
-        setEmail(data.email);
-  
-      } catch (error) {
-        console.error('Failed to fetch email:', error);
-      }
-    };
-  
-    getEmailFromToken();
-  }, []);
-  
+
   useEffect(() => {
     const fetchCsrfToken = async () => {
       try {
@@ -46,6 +30,41 @@ const ResetPassword = () => {
       }
     };
     fetchCsrfToken();
+  }, []);
+
+  useEffect(() => {
+  
+    const getEmailFromToken = async () => {
+      try {
+        const response = await fetch(`${backend_url}get_email_from_token/${uidb64}/${token}/`, {
+          method: 'GET',
+          credentials: 'include', // Ensure cookies are included in the request
+          headers: {
+            'X-CSRFToken': csrfToken, // Include the CSRF token in the request header
+          },
+        });
+        
+        // Check if the response is ok
+        if (!response.ok) {
+          throw new Error('Failed to fetch email, response not OK');
+        }
+        
+        const data = await response.json();
+        console.log('Email retrieved from token:', data.email); // Log to check the response
+    
+        if (data.email) {
+          setEmail(data.email);
+        } else {
+          throw new Error('Email not found in the response');
+        }
+      } catch (error) {
+        console.error('Failed to fetch email:', error);
+        setMessage('Invalid or expired token. Please try again.');
+      }
+    };
+    
+  
+    getEmailFromToken();
   }, []);
 
   const handleSubmit = async (e) => {

@@ -32,6 +32,9 @@ from django.http import FileResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 import os
+from .tokens import account_activation_token
+
+
 
 def login_view(request):
     print(request.body)
@@ -220,7 +223,7 @@ def activate(request, uidb64, token):
     uid = urlsafe_base64_decode(uidb64).decode()
     user = User.objects.get(email = uid)
     if user is not None and account_activation_token.check_token(user, token):
-        user.activated = True
+        user.is_active = True
         user.save()
         reset_url = f"http://localhost:3000/reset/{uidb64}/{token}"  # Adjust for production URL
 
@@ -297,12 +300,14 @@ def get_email_from_token(request, uidb64, token):
     try:
         # Decode the user id
         uid = urlsafe_base64_decode(uidb64).decode()
-        user = User.objects.get(pk=uid)
-
+        user = User.objects.get(email=uid)
+        print("uid: ", uid)
+        print("user: ", user)
         # Check the token
-        if default_token_generator.check_token(user, token):
+        if account_activation_token.check_token(user, token):
             return JsonResponse({'email': user.email}, status=200)
         else:
+            print(f"Invalid token for user: {user.email}, token: {token}")
             return JsonResponse({'error': 'Invalid token'}, status=400)
 
     except (TypeError, ValueError, OverflowError, User.DoesNotExist):

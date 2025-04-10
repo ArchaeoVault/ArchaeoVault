@@ -19,7 +19,7 @@ class threedprintedtable(models.Model):
 
 class gridnames(models.Model):
     id = models.IntegerField(primary_key=True)
-    typename = models.CharField(max_length=900)
+    typename = models.CharField(max_length=900) #changed
 
 class permissions(models.Model):
     numval = models.IntegerField(primary_key=True)
@@ -39,7 +39,7 @@ class users(models.Model):
 
 class organicinorganic(models.Model):
     id = models.IntegerField(primary_key=True)
-    type = models.CharField(max_length=20)
+    type = models.CharField(max_length=20) #changed
 
 class speciestype(models.Model):
     id = models.IntegerField(primary_key=True)

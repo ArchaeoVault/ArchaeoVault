@@ -14,7 +14,7 @@ import test_resend_verification
 sys.path.append("..")
 #print("Current working directory:", os.getcwd())
 
-# sys.path.append("../../deployment/tests/UAT_tests")
+sys.path.append("../../deployment/tests/UAT_tests")
 def load_tests(loader, standard_tests, pattern):
     test_suite = unittest.TestSuite()
     test_suite.addTests(loader.loadTestsFromModule(test_create_user))

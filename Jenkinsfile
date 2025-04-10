@@ -50,7 +50,7 @@ pipeline {
 
                 //Run back end server
                 sh 'chmod +x ./app/manage.py'
-                sh 'env/bin/python ./app/manage.py runserver > /dev/null 2>&1 &'
+                // sh 'env/bin/python ./app/manage.py runserver > /dev/null 2>&1 &'
                 
                 sh 'env/bin/python ./app/manage.py test ./deployment/tests'
             }

@@ -28,6 +28,7 @@ pipeline {
                 // Start front end and check connection
                 dir("app/frontend")
                 {
+                    sh 'npm install'
                     sh 'npm start > /dev/null 2>&1 &'
                 }
                 

@@ -32,6 +32,9 @@ from django.http import FileResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 import os
+from .tokens import account_activation_token
+
+
 
 def login_view(request):
     # print(request.body)
@@ -57,10 +60,15 @@ def login_view(request):
             
                 if user is not None:
                     login(request, user)
-                    return JsonResponse({
+                    return JsonResponse(
+                    { 
                         "status": "ok",
                         "user": {
-                            "email": user.email
+                            "email": user.email,
+                            "first_name": user.first_name,
+                            "last_name": user.last_name,
+                            "email": user.email,
+                            "password": password
                         }
                     }, status=200)
                 else:
@@ -222,15 +230,19 @@ def all_artifacts_view(request):
 
 def activate(request, uidb64, token):
     #put boolean that sets user active to true
-    uid = urlsafe_base64_decode(uidb64)
+    uid = urlsafe_base64_decode(uidb64).decode()
     user = User.objects.get(email = uid)
     if user is not None and account_activation_token.check_token(user, token):
-        user.activated = True
+        user.is_active = True
         user.save()
-        return render(request, 'home.html')
+        reset_url = f"http://localhost:3000/reset/{uidb64}/{token}"  # Adjust for production URL
+
+        # Redirect to the reset password page in React
+        return redirect(reset_url)
 
     
 
+@csrf_exempt
 def resend_verification_view(request):
     if(request.method == 'POST'):
         data = json.loads(request.body)
@@ -248,8 +260,7 @@ def resend_verification_view(request):
                 to_emails=user.email,
                 subject='Welcome to ArchaeoVault!',
                 html_content=(
-                    f'<h2>Thank you for registering for ArchaeoVault, we really hope you enjoy!'
-                    f'Click on the link below to verify your email address.</h2>'
+                    f'<h2>Follow this link below to verify account and reset password.</h2>'
                     f'<a href="{verification_link}">Verify your email address</a>'
                 )
             )
@@ -264,12 +275,15 @@ def resend_verification_view(request):
             return JsonResponse({'message': 'Verification email has been sent'}, status=200)
         else:
             return JsonResponse({'error': 'Email address not associated with an account'}, status=400)
-    return render(request, 'resend_verification.html')
-
+    return JsonResponse({
+                        "status": "ok",
+                        }, status=200)
+@csrf_exempt
 def change_password_view(request):
     if request.method == 'POST':
         try: 
             data = json.loads(request.body)
+            print("data:", data)
             email = data.get('email')
             newPassword = data.get('newPassword')
             confirmPassword = data.get('confirmPassword')
@@ -292,3 +306,23 @@ def change_password_view(request):
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
         except Exception as e:
             return JsonResponse({'error':'Error changing password'},status = 400)
+            print(str(e))  # Log the actual error message for debugging
+            return JsonResponse({'error': 'Error changing password'}, status=400)
+
+@csrf_exempt
+def get_email_from_token(request, uidb64, token):
+    try:
+        # Decode the user id
+        uid = urlsafe_base64_decode(uidb64).decode()
+        user = User.objects.get(email=uid)
+        print("uid: ", uid)
+        print("user: ", user)
+        # Check the token
+        if account_activation_token.check_token(user, token):
+            return JsonResponse({'email': user.email}, status=200)
+        else:
+            print(f"Invalid token for user: {user.email}, token: {token}")
+            return JsonResponse({'error': 'Invalid token'}, status=400)
+
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        return JsonResponse({'error': 'Invalid request'}, status=400)

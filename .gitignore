@@ -6,6 +6,7 @@ app/app/frontend/node_modules/
 # Virtual environments
 .venv/
 env/
+app/venv
 
 # Other common ignores
 node_modules/*

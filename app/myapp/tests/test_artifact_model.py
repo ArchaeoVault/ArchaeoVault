@@ -41,8 +41,8 @@ class test_artifact_model(TestCase):
 
         # permissions
         self.permissions = permissions.objects.create(
-            numVal=1,
-            role="Admin"
+            numval=1,
+            givenrole="Admin"
         )
 
         # users
@@ -129,7 +129,8 @@ class test_artifact_model(TestCase):
             sources_for_id="Source A",
             location="Room B",
             storage_location="Box 1",
-            uhlflages="None"
+            uhlflages="None",
+            id = 1
         )
 
 
@@ -156,7 +157,7 @@ class test_artifact_model(TestCase):
         # Check the content of the first artefact
         artifact_1 = data['artifacts'][0]
         self.assertEqual(artifact_1['object_name'], "Artifact Sample", f"Artifact name {artifact_1['object_name']} does not match expected artifact name Artifact Sample")
-        self.assertEqual(artifact_1['owner'], "John Doe", f"Owner name {artifact_1['owner']} does not match expected owner name John Doe")
+        self.assertEqual(artifact_1['object_description'], "Sample Description", f"Object description {artifact_1['object_description']} does not match expected owner name John Doe")
     
 
 

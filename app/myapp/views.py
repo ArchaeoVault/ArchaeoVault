@@ -60,10 +60,11 @@ def login_view(request):
             
                 if user is not None:
                     login(request, user)
-                    return JsonResponse({
+                    return JsonResponse(
+                    { 
                         "status": "ok",
                         "user": {
-                            "email": user.email
+                            "email": user.email,
                             "first_name": user.first_name,
                             "last_name": user.last_name,
                             "email": user.email,

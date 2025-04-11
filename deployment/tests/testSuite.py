@@ -1,13 +1,18 @@
 import unittest
 import sys
+import os
+env = os.environ.get('DJANGO_ENV', 'None')
+if env == 'production':
+    sys.path.append(os.path.abspath("app/myapp/tests"))
+else:
+    sys.path.append("myapp/tests")
 
-sys.path.append("myapp/tests")
 import test_create_user
 import test_artifact_model
 import test_change_password
 import test_resend_verification
 sys.path.append("..")
-
+#print("Current working directory:", os.getcwd())
 
 sys.path.append("../../deployment/tests/UAT_tests")
 def load_tests(loader, standard_tests, pattern):

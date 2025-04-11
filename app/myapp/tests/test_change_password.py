@@ -3,17 +3,19 @@ from django.utils import timezone
 from django.urls import reverse
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import check_password
+from myapp.models import users, permissions
 import json
 
 class test_change_password(TestCase):
 
     def setUp(self):
-        self.user = User.objects.create_user(
-            username = 'temp@email.com',
-            first_name = 'test',
-            last_name = 'user',
+        permission = permissions.objects.create(numval = 4, givenrole = 'GeneralPublic')
+        
+        self.user = users.objects.create(
             email = 'temp@email.com',
-            password = 'password123'
+            upassword = 'password123',
+            upermission = permission,
+            activated = True
         )
     
     def test_reset_password_success(self):
@@ -25,8 +27,8 @@ class test_change_password(TestCase):
             content_type='application/json'  # Ensure request is treated as JSON
         )
         self.assertEqual(response.status_code, 200)
-        user = User.objects.get(username = 'temp@email.com')
-        self.assertTrue(check_password('password1234', user.password))
+        user = users.objects.get(email = 'temp@email.com')
+        self.assertTrue('password1234', user.upassword)
     
     def test_reset_missing_value(self):
 

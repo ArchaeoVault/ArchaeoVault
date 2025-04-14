@@ -64,7 +64,7 @@ pipeline {
         }
 
         failure{
-            
+            sh 'touch test_results.log'
             script{
                 def file_contents = readFile('test_results.log')
                 slackSend color: "danger", message: "Build failed :face_with_head_bandage: \n`${env.JOB_NAME}#${env.BUILD_NUMBER}` <${env.BUILD_URL}|Open in Jenkins>"
@@ -73,7 +73,7 @@ pipeline {
             
         }
         always {
-            cleanWs()
+            cleanWs(deleteDirs: true)
             sh 'fuser -k 8000/tcp || true'
             sh 'fuser -k 3000/tcp || true'
             

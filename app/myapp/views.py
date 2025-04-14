@@ -8,7 +8,7 @@ from django.core.exceptions import ValidationError
 from myapp.forms import *
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import Http404
-from myapp.models import your_table_test
+from myapp.models import *
 
 from django.http import JsonResponse
 from django.contrib.auth.hashers import check_password
@@ -158,7 +158,7 @@ def create_user_view(request):
 
 def all_artifacts_view(request):
 
-    artifacts = your_table_test.objects.all()
+    artifacts = your_table.objects.all()
     print(artifacts)
 
     artifact_data = [

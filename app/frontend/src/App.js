@@ -12,6 +12,7 @@ import Artifacts2 from './Artifacts2';
 import AboutUs from "./AboutUs";
 import Contact from "./Contact";
 import ListPage from "./list";
+import ListDB from "./listDB";
 
 const App = () => {
   const [showLogin, setShowLogin] = useState(false);
@@ -49,6 +50,7 @@ const App = () => {
         <Route path="/artifacts" element={<Artifacts />} />
         <Route path="/Artifacts2" element={<Artifacts2 />} />
         <Route path="/list" element={<ListPage />} />
+        <Route path="/listDB" element={<ListDB />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset/:uidb64/:token" element={<ResetPassword />} />

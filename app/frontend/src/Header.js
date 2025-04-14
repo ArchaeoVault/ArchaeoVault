@@ -47,6 +47,7 @@ const Header = () => {
         <Link to="/Artifacts2">3D Scans</Link>
         <Link to="/Contact">Contact</Link>
         <Link to="/About">About Us</Link>
+        <Link to="/ListDB">List DB TEST</Link>
 
         {!isLoggedIn ? (
           <Link to="/Login" className="login-link">Login</Link>

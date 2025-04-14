@@ -82,7 +82,7 @@ const ResetPassword = () => {
       body: JSON.stringify({ email: email, newPassword: newPassword, confirmPassword: confirmPassword }),
     });
     if (response.ok) {
-      setMessage('Your password has been reset successfully.');
+      alert('Your password has been reset successfully.');
       setRedirectToLogin(true);
     } else {
       const data = await response.json();

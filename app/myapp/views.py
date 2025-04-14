@@ -35,7 +35,7 @@ import os
 from .tokens import account_activation_token
 
 
-
+@csrf_exempt
 def login_view(request):
     # print(request.body)
     if request.method == 'POST':

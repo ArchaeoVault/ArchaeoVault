@@ -6,20 +6,45 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.chrome.options import Options
+from pyvirtualdisplay import Display
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.firefox.options import Options
+import chromedriver_autoinstaller
 import os
+import tempfile
+import shutil
+import time
+import subprocess
+
+
+
 
 class test_UAT_userstory19(unittest.TestCase):
+
 	def setUp(self):
 		env = os.environ.get('DJANGO_ENV', 'None')
 		if env == 'production':
-			chrome_options = Options()
-			chrome_options.add_argument("--headless=new") # for Chrome >= 109
-			self.driver = webdriver.Chrome(options=chrome_options)
+			# Start virtual display
+			display = Display(visible=0, size=(1280, 800))
+			display.start()
+
+			self.user_data_dir = tempfile.mkdtemp()
+			options = Options()
+			options.add_argument(f"--user-data-dir={self.user_data_dir}")
+			options.headless = True
+
+			# Start the browser
+			self.driver = webdriver.Firefox(options=options)
 		else:
 			self.driver = webdriver.Chrome()
+		
+		# if env == 'production':
+		# 	self.driver.get("http://152.42.155.23:3000/")
+		# else:
 		self.driver.get("http://localhost:3000")
 		login_page_button = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.LINK_TEXT, "Login")))
 		login_page_button.click()
+		
 
 	"""
 	def test_valid_email_with_valid_password(self):
@@ -105,7 +130,6 @@ class test_UAT_userstory19(unittest.TestCase):
 			validation_message = emailBox.get_attribute("validationMessage")
 		except:
 			print("No validation message found.")
-		assert validation_message == "Please fill out this field."
 
 
 	def test_valid_email_no_password(self):
@@ -145,7 +169,7 @@ class test_UAT_userstory19(unittest.TestCase):
 			validation_message = emailBox.get_attribute("validationMessage")
 		except:
 			print("No validation message found.")
-		assert validation_message == "A part following '@' should not contain the symbol ' '."
+		assert (validation_message == "A part following '@' should not contain the symbol ' '." or validation_message == "Please enter an email address.")
 	"""
 	def test_password_sql_injection(self):
 		self.driver.implicitly_wait(1)
@@ -172,6 +196,7 @@ class test_UAT_userstory19(unittest.TestCase):
 
 	def tearDown(self):
 		self.driver.close()
+		self.driver.quit()
 
 if __name__ == "__main__":
 	unittest.main()

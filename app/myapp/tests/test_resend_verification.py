@@ -11,6 +11,7 @@ class test_resend_verification(TestCase):
     def setUp(self):
         self.permission = permissions.objects.create(numval = 4, givenrole = 'GeneralPublic')
         
+        
         self.user = users.objects.create(
             email = 'temp@email.com',
             upassword = 'password123',

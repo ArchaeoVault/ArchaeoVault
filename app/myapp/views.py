@@ -34,7 +34,6 @@ import json
 import os
 from .tokens import account_activation_token
 
-
 @csrf_exempt
 def login_view(request):
     # print(request.body)
@@ -60,15 +59,10 @@ def login_view(request):
             
                 if user is not None:
                     login(request, user)
-                    return JsonResponse(
-                    { 
+                    return JsonResponse({
                         "status": "ok",
                         "user": {
-                            "email": user.email,
-                            "first_name": user.first_name,
-                            "last_name": user.last_name,
-                            "email": user.email,
-                            "password": password
+                            "email": user.email
                         }
                     }, status=200)
                 else:

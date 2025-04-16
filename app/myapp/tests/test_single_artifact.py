@@ -163,7 +163,7 @@ class test_artifact_model(TestCase):
 
         self.assertEqual(len(data['artifacts']), 1, f"Number of artifacts is not 1, instead there are {len(data['artifacts'])} artifacts")  # We created 1 artifacts in setUp()
 
-        # Check the content of the first (only hopefully) artefact
+        # Check the content of the first (hopefully only) artifact
         artifact_1 = data['artifacts'][0]
         self.assertEqual(artifact_1['object_name'], "Artifact Sample", f"Artifact name {artifact_1['object_name']} does not match expected artifact name Artifact Sample")
         self.assertEqual(artifact_1['object_description'], "Sample Description", f"Object description {artifact_1['object_description']} does not match expected owner name John Doe")

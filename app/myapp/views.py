@@ -49,8 +49,9 @@ def login_view(request):
 
             try:
                 # Get user by email
+                print("attemping to find user")
                 user = users.objects.get(email=email)
-
+                print("user found in database")
                 # Now authenticate using the user's username and password
                 if password != user.upassword:  # Compare hashed password
                     return JsonResponse({'status':'error','message':'Passwords do not match'}, status = 400)

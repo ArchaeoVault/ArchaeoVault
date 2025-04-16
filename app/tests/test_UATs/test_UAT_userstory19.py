@@ -6,10 +6,11 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from django.test import LiveServerTestCase
 from django.test import TestCase, Client
-from django.contrib.auth.models import User
-from django.urls import reverse
+from django.contrib.auth.hashers import make_password, check_password
+from myapp.models import users, permissions
 import json
 import os
 
@@ -18,11 +19,13 @@ class TestUATUserstory19(LiveServerTestCase,TestCase):
 	@classmethod
 	def setUpTestData(cls):
 		print("RUNNING setUpTestData")
-		cls.user = User.objects.create_user(
-    	uemail="temp@email.com", password="password123"
+		permissions.objects.create(numval = 4, givenrole = 'GeneralPublic')
+		permission = permissions.objects.get(numval = 4, givenrole = 'GeneralPublic') 
+		users.objects.create(
+    	email="temp@email.com", upassword=make_password("password123"), activated = True, upermission = permission
 		)
-		cls.user.is_active = True
-		cls.user.save()
+		print("All permissions:", list(permissions.objects.all()))
+		print("All users:", list(users.objects.all()))
 
 
 
@@ -34,7 +37,9 @@ class TestUATUserstory19(LiveServerTestCase,TestCase):
 			chrome_options.add_argument("--headless=new") # for Chrome >= 109
 			self.driver = webdriver.Chrome(options=chrome_options)
 		else:
-			self.driver = webdriver.Chrome()
+			options = Options()
+			options.set_capability("goog:loggingPrefs", {"performance": "ALL"})
+			self.driver = webdriver.Chrome(options = options)
 		self.driver.get('http://localhost:3000')
 		print(self.live_server_url)
 		login_page_button = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.LINK_TEXT, "Login")))
@@ -46,9 +51,10 @@ class TestUATUserstory19(LiveServerTestCase,TestCase):
 		passwordBox = self.driver.find_element(by = By.XPATH, value = "//input[@placeholder='Password']")
 		emailBox.send_keys("temp@email.com")
 		passwordBox.send_keys("password123")
-		print(User.objects.filter(username ='temp@email.com').exists())
+		print(users.objects.all())
 		submitButton = self.driver.find_element(By.XPATH, "//button[text()='Log In']")
 		submitButton.click()
+
 		try:
 			WebDriverWait(self.driver, 3).until(EC.alert_is_present())
 			alert = self.driver.switch_to.alert
@@ -56,6 +62,13 @@ class TestUATUserstory19(LiveServerTestCase,TestCase):
 			alert.accept()
 		except TimeoutException:
 			assert False
+		"""
+		for entry in self.driver.get_log("performance"):
+			log = json.loads(entry["message"])["message"]
+			if log["method"] == "Network.requestWillBeSent":
+				url = log["params"]["request"]["url"]
+				print(f"Frontend made request to: {url}")
+		"""
 		self.assertEqual(message, "Login successful!", f"{message} does not equal login successful")
 
 	"""

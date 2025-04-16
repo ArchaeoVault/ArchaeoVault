@@ -32,7 +32,7 @@ from django.http import FileResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 import os
-from .tokens import account_activation_token
+
 
 @csrf_exempt
 def login_view(request):
@@ -225,14 +225,13 @@ def all_artifacts_view(request):
 def activate(request, uidb64, token):
     #put boolean that sets user active to true
     uid = urlsafe_base64_decode(uidb64).decode()
+    print("uid: ", uid)
     user = User.objects.get(email = uid)
+    print("User: ", user)
     if user is not None and account_activation_token.check_token(user, token):
-        user.is_active = True
+        user.activated = True
         user.save()
-        reset_url = f"http://localhost:3000/reset/{uidb64}/{token}"  # Adjust for production URL
-
-        # Redirect to the reset password page in React
-        return redirect(reset_url)
+        return render(request, 'home.html')
 
     
 

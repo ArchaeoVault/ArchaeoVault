@@ -157,7 +157,7 @@ class test_artifact_model(TestCase):
         # Check the content of the first artefact
         artifact_1 = data['artifacts'][0]
         self.assertEqual(artifact_1['object_name'], "Artifact Sample", f"Artifact name {artifact_1['object_name']} does not match expected artifact name Artifact Sample")
-        self.assertEqual(artifact_1['owner'], "John Doe", f"Owner name {artifact_1['owner']} does not match expected owner name John Doe")
+        self.assertEqual(artifact_1['object_description'], "Sample Description", f"Object description {artifact_1['object_description']} does not match expected owner name John Doe")
     
 
 

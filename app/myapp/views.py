@@ -301,7 +301,7 @@ def delete_artifact_view(request):
             #print('In try')
             
             email = request.session.get('user_email') #gets current sessions email
-            print(email)
+            # print(email)
             artifactId = data.get('id')
             #print('Getting user')
             if not users.objects.filter(email=email).exists():
@@ -310,7 +310,6 @@ def delete_artifact_view(request):
             user = users.objects.get(email = email)
             #print('got user')
             numberValue = user.upermission.numval
-            #print('got numval')
             if numberValue == 4:
                 #print('Cant be gen pub')
                 return JsonResponse({'error':'General Public can not delete artifacts'}, status = 402)
@@ -336,14 +335,14 @@ def edit_artifact_view(request):
             data = json.loads(request.body)
             #print('In try')
             email = request.session.get('user_email') #gets current sessions email
-            print(email)
+            #print(email)
             artifactId = data.get('id')
             object_name = data.get('name')
             location = data.get('location')
             age = data.get('age')
             materialId = data.get('material')
             object_description = data.get('description')
-            print('Getting user')
+            #print('Getting user')
             if not all([email, artifactId,object_name,object_description,location,age,materialId]):
                 return JsonResponse({'error': 'All fields are required'}, status=404)
             if not users.objects.filter(email=email).exists():
@@ -353,7 +352,7 @@ def edit_artifact_view(request):
             #print('got user')
             numberValue = user.upermission.numval
             material = materialtype.objects.get(id = materialId)
-            print('got numval')
+            #print('got numval')
             if numberValue == 4:
                 #print('Cant be gen pub')
                 return JsonResponse({'error':'General Public can not edit artifacts'}, status = 402)

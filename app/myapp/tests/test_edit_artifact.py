@@ -157,11 +157,6 @@ class test_edit_artifact(TestCase):
         self.assertEqual(objectCheck.material_of_manufacture.id,2)
        
     def test_invalid_id_number(self):
-        # self.client.post(
-        #     reverse('login_view'),
-        #     data = json.dumps({'email':'testuser@example.com','password':'securepassword123'}),
-        #     content_type='application/json'
-        #     )
         response = self.client.post(
             reverse('edit_artifact_view'),
             data = json.dumps({'id':-2,'name':'test object','description':'this is a description for a test object','age':'Jan,01,2000','location':'Stonehill', 'material':2}),
@@ -170,11 +165,6 @@ class test_edit_artifact(TestCase):
         self.assertEqual(response.status_code,403)
 
     def test_mismatch_id_number(self):
-        # self.client.post(
-        #     reverse('login_view'),
-        #     data = json.dumps({'email':'testuser@example.com','password':'securepassword123'}),
-        #     content_type='application/json'
-        #     )
         response = self.client.post(
             reverse('edit_artifact_view'),
             data = json.dumps({'id':2,'name':'test object','description':'this is a description for a test object','age':'Jan,01,2000','location':'Stonehill', 'material':2}),
@@ -184,11 +174,9 @@ class test_edit_artifact(TestCase):
 
     def test_invalid_permissions(self):
         self.assertTrue(your_table.objects.filter(id =1).exists())
-        # self.client.post(
-        #     reverse('login_view'),
-        #     data = json.dumps({'email':'genPub@email.com','password':'password123'}),
-        #     content_type='application/json'
-        #     )
+        user = users.objects.get(email='testuser@example.com')
+        user.upermission = self.permissionGenPub
+        user.save()
         response = self.client.post(
             reverse('edit_artifact_view'),
             data = json.dumps({'id':1,'name':'test object','description':'this is a description for a test object','age':'Jan,01,2000','location':'Stonehill', 'material':2}),
@@ -201,11 +189,6 @@ class test_edit_artifact(TestCase):
         self.assertEqual(objectCheck.object_description,'Sample Description')
         
     def test_not_all_fields_filled(self):
-        # self.client.post(
-        #     reverse('login_view'),
-        #     data = json.dumps({'email':'testuser@example.com','password':'securepassword123'}),
-        #     content_type='application/json'
-        #     )
         response = self.client.post(
             reverse('edit_artifact_view'),
             data = json.dumps({'id':'','name':'','description':'','age':'','location':'', 'material':''}),

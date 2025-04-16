@@ -5,53 +5,47 @@ from django.contrib.auth.models import User #imports django user model if we dec
 from django.core.mail import send_mail
 from myapp.models import users, permissions
 import json
+from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 
-class test_create_user(TestCase):
+class CreateUserViewTestCase(TestCase):
     def setUp(self):
-        permission = permissions.objects.create(numval = 4, givenrole = 'GeneralPublic')
+        self.client = Client()
+        self.permission = permissions.objects.create(numval=4, givenrole='GeneralPublic')
 
-    def test_user_create_success(self):        
-        response = self.client.post(
-            reverse('create_user_view'),
-            data = json.dumps({'email':'temp@email.com','password':'password123','confirm_password':'password123'}),
-            content_type='application/json'
-            )
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue(users.objects.filter(email ='temp@email.com').exists())
-        #check if in database    
-    def test_create_user_missing_value(self):        
-        response = self.client.post(
-            reverse('create_user_view'),
-            data = json.dumps({'email':'','password':'','confirm_password':''}),
-            content_type='application/json'
-            )
-        self.assertEqual(response.status_code, 400)    
-    
-    def test_create_user_invalid_email(self):        
-        response = self.client.post(
-            reverse('create_user_view'),
-            data = json.dumps({'email':'temp','password':'password123','confirm_password':'password123'}),
-            content_type='application/json'
-            )
-        self.assertEqual(response.status_code, 400)    
-    def test_mismatch_password(self):        
-        response = self.client.post(
-            reverse('create_user_view'),
-            data = json.dumps({'email':'temp@email.com','password':'password123','confirm_password':'password1234'}),
-            content_type='application/json'
-            )
-        self.assertEqual(response.status_code,400)   
-    def test_create_user_with_same_email(self):        
-        response = self.client.post(
-            reverse('create_user_view'),
-            data = json.dumps({'email':'temp@email.com','password':'password123','confirm_password':'password123'}),
-            content_type='application/json'
-            )
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue(users.objects.filter(email ='temp@email.com').exists())
-        response = self.client.post(
-            reverse('create_user_view'),
-            data = json.dumps({'email':'temp@email.com','password':'password123','confirm_password':'password123'}),
-            content_type='application/json'
-            )
+    def test_missing_fields(self):
+        response = self.client.post('/create_user/', json.dumps({}), content_type='application/json')
         self.assertEqual(response.status_code, 400)
+        self.assertIn('All fields are required', response.json()['error'])
+
+    def test_password_mismatch(self):
+        data = {'email': 'test@example.com', 'password': 'password123', 'confirm_password': 'password456'}
+        response = self.client.post('/create_user/', json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('Passwords do not match', response.json()['error'])
+
+    def test_duplicate_user(self):
+        users.objects.create(email='test@example.com', upassword='password123', activated=False, upermission=self.permission)
+        data = {'email': 'test@example.com', 'password': 'password123', 'confirm_password': 'password123'}
+        response = self.client.post('/create_user/', json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('User with this email already exists', response.json()['error'])
+
+    def test_invalid_email(self):
+        data = {'email': 'invalid-email', 'password': 'password123', 'confirm_password': 'password123'}
+        response = self.client.post('/create_user/', json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('Invalid email address', response.json()['error'])
+
+    def test_successful_user_creation(self):
+        data = {'email': 'newuser@example.com', 'password': 'securepass', 'confirm_password': 'securepass'}
+        response = self.client.post('/create_user/', json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('User created successfully', response.json()['message'])
+        self.assertTrue(users.objects.filter(email='newuser@example.com').exists())
+
+    def test_invalid_request_method(self):
+        response = self.client.get('/create_user/')
+        self.assertEqual(response.status_code, 405)
+        self.assertIn('Invalid request method', response.json()['error'])

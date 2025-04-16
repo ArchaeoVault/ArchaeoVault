@@ -153,9 +153,6 @@ def create_user_view(request):
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
-
-
-
 def all_artifacts_view(request):
 
     artifacts = your_table.objects.all()

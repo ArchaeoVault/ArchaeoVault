@@ -12,7 +12,7 @@ class LoginUserTests(TestCase):
         
         permission = permissions.objects.create(numval = 4, givenrole = 'GeneralPublic')
         
-        self.user = users.objects.create(
+        self.user = User.objects.create(
             email = 'temp@email.com',
             upassword = 'password123',
             upermission = permission,

@@ -33,6 +33,13 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 import os
 
+env = os.environ.get('DJANGO_ENV', 'None')
+
+if env == 'production':
+    frontend_url = 'https://archaeovault.com'
+else:
+    frontend_url = 'http://localhost:3000'
+
 
 @csrf_exempt
 def login_view(request):
@@ -83,7 +90,6 @@ def signup(request):
             username = data.get('username')
             password = data.get('password')
             email = data.get('email')
-
             if not username or not password or not email:
                 return JsonResponse({'error': 'Missing fields'}, status=400)
 
@@ -226,12 +232,14 @@ def activate(request, uidb64, token):
     #put boolean that sets user active to true
     uid = urlsafe_base64_decode(uidb64).decode()
     print("uid: ", uid)
-    user = User.objects.get(email = uid)
+    user = users.objects.get(email = uid)
     print("User: ", user)
     if user is not None and account_activation_token.check_token(user, token):
         user.activated = True
         user.save()
-        return render(request, 'home.html')
+        reset_url = f"{frontend_url}/reset/{uidb64}/{token}"
+        return redirect(reset_url)
+    return HttpResponseBadRequest("Invalid activation link or token.")
 
     
 
@@ -307,7 +315,7 @@ def get_email_from_token(request, uidb64, token):
     try:
         # Decode the user id
         uid = urlsafe_base64_decode(uidb64).decode()
-        user = User.objects.get(email=uid)
+        user = users.objects.get(email=uid)
         print("uid: ", uid)
         print("user: ", user)
         # Check the token

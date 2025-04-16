@@ -134,9 +134,14 @@ class test_edit_artifact(TestCase):
     
     def test_edit_artifact_success(self):
         self.assertTrue(your_table.objects.filter(id =1).exists())
+        self.client.post(
+            reverse('login_view'),
+            data = json.dumps({'email':'testuser@example.com','password':'securepassword123'}),
+            content_type='application/json'
+            )
         response = self.client.post(
             reverse('edit_artifact_view'),
-            data = json.dumps({'id':1,'email':'testuser@example.com','object_name':'test object','object_description':'this is a description for a test object'}),
+            data = json.dumps({'id':1,'object_name':'test object','object_description':'this is a description for a test object'}),
             content_type='application/json'
             )
         self.assertEqual(response.status_code, 200)
@@ -145,23 +150,38 @@ class test_edit_artifact(TestCase):
         self.assertEqual(objectCheck.object_description,'this is a description for a test object')
        
     def test_invalid_id_number(self):
+        self.client.post(
+            reverse('login_view'),
+            data = json.dumps({'email':'testuser@example.com','password':'securepassword123'}),
+            content_type='application/json'
+            )
         response = self.client.post(
             reverse('edit_artifact_view'),
-            data = json.dumps({'id':-2,'email':'testuser@example.com','object_name':'test object','object_description':'this is a description for a test object'}),
+            data = json.dumps({'id':-2,'object_name':'test object','object_description':'this is a description for a test object'}),
             content_type='application/json'
             )
         self.assertEqual(response.status_code,403)
 
     def test_mismatch_id_number(self):
+        self.client.post(
+            reverse('login_view'),
+            data = json.dumps({'email':'testuser@example.com','password':'securepassword123'}),
+            content_type='application/json'
+            )
         response = self.client.post(
             reverse('edit_artifact_view'),
-            data = json.dumps({'id': 2,'email':'testuser@example.com','object_name':'test object','object_description':'this is a description for a test object'}),
+            data = json.dumps({'id': 2,'object_name':'test object','object_description':'this is a description for a test object'}),
             content_type='application/json'
             )
         self.assertEqual(response.status_code,403)
 
     def test_invalid_permissions(self):
         self.assertTrue(your_table.objects.filter(id =1).exists())
+        self.client.post(
+            reverse('login_view'),
+            data = json.dumps({'email':'genPub@email.com','password':'password123'}),
+            content_type='application/json'
+            )
         response = self.client.post(
             reverse('edit_artifact_view'),
             data = json.dumps({'id':1,'email':'genPub@email.com','object_name':'test object','object_description':'this is a description for a test object'}),
@@ -173,19 +193,15 @@ class test_edit_artifact(TestCase):
         self.assertEqual(objectCheck.object_name,'Artifact Sample')
         self.assertEqual(objectCheck.object_description,'Sample Description')
         
-    
-    def test_user_does_not_exist(self):
-        response = self.client.post(
-            reverse('edit_artifact_view'),
-            data = json.dumps({'id':1,'email':'work@email.com','object_name':'test object','object_description':'this is a description for a test object'}),
-            content_type='application/json'
-        )
-        self.assertEqual(response.status_code,401)
-    
     def test_not_all_fields_filled(self):
+        self.client.post(
+            reverse('login_view'),
+            data = json.dumps({'email':'testuser@example.com','password':'securepassword123'}),
+            content_type='application/json'
+            )
         response = self.client.post(
             reverse('edit_artifact_view'),
-            data = json.dumps({'id':'','email':'','object_name':'','object_description':''}),
+            data = json.dumps({'id':'','object_name':'','object_description':''}),
             content_type='application/json'
         )
         self.assertEqual(response.status_code, 404)

@@ -57,6 +57,7 @@ def login_view(request):
             
                 if user is not None:
                     login(request, user)
+                    request.session['user_email'] = user.email #stores users email for current session to be used later
                     return JsonResponse({
                         "status": "ok",
                         "user": {
@@ -298,7 +299,9 @@ def delete_artifact_view(request):
         try:
             data = json.loads(request.body)
             #print('In try')
-            email = data.get('email')
+            
+            email = request.session.get('user_email') #gets current sessions email
+            print(email)
             artifactId = data.get('id')
             #print('Getting user')
             if not users.objects.filter(email=email).exists():
@@ -332,7 +335,8 @@ def edit_artifact_view(request):
         try:
             data = json.loads(request.body)
             #print('In try')
-            email = data.get('email')
+            email = request.session.get('user_email') #gets current sessions email
+            print(email)
             artifactId = data.get('id')
             object_name = data.get('object_name')
             object_description = data.get('object_description')

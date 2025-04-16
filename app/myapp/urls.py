@@ -28,5 +28,6 @@ urlpatterns = [
     path('api/change_password', views.change_password_view, name = 'change_password_view'),
     path('api/delete_artifact/', views.delete_artifact_view, name = 'delete_artifact_view'),
     path('api/edit_artifact/', views.edit_artifact_view, name = 'edit_artifact_view'),
+    path('api/logout/', views.logout_view, name = 'logout_view'),
     path('api/get_csrf_token/', views.get_csrf_token, name = 'get_csrf_token')
 ]

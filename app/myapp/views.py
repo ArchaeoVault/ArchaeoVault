@@ -73,7 +73,7 @@ def login_view(request):
             return JsonResponse({"status": "error", "message": "Invalid JSON format."}, status=400)
 
     return JsonResponse({"status": "error", "message": "Invalid request method."}, status=400)
-  
+
 @csrf_exempt
 def signup(request):
     if request.method == 'POST':
@@ -368,3 +368,7 @@ def edit_artifact_view(request):
         except Exception as e:
             #print('Outer exception')
             return JsonResponse ({'error':'Error in editing artifact'}, status = 400)
+        
+def logout_view(request):
+    request.session.flush()  # Clears all session data, logs out the user
+    return JsonResponse({'status': 'ok', 'message': 'Logged out'})

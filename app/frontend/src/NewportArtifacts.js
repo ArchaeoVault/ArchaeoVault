@@ -18,8 +18,98 @@ const List = () => {
 
   const [showFilters, setShowFilters] = useState(false);
 
+  // const [isEditing, setIsEditing] = useState(false);
+  // const [editingIndex, setEditingIndex] = useState(null);
+
+
+  const [showForm, setShowForm] = useState(false); //  Admin-only
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingIndex, setEditingIndex] = useState(null);
+  const [newArtifact, setNewArtifact] = useState({ //  Admin-only
+  name: '',
+  description: '',
+  scanned: 'No',
+  year: '',
+  organic: 'inorganic',
+  material: '',
+  address: 'Newport, RI'
+  });
+
   const artifactsPerPage = 5;
 
+  const handleInputChange = (e) => {
+    setNewArtifact({ ...newArtifact, [e.target.name]: e.target.value });
+  };
+  
+  const handleAddArtifact = (e) => {
+    e.preventDefault();
+    if (!newArtifact.name || !newArtifact.description || !newArtifact.material) {
+      alert("Please fill in all required fields.");
+      return;
+    }
+  
+    // const updatedArtifacts = [newArtifact, ...artifacts];
+    // setArtifacts(updatedArtifacts);
+    // setFilteredArtifacts(updatedArtifacts);
+    // setShowForm(false);
+    // setNewArtifact({
+    //   name: "",
+    //   description: "",
+    //   scanned: "No",
+    //   year: "",
+    //   organic: "inorganic",
+    //   material: "",
+    //   address: "Newport, RI", // or "Newport, RI"
+    // });
+
+    let updatedArtifacts = [...artifacts];
+
+    if (isEditing && editingIndex !== null) {
+      // Replace existing artifact
+      updatedArtifacts[editingIndex] = newArtifact;
+    } else {
+      // Add new artifact
+      updatedArtifacts = [newArtifact, ...artifacts];
+    }
+
+    setArtifacts(updatedArtifacts);
+    setFilteredArtifacts(updatedArtifacts);
+    resetForm();
+  };
+  
+  const handleDeleteArtifact = (index) => {
+    const updated = [...artifacts];
+    updated.splice(index, 1);
+    setArtifacts(updated);
+    setFilteredArtifacts(updated);
+  };
+  
+  const handleEditArtifact = (index) => {
+    const artifactToEdit = artifacts[index];
+    setNewArtifact(artifactToEdit);
+    setIsEditing(true);
+    setEditingIndex(index);
+    // handleDeleteArtifact(index);
+    setShowForm(true);
+  };
+
+  const resetForm = () => {
+    setNewArtifact({
+      name: "",
+      description: "",
+      scanned: "No",
+      year: "",
+      organic: "inorganic",
+      material: "",
+      address: "Newport, RI", // or "Newport, RI"
+    });
+    setShowForm(false);
+    setIsEditing(false);
+    setEditingIndex(null);
+  };
+  
+  
+  
   useEffect(() => {
     fetch("/cleaned_data.csv")
       .then((response) => response.text())
@@ -125,6 +215,51 @@ const List = () => {
       <div className="artifact-list">
         <h2>Newport, RI Artifacts</h2>
 
+        {localStorage.getItem('isAdmin') === 'true' && (
+          <>
+            {!showForm && (
+              <button
+                className="toggle-form-btn"
+                onClick={() => {
+                  resetForm(); // clear everything
+                  setShowForm(true); // open the form
+                }}
+              >
+                Add New Artifact
+              </button>
+            )}
+            
+            {showForm && (
+              <button className="toggle-form-btn" onClick={resetForm}>
+                Close
+              </button>
+            )}
+
+            {showForm && (
+              <form onSubmit={handleAddArtifact} className="artifact-form">
+                <label>Name: <input type="text" name="name" value={newArtifact.name} onChange={handleInputChange} required /></label>
+                <label>Description: <textarea name="description" value={newArtifact.description} onChange={handleInputChange} required /></label>
+                <label>3D Scanned:
+                  <select name="scanned" value={newArtifact.scanned} onChange={handleInputChange}>
+                    <option value="No">No</option>
+                    <option value="Yes">Yes</option>
+                  </select>
+                </label>
+                <label>Year: <input type="text" name="year" value={newArtifact.year} onChange={handleInputChange} /></label>
+                <label>Material: <input type="text" name="material" value={newArtifact.material} onChange={handleInputChange} required /></label>
+                <label>Organic/Inorganic:
+                  <select name="organic" value={newArtifact.organic} onChange={handleInputChange}>
+                    <option value="inorganic">Inorganic</option>
+                    <option value="organic">Organic</option>
+                  </select>
+                </label>
+                <button type="submit">Add Artifact</button>
+              </form>
+            )}
+          </>
+        )}
+
+
         {/* Filters Toggle */}
         <div className="filters-container">
           <button
@@ -189,6 +324,13 @@ const List = () => {
               <div key={index} className="artifact-item">
                 <h3>{artifact.name}</h3>
                 <p>{artifact.description}</p>
+
+                {localStorage.getItem('isAdmin') === 'true' && (
+                  <div className="admin-buttons">
+                    <button onClick={() => handleEditArtifact(index)}>Edit</button>
+                    <button onClick={() => handleDeleteArtifact(index)}>Delete</button>
+                  </div>
+                )}
               </div>
             ))
           )}

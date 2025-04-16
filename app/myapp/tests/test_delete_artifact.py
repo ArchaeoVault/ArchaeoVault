@@ -131,14 +131,15 @@ class test_delete_artifact(TestCase):
             uhlflages="None",
             id = 1
         )
-    
-    def test_delete_artifact_success(self):
-        self.assertTrue(your_table.objects.filter(id =1).exists())
         self.client.post(
             reverse('login_view'),
             data = json.dumps({'email':'testuser@example.com','password':'securepassword123'}),
             content_type='application/json'
             )
+
+    def test_delete_artifact_success(self):
+        self.assertTrue(your_table.objects.filter(id =1).exists())
+        
         response = self.client.post(
             reverse('delete_artifact_view'),
             data = json.dumps({'id':1}),
@@ -150,11 +151,11 @@ class test_delete_artifact(TestCase):
 
 
     def test_invalid_id_number(self):
-        self.client.post(
-            reverse('login_view'),
-            data = json.dumps({'email':'testuser@example.com','password':'securepassword123'}),
-            content_type='application/json'
-            )
+        # self.client.post(
+        #     reverse('login_view'),
+        #     data = json.dumps({'email':'testuser@example.com','password':'securepassword123'}),
+        #     content_type='application/json'
+        #     )
         response = self.client.post(
             reverse('delete_artifact_view'),
             data = json.dumps({'id':-2}),
@@ -163,11 +164,11 @@ class test_delete_artifact(TestCase):
         self.assertEqual(response.status_code,403)
 
     def test_mismatch_id_number(self):
-        self.client.post(
-            reverse('login_view'),
-            data = json.dumps({'email':'testuser@example.com','password':'securepassword123'}),
-            content_type='application/json'
-            )
+        # self.client.post(
+        #     reverse('login_view'),
+        #     data = json.dumps({'email':'testuser@example.com','password':'securepassword123'}),
+        #     content_type='application/json'
+        #     )
         response = self.client.post(
             reverse('delete_artifact_view'),
             data = json.dumps({'id': 2}),
@@ -177,11 +178,11 @@ class test_delete_artifact(TestCase):
 
     def test_invalid_permissions(self):
         self.assertTrue(your_table.objects.filter(id =1).exists())
-        self.client.post(
-            reverse('login_view'),
-            data = json.dumps({'email':'genPub@email.com','password':'password123'}),
-            content_type='application/json'
-            )
+        # self.client.post(
+        #     reverse('login_view'),
+        #     data = json.dumps({'email':'genPub@email.com','password':'password123'}),
+        #     content_type='application/json'
+        #     )
         response = self.client.post(
             reverse('delete_artifact_view'),
             data = json.dumps({'id':1}),

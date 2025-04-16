@@ -142,7 +142,7 @@ def create_user_view(request):
             user = users.objects.create(
                 email=email,
                 upassword=password,
-                activated = False,
+                activated = True,
                 upermission = permission
             )
             #print('after creating user')
@@ -338,10 +338,13 @@ def edit_artifact_view(request):
             email = request.session.get('user_email') #gets current sessions email
             print(email)
             artifactId = data.get('id')
-            object_name = data.get('object_name')
-            object_description = data.get('object_description')
-            #print('Getting user')
-            if not all([email, artifactId,object_name,object_description]):
+            object_name = data.get('name')
+            location = data.get('location')
+            age = data.get('age')
+            materialId = data.get('material')
+            object_description = data.get('description')
+            print('Getting user')
+            if not all([email, artifactId,object_name,object_description,location,age,materialId]):
                 return JsonResponse({'error': 'All fields are required'}, status=404)
             if not users.objects.filter(email=email).exists():
                 #print('User does not exist')
@@ -349,7 +352,8 @@ def edit_artifact_view(request):
             user = users.objects.get(email = email)
             #print('got user')
             numberValue = user.upermission.numval
-            #print('got numval')
+            material = materialtype.objects.get(id = materialId)
+            print('got numval')
             if numberValue == 4:
                 #print('Cant be gen pub')
                 return JsonResponse({'error':'General Public can not edit artifacts'}, status = 402)
@@ -360,6 +364,9 @@ def edit_artifact_view(request):
                 artifact = your_table.objects.get(id = artifactId)
                 artifact.object_description = object_description
                 artifact.object_name = object_name
+                artifact.location = location
+                artifact.object_dated_to = age
+                artifact.material_of_manufacture = material
                 artifact.save()
                 return JsonResponse({'message':'Artifact successfully editied'}, status = 200)
             except Exception as e:

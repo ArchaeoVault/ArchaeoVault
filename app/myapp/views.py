@@ -41,7 +41,7 @@ def login_view(request):
             data = json.loads(request.body)
             email = data.get('email')
             password = data.get('password')
-            print('Checking all fields are filled')
+            #print('Checking all fields are filled')
             if not email or not password:
                 return JsonResponse({"status": "error", "message": "Email and password are required."}, status=400)
 
@@ -57,6 +57,7 @@ def login_view(request):
             
                 if user is not None:
                     login(request, user)
+                    request.session['user_email'] = user.email #stores users email for current session to be used later
                     return JsonResponse({
                         "status": "ok",
                         "user": {
@@ -72,7 +73,7 @@ def login_view(request):
             return JsonResponse({"status": "error", "message": "Invalid JSON format."}, status=400)
 
     return JsonResponse({"status": "error", "message": "Invalid request method."}, status=400)
-  
+
 @csrf_exempt
 def signup(request):
     if request.method == 'POST':
@@ -109,7 +110,7 @@ def get_csrf_token(request):
 
 @csrf_protect
 def create_user_view(request):
-    print(request)
+    #print(request)
     if request.method == 'POST':
         try:
             # Parsing the incoming JSON data
@@ -119,33 +120,33 @@ def create_user_view(request):
             confirm_password = data.get('confirm_password')
 
             # Validation logic
-            print('checking if all fields filled')
+            #print('checking if all fields filled')
             if not all([email, password,confirm_password]):
                 return JsonResponse({'error': 'All fields are required'}, status=400)
-            print('checking if password match')
+            #print('checking if password match')
             if password != confirm_password:
                 return JsonResponse({'error': 'Passwords do not match'}, status=400)
-            print('checking if object already exists')
+            #print('checking if object already exists')
             if users.objects.filter(email=email).exists():
-                print('object already exists')
+                #print('object already exists')
                 return JsonResponse({'error': 'User with this email already exists'}, status=400)
-            print('validating email')
+            #print('validating email')
             try:
                 validate_email(email)
             except ValidationError:
                 return JsonResponse({'error': 'Invalid email address'}, status=400)
 
             # Create the user
-            print('Creating user')
+            #print('Creating user')
             permission = permissions.objects.get(numval = 4, givenrole = 'GeneralPublic')
             user = users.objects.create(
                 email=email,
                 upassword=password,
-                activated = False,
+                activated = True,
                 upermission = permission
             )
-            print('after creating user')
-            print(user.email)
+            #print('after creating user')
+            #print(user.email)
             return JsonResponse({'message': 'User created successfully'}, status=200)
 
         except json.JSONDecodeError:
@@ -366,3 +367,88 @@ def change_password_view(request):
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
         except Exception as e:
             return JsonResponse({'error':'Error changing password'},status = 400)
+
+def delete_artifact_view(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            #print('In try')
+            
+            email = request.session.get('user_email') #gets current sessions email
+            # print(email)
+            artifactId = data.get('id')
+            #print('Getting user')
+            if not users.objects.filter(email=email).exists():
+                #print('User does not exist')
+                return JsonResponse({'error':'User with this email does not exist'}, status = 401)
+            user = users.objects.get(email = email)
+            #print('got user')
+            numberValue = user.upermission.numval
+            if numberValue == 4:
+                #print('Cant be gen pub')
+                return JsonResponse({'error':'General Public can not delete artifacts'}, status = 402)
+            if not your_table.objects.filter(id = artifactId).exists():
+                #print('Artifact dont exist')
+                return JsonResponse({'error':'Artifact you are trying to delete does not exist'}, status = 403)
+            try:
+                artifact = your_table.objects.get(id = artifactId)
+                artifact.delete()
+                if not your_table.objects.filter(id = artifactId).exists():
+                    #print('Artifact delete')
+                    return JsonResponse({'message':'Artifact successfully deleted'}, status = 200)
+            except Exception as e:
+                #print('In inner exception')
+                return JsonResponse ({'error':'Error in deleting artifact'}, status = 400)
+        except Exception as e:
+            #print('Outer exception')
+            return JsonResponse ({'error':'Error in deleting artifact'}, status = 400)
+        
+def edit_artifact_view(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            #print('In try')
+            email = request.session.get('user_email') #gets current sessions email
+            #print(email)
+            artifactId = data.get('id')
+            object_name = data.get('name')
+            location = data.get('location')
+            age = data.get('age')
+            materialId = data.get('material')
+            object_description = data.get('description')
+            #print('Getting user')
+            if not all([email, artifactId,object_name,object_description,location,age,materialId]):
+                return JsonResponse({'error': 'All fields are required'}, status=404)
+            if not users.objects.filter(email=email).exists():
+                #print('User does not exist')
+                return JsonResponse({'error':'User with this email does not exist'}, status = 401)
+            user = users.objects.get(email = email)
+            #print('got user')
+            numberValue = user.upermission.numval
+            material = materialtype.objects.get(id = materialId)
+            #print('got numval')
+            if numberValue == 4:
+                #print('Cant be gen pub')
+                return JsonResponse({'error':'General Public can not edit artifacts'}, status = 402)
+            if not your_table.objects.filter(id = artifactId).exists():
+                #print('Artifact dont exist')
+                return JsonResponse({'error':'Artifact you are trying to edit does not exist'}, status = 403)
+            try:
+                artifact = your_table.objects.get(id = artifactId)
+                artifact.object_description = object_description
+                artifact.object_name = object_name
+                artifact.location = location
+                artifact.object_dated_to = age
+                artifact.material_of_manufacture = material
+                artifact.save()
+                return JsonResponse({'message':'Artifact successfully editied'}, status = 200)
+            except Exception as e:
+                #print('In inner exception')
+                return JsonResponse ({'error':'Error in editing artifact'}, status = 400)
+        except Exception as e:
+            #print('Outer exception')
+            return JsonResponse ({'error':'Error in editing artifact'}, status = 400)
+        
+def logout_view(request):
+    request.session.flush()  # Clears all session data, logs out the user
+    return JsonResponse({'status': 'ok', 'message': 'Logged out'})

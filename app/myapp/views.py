@@ -82,29 +82,8 @@ def login_view(request):
 
     return JsonResponse({"status": "error", "message": "Invalid request method."}, status=400)
   
-@csrf_exempt
-def signup(request):
-    if request.method == 'POST':
-        try:
-            data = json.loads(request.body)
-            username = data.get('username')
-            password = data.get('password')
-            email = data.get('email')
-            if not username or not password or not email:
-                return JsonResponse({'error': 'Missing fields'}, status=400)
-
-            if User.objects.filter(username=username).exists():
-                return JsonResponse({'error': 'Username already exists'}, status=400)
-
-            user = User.objects.create_user(username=username, password=password, email=email)
-            return JsonResponse({'message': 'User created successfully'}, status=201)
-        except Exception as e:
-            return JsonResponse({'error': str(e)}, status=500)
-    return JsonResponse({'error': 'Invalid request method'}, status=405)
-
 def home(request):
     return redirect('http://localhost:3000')
-
 
 def index(request):
     return redirect('http://localhost:3000')
@@ -122,6 +101,7 @@ def create_user_view(request):
         try:
             # Parsing the incoming JSON data
             data = json.loads(request.body)
+            username = data.get('first_name')
             email = data.get('email')
             password = data.get('password')
             confirm_password = data.get('confirm_password')
@@ -325,5 +305,5 @@ def get_email_from_token(request, uidb64, token):
             print(f"Invalid token for user: {user.email}, token: {token}")
             return JsonResponse({'error': 'Invalid token'}, status=400)
 
-    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+    except (TypeError, ValueError, OverflowError, users.DoesNotExist):
         return JsonResponse({'error': 'Invalid request'}, status=400)

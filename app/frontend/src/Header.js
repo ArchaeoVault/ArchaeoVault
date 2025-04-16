@@ -4,7 +4,7 @@ import './Header.css';
 
 const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userName, setUserName] = useState('');
+  /*const [userName, setUserName] = useState('');*/
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [hamburgerOpen, setHamburgerOpen] = useState(false);
   const dropdownRef = useRef();
@@ -12,9 +12,9 @@ const Header = () => {
 
   useEffect(() => {
     const auth = localStorage.getItem('isAuthenticated') === 'true';
-    const name = localStorage.getItem('userName');
+    /*const name = localStorage.getItem('userName');*/
     setIsLoggedIn(auth);
-    setUserName(name || '');
+    /*setUserName(name || '');*/
   }, []);
 
   const toggleDropdown = () => {
@@ -39,9 +39,8 @@ const Header = () => {
 
   const handleSignOut = () => {
     localStorage.removeItem('isAuthenticated');
-    localStorage.removeItem('userName');
     setIsLoggedIn(false);
-    setUserName('');
+    /*setUserName('');*/
     navigate('/login');
   };
 
@@ -78,11 +77,11 @@ const Header = () => {
         ) : (
           <div className="account-section" ref={dropdownRef}>
             <div className="account-bubble" onClick={toggleDropdown}>
-              {userName.charAt(0).toUpperCase()}
+              <img src="/profile_bubble.jpg" alt="Profile" className="profile-img" />
             </div>
             {dropdownOpen && (
               <div className="account-dropdown">
-                <p>Hi, {userName}!</p>
+                <p>Welcome!</p>
                 <button onClick={handleSignOut}>Sign Out</button>
               </div>
             )}
@@ -101,11 +100,11 @@ const Header = () => {
         ) : (
           <div className="account-section" ref={dropdownRef}>
             <div className="account-bubble" onClick={toggleDropdown}>
-              {userName.charAt(0).toUpperCase()}
+              <img src="/profile_bubble.jpg" alt="Profile" className="profile-img" />
             </div>
             {dropdownOpen && (
               <div className="account-dropdown">
-                <p>Hi, {userName}!</p>
+                <p>Welcome!</p>
                 <button onClick={handleSignOut}>Sign Out</button>
               </div>
             )}

@@ -41,7 +41,7 @@ else:
     frontend_url = 'http://localhost:3000'
 
 
-@csrf_exempt
+@csrf_protect
 def login_view(request):
     # print(request.body)
     if request.method == 'POST':
@@ -222,7 +222,7 @@ def activate(request, uidb64, token):
 
     
 
-@csrf_exempt
+@csrf_protect
 def resend_verification_view(request):
     if(request.method == 'POST'):
         data = json.loads(request.body)
@@ -258,7 +258,7 @@ def resend_verification_view(request):
     return JsonResponse({
                         "status": "ok",
                         }, status=200)
-@csrf_exempt
+@csrf_protect
 def change_password_view(request):
     if request.method == 'POST':
         try: 
@@ -289,7 +289,7 @@ def change_password_view(request):
             print(str(e))  # Log the actual error message for debugging
             return JsonResponse({'error': 'Error changing password'}, status=400)
 
-@csrf_exempt
+@csrf_protect
 def get_email_from_token(request, uidb64, token):
     try:
         # Decode the user id

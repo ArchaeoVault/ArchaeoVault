@@ -30,10 +30,10 @@ const App = () => {
     return element;
   };
 
-  const PrivateAdminRoute = ({ element }) => {
+  /*const PrivateAdminRoute = ({ element }) => {
     const isAdmin = localStorage.getItem('isAdmin') === 'true';
     return isAdmin ? element : <Navigate to="/login" />;
-  };
+  };*/
 
   return (
     <Router>
@@ -63,7 +63,7 @@ const App = () => {
 
         <Route path="/" element={<HomePage />} />
 
-        <Route path="/adminpage" element={<PrivateAdminRoute element={<AdminPage />} />} />
+        {/*<Route path="/adminpage" element={<PrivateAdminRoute element={<AdminPage />} />} />*/}
       </Routes>
     </Router>
   );

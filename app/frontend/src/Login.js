@@ -52,13 +52,12 @@ const Login = () => {
         
         localStorage.setItem('isAuthenticated', true); // Store authentication status
         /*localStorage.setItem('isAdmin', email === 'archaeovault77@gmail.com'); // Check if the user is an admin*/
-
-        if (email === "archaeovault77@gmail.com") {
-          navigate('/artifacts'); // Redirect to the homepage
+        console.log(result.user.upermission);
+        if (result.user.upermission === 3) {
+          navigate('/adminpage'); // Redirect to the homepage
         } else {
           navigate('/artifacts'); // Redirect to the homepage
         }
-        // navigate(''); // Redirect to the homepage
       } else {
         alert(result.message); // Show error message from the backend
       }

@@ -57,23 +57,22 @@ def login_view(request):
             # Try to get the user by email
 
             try:
-                # Get user by email
                 user = users.objects.get(email=email)
 
-                # Now authenticate using the user's username and password
-                if password != user.upassword:  # Compare hashed password
-                    return JsonResponse({'status':'error','message':'Passwords do not match'}, status = 400)
+                if password != user.upassword:
+                    return JsonResponse({'status': 'error', 'message': 'Passwords do not match'}, status=400)
+
+                # Manually store session value (just like login() would)
+                request.session['user_email'] = user.email
+
+                return JsonResponse({
+                    "status": "ok",
+                    "user": {
+                        "email": user.email,
+                        "upermission": user.upermission.numval
+                    }
+                }, status=200)
             
-                if user is not None:
-                    login(request, user)
-                    return JsonResponse({
-                        "status": "ok",
-                        "user": {
-                            "email": user.email
-                        }
-                    }, status=200)
-                else:
-                    return JsonResponse({"status": "error", "message": "Invalid credentials"}, status=400)
             except users.DoesNotExist:
                 return JsonResponse({"status": "error", "message": "Invalid credentials"}, status=400)
 

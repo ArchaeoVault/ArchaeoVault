@@ -33,6 +33,7 @@ const ForgotPassword = () => {
     e.preventDefault();
     const response = await fetch(backend_url+'resend_verification', {
       method: 'POST',
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
         'X-CSRFToken': csrfToken,

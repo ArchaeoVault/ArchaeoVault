@@ -207,6 +207,7 @@ def all_artifacts_view(request):
     # Return data as JSON response
     return JsonResponse({'artifacts': artifact_data}, status = 200)
 
+#Not sure if we could use this for somethin else
 def activate(request, uidb64, token):
     #put boolean that sets user active to true
     uid = urlsafe_base64_decode(uidb64).decode()
@@ -219,9 +220,7 @@ def activate(request, uidb64, token):
         reset_url = f"{frontend_url}/reset/{uidb64}/{token}"
         return redirect(reset_url)
     return HttpResponseBadRequest("Invalid activation link or token.")
-
-    
-
+  
 @csrf_protect
 def resend_verification_view(request):
     if(request.method == 'POST'):
@@ -255,9 +254,8 @@ def resend_verification_view(request):
             return JsonResponse({'message': 'Verification email has been sent'}, status=200)
         else:
             return JsonResponse({'error': 'Email address not associated with an account'}, status=400)
-    return JsonResponse({
-                        "status": "ok",
-                        }, status=200)
+    return JsonResponse({ "status": "ok",}, status=200)
+
 @csrf_protect
 def change_password_view(request):
     if request.method == 'POST':

@@ -33,13 +33,14 @@ const ResetPassword = () => {
   }, []);
 
   useEffect(() => {
-  
+    if (!csrfToken) return;
     const getEmailFromToken = async () => {
       try {
         const response = await fetch(`${backend_url}get_email_from_token/${uidb64}/${token}/`, {
           method: 'GET',
           credentials: 'include', // Ensure cookies are included in the request
           headers: {
+            'Content-Type': 'application/json',
             'X-CSRFToken': csrfToken, // Include the CSRF token in the request header
           },
         });
@@ -75,6 +76,7 @@ const ResetPassword = () => {
     }
     const response = await fetch(backend_url+`change_password/`, {
       method: 'POST',
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
         'X-CSRFToken': csrfToken,

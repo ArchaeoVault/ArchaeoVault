@@ -5,6 +5,7 @@ from django.contrib.auth.models import User #imports django user model if we dec
 from django.core.mail import send_mail
 from myapp.models import users, permissions
 import json
+from myapp.models import (permissions)
 
 class test_resend_verification(TestCase):
 

@@ -3,14 +3,16 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 import json
 from unittest.mock import patch
+from myapp.models import users, permissions
 
 class SendPasswordResetEmailTests(TestCase):
     def setUp(self):
         self.client = Client()
         self.user_email = "test@example.com"
         self.user_password = "TestPassword123"
-        self.user = User.objects.create_user(username=self.user_email, email=self.user_email, password=self.user_password)
-        self.endpoint = reverse('send_password_reset_email')  # Assume the URL name is 'send_password_reset_email'
+        self.permission = permissions.objects.create(numval = 4, givenrole = 'GeneralPublic')
+        self.user = users.objects.create(email=self.user_email, upassword=self.user_password, upermission=self.permission, activated=True)
+        self.endpoint = reverse('send_change_password_email_view')  # Assume the URL name is 'send_change_password_email_view'
         self.valid_data = {"email": self.user_email}
 
     def test_invalid_request_method(self):

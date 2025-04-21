@@ -5,13 +5,15 @@ from django.utils.encoding import force_bytes
 from django.http import JsonResponse
 from myapp.models import users, permissions
 import json
+from myapp.models import (permissions)
 
 class ChangePasswordViewTests(TestCase):
     def setUp(self):
         self.client = Client()
         self.user_email = "test@example.com"
         self.user_password = "OldPassword123"
-        self.user = User.objects.create_user(username=self.user_email, email=self.user_email, password=self.user_password)
+        self.permission = permissions.objects.create(numval = 4, givenrole = 'GeneralPublic')
+        self.user = users.objects.create(email=self.user_email, upassword=self.user_password, upermission=self.permission, activated=True)
         self.token = "valid_token"  # Simulate the token for testing purposes
         self.uidb64 = urlsafe_base64_encode(force_bytes(self.user_email))
 

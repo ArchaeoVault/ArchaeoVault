@@ -26,9 +26,10 @@ urlpatterns = [
     path('api/login/', views.login_view, name = 'login_view'),
     path('api/resend_verification',views.resend_verification_view, name = 'resend_verification_view'),
     path('activate/<uidb64>/<token>/', views.activate, name='activate'),
-    path('api/change_password', views.change_password_view, name = 'change_password_view'),
+    path('api/change_password/<uidb64>/<token>/', views.change_password_view, name = 'change_password_view'),
     path('api/delete_artifact/', views.delete_artifact_view, name = 'delete_artifact_view'),
     path('api/edit_artifact/', views.edit_artifact_view, name = 'edit_artifact_view'),
     path('api/logout/', views.logout_view, name = 'logout_view'),
-    path('api/get_csrf_token/', views.get_csrf_token, name = 'get_csrf_token')
+    path('api/get_csrf_token/', views.get_csrf_token, name = 'get_csrf_token'),
+    path('api/send_password_reset/', views.send_password_reset_view, name = 'send_password_reset_view')
 ]

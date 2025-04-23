@@ -50,7 +50,7 @@ def login_view(request):
             data = json.loads(request.body)
             email = data.get('email')
             password = data.get('password')
-            print('Checking all fields are filled')
+            #print('Checking all fields are filled')
             if not email or not password:
                 return JsonResponse({"status": "error", "message": "Email and password are required."}, status=400)
 
@@ -59,20 +59,21 @@ def login_view(request):
             try:
                 user = users.objects.get(email=email)
 
-                if password != user.upassword:
-                    return JsonResponse({'status': 'error', 'message': 'Passwords do not match'}, status=400)
-
-                # Manually store session value (just like login() would)
-                request.session['user_email'] = user.email
-
-                return JsonResponse({
-                    "status": "ok",
-                    "user": {
-                        "email": user.email,
-                        "upermission": user.upermission.numval
-                    }
-                }, status=200)
+                # Now authenticate using the user's username and password
+                if password != user.upassword:  # Compare hashed password
+                    return JsonResponse({'status':'error','message':'Passwords do not match'}, status = 400)
             
+                if user is not None:
+                    login(request, user)
+                    request.session['user_email'] = user.email #stores users email for current session to be used later
+                    return JsonResponse({
+                        "status": "ok",
+                        "user": {
+                            "email": user.email
+                        }
+                    }, status=200)
+                else:
+                    return JsonResponse({"status": "error", "message": "Invalid credentials"}, status=400)
             except users.DoesNotExist:
                 return JsonResponse({"status": "error", "message": "Invalid credentials"}, status=400)
 
@@ -81,6 +82,27 @@ def login_view(request):
 
     return JsonResponse({"status": "error", "message": "Invalid request method."}, status=400)
   
+@csrf_exempt
+def signup(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            username = data.get('username')
+            password = data.get('password')
+            email = data.get('email')
+
+            if not username or not password or not email:
+                return JsonResponse({'error': 'Missing fields'}, status=400)
+
+            if User.objects.filter(username=username).exists():
+                return JsonResponse({'error': 'Username already exists'}, status=400)
+
+            user = User.objects.create_user(username=username, password=password, email=email)
+            return JsonResponse({'message': 'User created successfully'}, status=201)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
 def home(request):
     return redirect('http://localhost:3000')
 
@@ -95,7 +117,7 @@ def get_csrf_token(request):
 
 @csrf_protect
 def create_user_view(request):
-    print(request)
+    #print(request)
     if request.method == 'POST':
         try:
             # Parsing the incoming JSON data
@@ -106,33 +128,33 @@ def create_user_view(request):
             confirm_password = data.get('confirm_password')
 
             # Validation logic
-            print('checking if all fields filled')
+            #print('checking if all fields filled')
             if not all([email, password,confirm_password]):
                 return JsonResponse({'error': 'All fields are required'}, status=400)
-            print('checking if password match')
+            #print('checking if password match')
             if password != confirm_password:
                 return JsonResponse({'error': 'Passwords do not match'}, status=400)
-            print('checking if object already exists')
+            #print('checking if object already exists')
             if users.objects.filter(email=email).exists():
-                print('object already exists')
+                #print('object already exists')
                 return JsonResponse({'error': 'User with this email already exists'}, status=400)
-            print('validating email')
+            #print('validating email')
             try:
                 validate_email(email)
             except ValidationError:
                 return JsonResponse({'error': 'Invalid email address'}, status=400)
 
             # Create the user
-            print('Creating user')
+            #print('Creating user')
             permission = permissions.objects.get(numval = 4, givenrole = 'GeneralPublic')
             user = users.objects.create(
                 email=email,
                 upassword=password,
-                activated = False,
+                activated = True,
                 upermission = permission
             )
-            print('after creating user')
-            print(user.email)
+            #print('after creating user')
+            #print(user.email)
             return JsonResponse({'message': 'User created successfully'}, status=200)
 
         except json.JSONDecodeError:
@@ -207,21 +229,17 @@ def all_artifacts_view(request):
     # Return data as JSON response
     return JsonResponse({'artifacts': artifact_data}, status = 200)
 
-#Not sure if we could use this for somethin else
 def activate(request, uidb64, token):
     #put boolean that sets user active to true
-    uid = urlsafe_base64_decode(uidb64).decode()
-    print("uid: ", uid)
-    user = users.objects.get(email = uid)
-    print("User: ", user)
+    uid = urlsafe_base64_decode(uidb64)
+    user = User.objects.get(email = uid)
     if user is not None and account_activation_token.check_token(user, token):
         user.activated = True
         user.save()
-        reset_url = f"{frontend_url}/reset/{uidb64}/{token}"
-        return redirect(reset_url)
-    return HttpResponseBadRequest("Invalid activation link or token.")
-  
-@csrf_protect
+        return render(request, 'home.html')
+
+    
+
 def resend_verification_view(request):
     if(request.method == 'POST'):
         data = json.loads(request.body)
@@ -256,12 +274,10 @@ def resend_verification_view(request):
             return JsonResponse({'error': 'Email address not associated with an account'}, status=400)
     return JsonResponse({ "status": "ok",}, status=200)
 
-@csrf_protect
 def change_password_view(request):
     if request.method == 'POST':
         try: 
             data = json.loads(request.body)
-            print("data:", data)
             email = data.get('email')
             newPassword = data.get('newPassword')
             confirmPassword = data.get('confirmPassword')
@@ -272,35 +288,18 @@ def change_password_view(request):
             user = users.objects.get(email = email)
             if newPassword == user.upassword:
                 return JsonResponse({'error':'New Password can not be the same as the old password'}, status = 400)
-            try:
-                print('Changing password')
-                user.upassword = newPassword
-                user.save()
-            except Exception as e:
-                print('Error resetting')
-                return JsonResponse({'error':'Error in updating and saving password'}, status = 400)
+            if account_activation_token.check_token(user, token):
+                try:
+                    print('Changing password')
+                    user.upassword = newPassword
+                    user.save()
+                except Exception as e:
+                    print('Error resetting')
+                    return JsonResponse({'error':'Error in updating and saving password'}, status = 400)
+            else:
+                return JsonResponse({'error':'Token is invalid'}, status = 400)
             return JsonResponse({'message':'Password successfully reset'}, status = 200)
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
         except Exception as e:
             return JsonResponse({'error':'Error changing password'},status = 400)
-            print(str(e))  # Log the actual error message for debugging
-            return JsonResponse({'error': 'Error changing password'}, status=400)
-
-@csrf_protect
-def get_email_from_token(request, uidb64, token):
-    try:
-        # Decode the user id
-        uid = urlsafe_base64_decode(uidb64).decode()
-        user = users.objects.get(email=uid)
-        print("uid: ", uid)
-        print("user: ", user)
-        # Check the token
-        if account_activation_token.check_token(user, token):
-            return JsonResponse({'email': user.email}, status=200)
-        else:
-            print(f"Invalid token for user: {user.email}, token: {token}")
-            return JsonResponse({'error': 'Invalid token'}, status=400)
-
-    except (TypeError, ValueError, OverflowError, users.DoesNotExist):
-        return JsonResponse({'error': 'Invalid request'}, status=400)

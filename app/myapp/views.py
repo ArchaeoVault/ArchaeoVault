@@ -452,3 +452,38 @@ def edit_artifact_view(request):
 def logout_view(request):
     request.session.flush()  # Clears all session data, logs out the user
     return JsonResponse({'status': 'ok', 'message': 'Logged out'})
+
+def admin_create_user_view(request):
+    if request.method == 'POST':
+        try:
+            print()
+        except Exception as e:
+            return JsonResponse({'error':'Error in creating a user'}, status = 400)
+        
+def admin_edit_user_view(request):
+    if request.method == 'POST':
+        try:
+            print()
+        except Exception as e:
+            return JsonResponse({'error':'Error in editing a user'}, status = 400)
+        
+def admin_delete_user_view(request):
+    if request.method == 'POST':
+        try:
+            print()
+        except Exception as e:
+            return JsonResponse({'error':'Error in deleting a user'}, status = 400)
+        
+def admin_see_all_users_view(request):
+    if request.method == 'POST':
+        try:
+            print()
+        except Exception as e:
+            return JsonResponse({'error':'Error in displaying all users'}, status = 400)
+        
+def admin_reset_user_password_view(request):
+    if request.method == 'POST':
+        try:
+            print()
+        except Exception as e:
+            return JsonResponse({'error':'Error in resetting a users password'}, status = 400)

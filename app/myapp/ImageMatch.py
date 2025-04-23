@@ -12,6 +12,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'app.local')  # replace with you
 django.setup()
 
 from myapp.models import your_table
+from myapp.models import imagetable
 #######################
 
 dir_to_check =  r'/var/www/html/artifact_images/FINISHED JPG'
@@ -34,8 +35,9 @@ for image in images:
 
     # Get id by using select statement with catalog #
     # select id from public.myapp_your_table where "Catalog # (day inventory)" = '2022-9-29-576'
-    artifacts = your_table.objects.filter(catalog_number=catalog_number)
-    artifact_id = artifacts[0].id
+    artifacts = your_table.objects.filter(catalog_number__icontains=catalog_number)
+    for artifact in artifacts:
+        artifact_id = artifact.id
+        imagetable.objects.create(id=artifact_id, filepath=image)
+        print("Artifact ID: ",artifact_id," Catalog Number: ",catalog_number," FileName: ",image, "\n")
 
-    print("Artifact ID: ",artifact_id," Catalog Number: ",catalog_number," FileName: ",image, "\n")
-    #Update artifact in your_table with the filename, the catalog number is our connection

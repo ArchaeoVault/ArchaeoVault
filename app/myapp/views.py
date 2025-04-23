@@ -297,12 +297,20 @@ def single_artifact_view(request):
 
 def activate(request, uidb64, token):
     #put boolean that sets user active to true
-    uid = urlsafe_base64_decode(uidb64)
-    user = User.objects.get(email = uid)
-    if user is not None and account_activation_token.check_token(user, token):
-        user.activated = True
-        user.save()
-        return render(request, 'home.html')
+    try:
+        email = urlsafe_base64_decode(uidb64)
+        user = users.objects.get(email = email)
+    except Exception as e:
+        return JsonResponse({'error':'Invalid email'},status = 400)
+    if account_activation_token.check_token(user, token):
+        try:
+            user.activated = True
+            user.save()
+            return JsonResponse({'message':'User activation successful'},status = 200)
+        except Exception as e:
+            return JsonResponse({'error':'User activation failed'},status = 400)
+    else:
+        return JsonResponse({'error':'Invalid token'},status = 400)
 
     
 
@@ -341,11 +349,43 @@ def resend_verification_view(request):
             return JsonResponse({'error': 'Email address not associated with an account'}, status=400)
     return render(request, 'resend_verification.html')
 
-def change_password_view(request):
+def send_password_reset_view(request):
+    if(request.method == 'POST'):
+        data = json.loads(request.body)
+        email = data.get('email')
+        if(users.objects.filter(email = email).exists()):
+            #generates the uid and token
+            user = users.objects.get(email = email)
+            uid = urlsafe_base64_encode(force_bytes(user.email))
+            token = account_activation_token.make_token(user)
+            message = Mail(
+                from_email='noreply@archaeovault.com',
+                to_emails=user.email,
+                subject='ArchaeoVault Password Reset',
+                html_content=(
+                    f'<h2>Thank you for registering for ArchaeoVault, we really hope you enjoy!'
+                    f'Click on the link below to change your password.</h2>'
+                    f'<a href="https://www.archaeovault.com/api/change_password/{uid}/{token}/">Verify your email address</a>'
+                )
+            )
+            try:
+                sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
+                response = sg.send(message)
+                print(response.status_code)
+                #print(response.body)
+                # #print(response.headers)
+            except Exception as e:
+                print(str(e) + ' didnt work')
+            return JsonResponse({'message': 'Verification email has been sent'}, status=200)
+        else:
+            return JsonResponse({'error': 'Email address not associated with an account'}, status=400)
+    return render(request, 'resend_verification.html')
+
+def change_password_view(request, uidb64, token):
     if request.method == 'POST':
         try: 
             data = json.loads(request.body)
-            email = data.get('email')
+            email = urlsafe_base64_decode(uidb64)
             newPassword = data.get('newPassword')
             confirmPassword = data.get('confirmPassword')
             if not users.objects.filter(email=email).exists():
@@ -355,13 +395,16 @@ def change_password_view(request):
             user = users.objects.get(email = email)
             if newPassword == user.upassword:
                 return JsonResponse({'error':'New Password can not be the same as the old password'}, status = 400)
-            try:
-                print('Changing password')
-                user.upassword = newPassword
-                user.save()
-            except Exception as e:
-                print('Error resetting')
-                return JsonResponse({'error':'Error in updating and saving password'}, status = 400)
+            if account_activation_token.check_token(user, token):
+                try:
+                    print('Changing password')
+                    user.upassword = newPassword
+                    user.save()
+                except Exception as e:
+                    print('Error resetting')
+                    return JsonResponse({'error':'Error in updating and saving password'}, status = 400)
+            else:
+                return JsonResponse({'error':'Token is invalid'}, status = 400)
             return JsonResponse({'message':'Password successfully reset'}, status = 200)
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid JSON'}, status=400)

@@ -11,10 +11,10 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.firefox.options import Options
 import chromedriver_autoinstaller
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-from django.test import LiveServerTestCase
-from django.test import TestCase, Client
+from django.test import TestCase, Client, LiveServerTestCase,TransactionTestCase
 from django.contrib.auth.hashers import make_password, check_password
 from myapp.models import users, permissions
+from django.db import connection
 import json
 import os
 import tempfile
@@ -22,22 +22,12 @@ import shutil
 import time
 import subprocess
 
-
-
-
-class TestUATUserstory19(LiveServerTestCase,TestCase):
+class TestUATUserstory19(LiveServerTestCase,TransactionTestCase):
 	port = 8000
 	@classmethod
 	def setUpTestData(cls):
 		print("RUNNING setUpTestData")
-		permissions.objects.create(numval = 4, givenrole = 'GeneralPublic')
-		permission = permissions.objects.get(numval = 4, givenrole = 'GeneralPublic') 
-		users.objects.create(
-    	email="temp@email.com", upassword=make_password("password123"), activated = True, upermission = permission
-		)
-		print("All permissions:", list(permissions.objects.all()))
-		print("All users:", list(users.objects.all()))
-
+		
 
 
 	def setUp(self):
@@ -59,22 +49,24 @@ class TestUATUserstory19(LiveServerTestCase,TestCase):
 			options = Options()
 			options.set_capability("goog:loggingPrefs", {"performance": "ALL"})
 			self.driver = webdriver.Chrome(options = options)
-		
-		# if env == 'production':
-		# 	self.driver.get("http://152.42.155.23:3000/")
-		# else:
-		self.driver.get('http://localhost:3000')
-		print(self.live_server_url)
-		login_page_button = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.LINK_TEXT, "Login")))
-		login_page_button.click()
+			self.driver.get('http://localhost:3000/Login')
+
+		# Create a test user
+		permission = permissions.objects.create(numval = 4, givenrole = 'GeneralPublic')
+		test_user = users.objects.create(
+        email='temp@email.com',
+        upassword='password123',
+        activated=True,
+        upermission=permission
+    	)
+		test_user.save()
 
 	def test_valid_email_with_valid_password(self):
 		self.driver.implicitly_wait(1)
 		emailBox = self.driver.find_element(by = By.XPATH, value = "//input[@placeholder='Email']")
 		passwordBox = self.driver.find_element(by = By.XPATH, value = "//input[@placeholder='Password']")
-		emailBox.send_keys("temp@email.com")
-		passwordBox.send_keys("password123")
-		print(users.objects.all())
+		emailBox.send_keys('temp@email.com')
+		passwordBox.send_keys('password123')
 		submitButton = self.driver.find_element(By.XPATH, "//button[text()='Log In']")
 		submitButton.click()
 
@@ -85,16 +77,9 @@ class TestUATUserstory19(LiveServerTestCase,TestCase):
 			alert.accept()
 		except TimeoutException:
 			assert False
-		"""
-		for entry in self.driver.get_log("performance"):
-			log = json.loads(entry["message"])["message"]
-			if log["method"] == "Network.requestWillBeSent":
-				url = log["params"]["request"]["url"]
-				print(f"Frontend made request to: {url}")
-		"""
 		self.assertEqual(message, "Login successful!", f"{message} does not equal login successful")
 
-	"""
+	
 	def test_valid_email_with_invalid_password(self):
 		self.driver.implicitly_wait(1)
 		emailBox = self.driver.find_element(by = By.XPATH, value = "//input[@placeholder='Email']")
@@ -110,8 +95,7 @@ class TestUATUserstory19(LiveServerTestCase,TestCase):
 			alert.accept()
 		except TimeoutException:
 			assert False
-		assert message == "Invalid Email or Password"
-
+		self.assertEqual(message,"Passwords do not match", f"The alert says{message} instead of Passwords do not match")
 	def test_long_password(self):
 		self.driver.implicitly_wait(1)
 		emailBox = self.driver.find_element(by = By.XPATH, value = "//input[@placeholder='Email']")
@@ -127,8 +111,7 @@ class TestUATUserstory19(LiveServerTestCase,TestCase):
 			alert.accept()
 		except TimeoutException:
 			assert False
-		assert message == "Invalid Email or Password"
-
+		self.assertEqual(message,"Passwords do not match", f"The alert says{message} instead of Passwords do not match")
 
 
 	def test_long_email(self):
@@ -146,9 +129,7 @@ class TestUATUserstory19(LiveServerTestCase,TestCase):
 			alert.accept()
 		except TimeoutException:
 			assert False
-		assert message == "Invalid Email or Password"
-
-	"""
+		self.assertEqual(message,"Invalid credentials", "long password has messed up the login process")
 	
 	def test_no_email_no_password(self):
 		self.driver.implicitly_wait(1)
@@ -160,6 +141,7 @@ class TestUATUserstory19(LiveServerTestCase,TestCase):
 			validation_message = emailBox.get_attribute("validationMessage")
 		except:
 			print("No validation message found.")
+		self.assertEqual(validation_message,"Please fill out this field.", "failed to handle no username or password")
 
 
 	def test_valid_email_no_password(self):
@@ -172,7 +154,7 @@ class TestUATUserstory19(LiveServerTestCase,TestCase):
 			validation_message = passwordBox.get_attribute("validationMessage")
 		except:
 			print("No validation message found.")
-		assert validation_message == "Please fill out this field."
+		self.assertEqual(validation_message,"Please fill out this field.", "failed to valid username with no password")
 	
 
 	def test_no_email_valid_password(self):
@@ -185,7 +167,7 @@ class TestUATUserstory19(LiveServerTestCase,TestCase):
 			validation_message = emailBox.get_attribute("validationMessage")
 		except:
 			print("No validation message found.")
-		assert validation_message == "Please fill out this field."
+		self.assertEqual(validation_message,"Please fill out this field.", "failed to handle no username with valid password")
 
 	def test_email_sql_injection(self):
 		self.driver.implicitly_wait(1)
@@ -200,7 +182,7 @@ class TestUATUserstory19(LiveServerTestCase,TestCase):
 		except:
 			print("No validation message found.")
 		assert (validation_message == "A part following '@' should not contain the symbol ' '." or validation_message == "Please enter an email address.")
-	"""
+
 	def test_password_sql_injection(self):
 		self.driver.implicitly_wait(1)
 		emailBox = self.driver.find_element(by = By.XPATH, value = "//input[@placeholder='Email']")
@@ -216,13 +198,7 @@ class TestUATUserstory19(LiveServerTestCase,TestCase):
 			alert.accept()
 		except TimeoutException:
 			assert False
-		assert message == "Invalid Username or Password"
-		
-	def test_forgot_password_button(self):
-		self.driver.implicitly_wait(1)
-		forgotPasswordButton = self.driver.find_element(by = By.LINK_TEXT, value = "Forgot Password?")
-		forgotPasswordButton.click()
-		assert True"""
+		self.assertEqual(message,"Passwords do not match", "failed to handle sql injection properly")
 
 	def tearDown(self):
 		self.driver.close()

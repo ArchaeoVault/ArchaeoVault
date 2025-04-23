@@ -111,3 +111,9 @@ class your_table(models.Model):
     id = models.IntegerField(primary_key=True)
 
 
+
+
+class imagetable(models.Model):
+    your_table_id = models.ForeignKey(your_table, on_delete=models.CASCADE) #foriegn key
+    filepath = models.CharField(max_length=100,db_column='filepath')
+    

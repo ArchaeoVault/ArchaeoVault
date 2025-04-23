@@ -15,8 +15,8 @@ from myapp.models import your_table
 from myapp.models import imagetable
 #######################
 
-dir_to_check =  r'/var/www/html/artifact_images/FINISHED JPG'
-#dir_to_check = r'C:\Users\prory\OneDrive\Documents\2024-2025\Spring 2025\Capstone\image_test'
+#dir_to_check =  r'/var/www/html/artifact_images/FINISHED JPG'
+dir_to_check = r'C:\Users\prory\OneDrive\Documents\2024-2025\Spring 2025\Capstone\image_test'
 
 #Get list of images in the chosen directory
 images = os.listdir(dir_to_check)
@@ -38,6 +38,6 @@ for image in images:
     artifacts = your_table.objects.filter(catalog_number__icontains=catalog_number)
     for artifact in artifacts:
         artifact_id = artifact.id
-        imagetable.objects.create(id=artifact_id, filepath=image)
+        imagetable.objects.create(your_table_id=artifact, filepath=image)
         print("Artifact ID: ",artifact_id," Catalog Number: ",catalog_number," FileName: ",image, "\n")
 

@@ -1,4 +1,4 @@
-"""import unittest
+import unittest
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -43,7 +43,7 @@ class test_UAT_userstory8(LiveServerTestCase,TransactionTestCase):
 		permission = permissions.objects.create(numval = 4, givenrole = 'GeneralPublic')
 		test_user = users.objects.create(
         email='temp@email.com',
-        upassword='password123',
+        upassword='archaeovault',
         activated=True,
         upermission=permission
     	)
@@ -52,7 +52,8 @@ class test_UAT_userstory8(LiveServerTestCase,TransactionTestCase):
 		emailBox = self.driver.find_element(by = By.XPATH, value = "//input[@placeholder='Email']")
 		passwordBox = self.driver.find_element(by = By.XPATH, value = "//input[@placeholder='Password']")
 		emailBox.send_keys("temp@email.com")
-		passwordBox.send_keys("password123")
+		passwordBox.send_keys("archaeovault")
+		self.driver.implicitly_wait(1)
 		submitButton = self.driver.find_element(By.XPATH, "//button[text()='Log In']")
 		submitButton.click()
 		try:
@@ -88,6 +89,7 @@ class test_UAT_userstory8(LiveServerTestCase,TransactionTestCase):
 		self.driver.implicitly_wait(1)
 		self.driver.find_element(by = By.LINK_TEXT, value = "Newport, RI").click()
 		self.driver.implicitly_wait(1)
+		WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.XPATH, "//button[text()='Next']")))
 		self.driver.find_element(By.XPATH, "//button[text()='Next']").click()
 		first_artifact = self.driver.find_element(by = By.CLASS_NAME, value = "artifact-item")
 		self.assertIn("Bone", first_artifact.text, f"Bone not in artifact text {first_artifact.text}")
@@ -96,6 +98,7 @@ class test_UAT_userstory8(LiveServerTestCase,TransactionTestCase):
 		self.driver.implicitly_wait(1)
 		self.driver.find_element(by = By.LINK_TEXT, value = "Portsmouth, RI").click()
 		self.driver.implicitly_wait(1)
+		WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.XPATH, "//button[text()='Next']")))
 		self.driver.find_element(By.XPATH, "//button[text()='Next']").click()
 		first_artifact = self.driver.find_element(by = By.CLASS_NAME, value = "artifact-item")
 		self.assertIn("Lead", first_artifact.text, f"Lead not in artifact text {first_artifact.text}")
@@ -127,18 +130,24 @@ class test_UAT_userstory8(LiveServerTestCase,TransactionTestCase):
 		self.driver.find_element(by = By.LINK_TEXT, value = "Newport, RI").click()
 		self.driver.implicitly_wait(1)
 		while(True):
+			WebDriverWait(self.driver, 10).until(
+    		EC.presence_of_element_located((By.XPATH, "//button[text()='Next']"))
+			)
 			next_button = self.driver.find_element(By.XPATH, "//button[text()='Next']")
 			if next_button.is_enabled():
 				next_button.click()
 			else:
-				self.assertTrue(True)
 				break
+		self.assertTrue(True)
 
 	def test_turn_pages_to_end_portsmouth(self):
 		self.driver.implicitly_wait(1)
 		self.driver.find_element(by = By.LINK_TEXT, value = "Portsmouth, RI").click()
 		self.driver.implicitly_wait(1)
 		while(True):
+			WebDriverWait(self.driver, 10).until(
+    		EC.presence_of_element_located((By.XPATH, "//button[text()='Next']"))
+			)
 			next_button = self.driver.find_element(By.XPATH, "//button[text()='Next']")
 			if next_button.is_enabled():
 				next_button.click()
@@ -162,7 +171,5 @@ class test_UAT_userstory8(LiveServerTestCase,TransactionTestCase):
 
 	def tearDown(self):
 		self.driver.close()
-
-if __name__ == "__main__":
-	unittest.main()"""
+		self.driver.quit()
 		

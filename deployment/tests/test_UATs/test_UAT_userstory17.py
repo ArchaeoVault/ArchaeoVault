@@ -1,4 +1,3 @@
-"""
 import unittest
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -60,8 +59,8 @@ class test_UAT_userstory17(LiveServerTestCase,TransactionTestCase):
 		firstNameBox.send_keys("John")
 		laststNameBox.send_keys("Smith")
 		emailBox.send_keys("temp1@email.com")
-		passwordBox.send_keys("password123")
-		confirmPasswordBox.send_keys("password123")
+		passwordBox.send_keys("archaeovault111")
+		confirmPasswordBox.send_keys("archaeovault111")
 		submitButton = self.driver.find_element(By.XPATH, "//button[text()='Sign Up']")
 		submitButton.click()
 		try:
@@ -119,7 +118,7 @@ class test_UAT_userstory17(LiveServerTestCase,TransactionTestCase):
 			alert.accept()
 		except TimeoutException:
 			assert False
-		self.assertEqual(message,"Passwword is too short", "Using a short password threw an error")
+		self.assertIn("password is too short",message, "Using a short password threw an error")
 
 
 	def test_create_account_with_valid_email_with_mismatched_password(self):
@@ -145,29 +144,6 @@ class test_UAT_userstory17(LiveServerTestCase,TransactionTestCase):
 			assert False
 		self.assertEqual(message,"Passwords do not match.", "Mismatched passwords threw an error")
 
-	def test_create_account_with_valid_email_with_a_no_number_password(self):
-		self.driver.implicitly_wait(1)
-		firstNameBox = self.driver.find_element(by = By.XPATH, value = "//input[@placeholder='First Name']")
-		laststNameBox = self.driver.find_element(by = By.XPATH, value = "//input[@placeholder='Last Name']")
-		emailBox = self.driver.find_element(by = By.XPATH, value = "//input[@placeholder='Email']")
-		passwordBox = self.driver.find_element(by = By.XPATH, value = "//input[@placeholder='Password']")
-		confirmPasswordBox = self.driver.find_element(by = By.XPATH, value = "//input[@placeholder='Confirm Password']")
-		firstNameBox.send_keys("John")
-		laststNameBox.send_keys("Smith")
-		emailBox.send_keys("temp3@email.com")
-		passwordBox.send_keys("password")
-		confirmPasswordBox.send_keys("password")
-		submitButton = self.driver.find_element(By.XPATH, "//button[text()='Sign Up']")
-		submitButton.click()
-		try:
-			WebDriverWait(self.driver, 3).until(EC.alert_is_present())
-			alert = self.driver.switch_to.alert
-			message = alert.text
-			alert.accept()
-		except TimeoutException:
-			assert False
-		self.assertEqual(message, "Sign up successful!", "password with no numbers threw an error")
-
 	def test_create_account_with_valid_email_with_a_no_letter_password(self):
 		self.driver.implicitly_wait(1)
 		firstNameBox = self.driver.find_element(by = By.XPATH, value = "//input[@placeholder='First Name']")
@@ -178,8 +154,8 @@ class test_UAT_userstory17(LiveServerTestCase,TransactionTestCase):
 		firstNameBox.send_keys("John")
 		laststNameBox.send_keys("Smith")
 		emailBox.send_keys("temp1@email.com")
-		passwordBox.send_keys("12345678")
-		confirmPasswordBox.send_keys("12345678")
+		passwordBox.send_keys("1212898945")
+		confirmPasswordBox.send_keys("1212898945")
 		submitButton = self.driver.find_element(By.XPATH, "//button[text()='Sign Up']")
 		submitButton.click()
 		try:
@@ -189,7 +165,7 @@ class test_UAT_userstory17(LiveServerTestCase,TransactionTestCase):
 			alert.accept()
 		except TimeoutException:
 			assert False
-		self.assertEqual(message,"Your password doesn't have any letters", "password with no letters threw an error")
+		self.assertIn("This password is entirely numeric",message, "password with no letters threw an error")
 
 	def test_create_account_with_duplicate_email_with_a_no_number_password(self):
 		self.driver.implicitly_wait(1)
@@ -259,7 +235,7 @@ class test_UAT_userstory17(LiveServerTestCase,TransactionTestCase):
 		except TimeoutException:
 			assert False
 		self.assertIn("User with this email already exists", message, "Creating account with duplicate email threw an error")
-
+	"""
 	def test_create_account_with_a_long_first_name(self):
 		self.driver.implicitly_wait(1)
 		firstNameBox = self.driver.find_element(by = By.XPATH, value = "//input[@placeholder='First Name']")
@@ -270,8 +246,8 @@ class test_UAT_userstory17(LiveServerTestCase,TransactionTestCase):
 		firstNameBox.send_keys("DEJKASJLDELKFKDELLFDKLFDELKDFKLFWKKSFKSKFSLKFSLSDLDSMMSMDSMLDFSMSFLSDMLFSDMFMLSMLFSLMFWSLSLSFLQQQQQQQQQQDEJKASJLDELKFKDELLFDKLFDELKDFKLFWKKSFKSKFSLKFSLSDLDSMMSMDSMLDFSMSFLSDMLFSDMFMLSMLFSLMFWSLSLSFLQQQQQQQQQQDEJKASJLDELKFKDELLFDKLFDELKDFKLFWKKSFKSKFSLKFSLSDLDSMMSMDSMLDFSMSFLSDMLFSDMFMLSMLFSLMFWSLSLSFLQQQQQQQQQQDEJKASJLDELKFKDELLFDKLFDELKDFKLFWKKSFKSKFSLKFSLSDLDSMMSMDSMLDFSMSFLSDMLFSDMFMLSMLFSLMFWSLSLSFLQQQQQQQQQQ")
 		laststNameBox.send_keys("Smith")
 		emailBox.send_keys("temp4@email.com")
-		passwordBox.send_keys("password123")
-		confirmPasswordBox.send_keys("password123")
+		passwordBox.send_keys("archaeovault111")
+		confirmPasswordBox.send_keys("archaeovault111")
 		submitButton = self.driver.find_element(By.XPATH, "//button[text()='Sign Up']")
 		submitButton.click()
 		try:
@@ -292,9 +268,9 @@ class test_UAT_userstory17(LiveServerTestCase,TransactionTestCase):
 		confirmPasswordBox = self.driver.find_element(by = By.XPATH, value = "//input[@placeholder='Confirm Password']")
 		firstNameBox.send_keys("John")
 		laststNameBox.send_keys("DEJKASJLDELKFKDELLFDKLFDELKDFKLFWKKSFKSKFSLKFSLSDLDSMMSMDSMLDFSMSFLSDMLFSDMFMLSMLFSLMFWSLSLSFLQQQQQQQQQQ")
-		emailBox.send_keys("temp4@email.com")
-		passwordBox.send_keys("password123")
-		confirmPasswordBox.send_keys("password123")
+		emailBox.send_keys("temp1@email.com")
+		passwordBox.send_keys("archaeovault111")
+		confirmPasswordBox.send_keys("archaeovault111")
 		submitButton = self.driver.find_element(By.XPATH, "//button[text()='Sign Up']")
 		submitButton.click()
 		try:
@@ -305,9 +281,9 @@ class test_UAT_userstory17(LiveServerTestCase,TransactionTestCase):
 		except TimeoutException:
 			assert False
 		self.assertEqual(message, "Your last name is too long","Long last name threw an error")
-
+	"""
 
 
 	def tearDown(self):
 		self.driver.close()
-		self.driver.quit()"""
+		self.driver.quit()

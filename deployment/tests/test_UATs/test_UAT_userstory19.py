@@ -1,4 +1,3 @@
-"""
 import unittest
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -15,7 +14,6 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from django.test import TestCase, Client, LiveServerTestCase,TransactionTestCase
 from django.contrib.auth.hashers import make_password, check_password
 from myapp.models import users, permissions
-from django.db import connection
 import json
 import os
 import tempfile
@@ -51,7 +49,7 @@ class test_UAT_userstory19(LiveServerTestCase,TransactionTestCase):
 		permission = permissions.objects.create(numval = 4, givenrole = 'GeneralPublic')
 		test_user = users.objects.create(
         email='temp@email.com',
-        upassword='password123',
+        upassword='archaeovault',
         activated=True,
         upermission=permission
     	)
@@ -62,7 +60,7 @@ class test_UAT_userstory19(LiveServerTestCase,TransactionTestCase):
 		emailBox = self.driver.find_element(by = By.XPATH, value = "//input[@placeholder='Email']")
 		passwordBox = self.driver.find_element(by = By.XPATH, value = "//input[@placeholder='Password']")
 		emailBox.send_keys('temp@email.com')
-		passwordBox.send_keys('password123')
+		passwordBox.send_keys('archaeovault')
 		submitButton = self.driver.find_element(By.XPATH, "//button[text()='Log In']")
 		submitButton.click()
 
@@ -198,4 +196,4 @@ class test_UAT_userstory19(LiveServerTestCase,TransactionTestCase):
 
 	def tearDown(self):
 		self.driver.close()
-		self.driver.quit()"""
+		self.driver.quit()

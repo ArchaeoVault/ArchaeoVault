@@ -25,6 +25,8 @@ pipeline {
             when { not { branch 'main' } }
             steps{
 
+                
+
                 // Start front end and check connection
                 dir("app/frontend")
                 {
@@ -39,10 +41,10 @@ pipeline {
                 sh  '. env/bin/activate'
                 sh 'env/bin/pip install -r requirements.txt'
 
+
                 //Run back end server
                 sh 'chmod +x ./app/manage.py'
                 sh 'env/bin/python ./app/manage.py runserver > /dev/null 2>&1 &'
-                
                 sh 'env/bin/python ./app/manage.py test ./deployment/tests > test_results.log 2>&1'
             }
         }
@@ -64,13 +66,11 @@ pipeline {
         }
 
         failure{
-            sh 'touch test_results.log'
             script{
-                def file_contents = readFile('test_results.log')
+                def file_contents = readFile('./deployment/tests/test_results.log')
                 slackSend color: "danger", message: "Build failed :face_with_head_bandage: \n`${env.JOB_NAME}#${env.BUILD_NUMBER}` <${env.BUILD_URL}|Open in Jenkins>"
                 slackSend color: "danger", message: "File Contents:\n\n'''" + file_contents + "'''"
             }
-            //sh 'rm test_results.log'
             
         }
         always {

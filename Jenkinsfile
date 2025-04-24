@@ -26,7 +26,7 @@ pipeline {
             steps{
 
                 //Create log file
-                sh 'touch test_results.log'
+                //sh 'touch test_results.log'
 
                 // Start front end and check connection
                 dir("app/frontend")

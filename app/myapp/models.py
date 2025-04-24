@@ -114,6 +114,6 @@ class your_table(models.Model):
 
 
 class imagetable(models.Model):
-    your_table_id = models.ForeignKey(your_table, on_delete=models.CASCADE) #foriegn key
+    your_table_id = models.ForeignKey(your_table, on_delete=models.CASCADE,db_column='your_table_id',primary_key=True) #foriegn key
     filepath = models.CharField(max_length=100,db_column='filepath')
     

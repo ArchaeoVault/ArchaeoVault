@@ -172,4 +172,4 @@ class test_UAT_userstory8(LiveServerTestCase,TransactionTestCase):
 	def tearDown(self):
 		self.driver.close()
 		self.driver.quit()
-		
+	

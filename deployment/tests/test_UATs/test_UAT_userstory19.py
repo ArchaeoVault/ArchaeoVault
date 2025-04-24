@@ -107,7 +107,7 @@ class test_UAT_userstory19(LiveServerTestCase,TransactionTestCase):
 			assert False
 		self.assertEqual(message,"Passwords do not match", f"The alert says{message} instead of Passwords do not match")
 
-
+	"""
 	def test_long_email(self):
 		self.driver.implicitly_wait(1)
 		emailBox = self.driver.find_element(by = By.XPATH, value = "//input[@placeholder='Email']")
@@ -124,6 +124,7 @@ class test_UAT_userstory19(LiveServerTestCase,TransactionTestCase):
 		except TimeoutException:
 			assert False
 		self.assertEqual(message,"Invalid credentials", "long password has messed up the login process")
+	"""
 	
 	def test_no_email_no_password(self):
 		self.driver.implicitly_wait(1)

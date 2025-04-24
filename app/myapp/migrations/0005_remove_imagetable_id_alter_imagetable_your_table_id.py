@@ -14,10 +14,5 @@ class Migration(migrations.Migration):
         migrations.RemoveField(
             model_name='imagetable',
             name='id',
-        ),
-        migrations.AlterField(
-            model_name='imagetable',
-            name='your_table_id',
-            field=models.ForeignKey(db_column='your_table_id', on_delete=django.db.models.deletion.CASCADE, primary_key=True, serialize=False, to='myapp.your_table'),
-        ),
+        )
     ]

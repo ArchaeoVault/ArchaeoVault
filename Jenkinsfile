@@ -39,12 +39,12 @@ pipeline {
                 sh  '. env/bin/activate'
                 sh 'env/bin/pip install -r requirements.txt'
 
-    
+
                 //Run back end server
                 sh 'chmod +x ./app/manage.py'
                 sh 'env/bin/python ./app/manage.py runserver > /dev/null 2>&1 &'
                 
-                sh 'env/bin/python ./app/manage.py test ./deployment/tests' // > test_results.log 2>&1'
+                sh 'env/bin/python ./app/manage.py test ./deployment/tests > test_results.log 2>&1'
             }
         }
         stage('Deploy'){

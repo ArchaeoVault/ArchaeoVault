@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseServerError, JsonResponse
 from django.core.validators import validate_email
+from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from myapp.forms import *
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
@@ -108,6 +109,12 @@ def get_csrf_token(request):
     print('Cookie: ', csrf_token)
     return JsonResponse({'csrfToken': csrf_token}, safe=False)
 
+def check_strength(password):
+    if len(password) >= 8:
+        return True
+    else:
+        return False
+
 @csrf_protect
 def create_user_view(request):
     #print(request)
@@ -131,6 +138,13 @@ def create_user_view(request):
                 #print('object already exists')
                 return JsonResponse({'error': 'User with this email already exists'}, status=400)
             #print('validating email')
+            try:
+                validate_password(password)
+                #print("Password is valid.")
+            except ValidationError as e:
+                print("Password validation errors:", e.messages)
+                error_string = 'Invalid Password' + str(e.messages)
+                return JsonResponse({'error': error_string}, status=400)
             try:
                 validate_email(email)
             except ValidationError:

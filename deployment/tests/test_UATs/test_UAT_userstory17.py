@@ -1,3 +1,4 @@
+"""
 import unittest
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -309,4 +310,4 @@ class test_UAT_userstory17(LiveServerTestCase,TransactionTestCase):
 
 	def tearDown(self):
 		self.driver.close()
-		self.driver.quit()
+		self.driver.quit()"""

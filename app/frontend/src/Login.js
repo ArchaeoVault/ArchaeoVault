@@ -58,7 +58,7 @@ const Login = () => {
         alert(result.message); // Show error message from the backend
       }
     } catch (error) {
-      console.error('Error:', error);
+      //console.error('Error:', error);
       alert('An error occurred. Please try again.');
     }
   };

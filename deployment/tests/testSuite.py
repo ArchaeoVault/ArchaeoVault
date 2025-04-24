@@ -37,7 +37,3 @@ def load_tests(loader, standard_tests, pattern):
     test_suite.addTests(loader.loadTestsFromModule(test_single_artifact))
 
     return test_suite
-
-
-#if __name__ == '__main__':
-#    unittest.main()

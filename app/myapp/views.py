@@ -400,9 +400,10 @@ def change_password_view(request, uidb64, token):
     if request.method == 'POST':
         try: 
             data = json.loads(request.body)
-            email = urlsafe_base64_decode(uidb64)
+            email = urlsafe_base64_decode(uidb64).decode()
             newPassword = data.get('newPassword')
             confirmPassword = data.get('confirmPassword')
+
             if not users.objects.filter(email=email).exists():
                 return JsonResponse({'error':'User with this email does not exist'}, status = 400)
             if newPassword != confirmPassword:
@@ -410,6 +411,8 @@ def change_password_view(request, uidb64, token):
             user = users.objects.get(email = email)
             if newPassword == user.upassword:
                 return JsonResponse({'error':'New Password can not be the same as the old password'}, status = 400)
+            if newPassword == "":
+                return JsonResponse({'error':'Password must not be empty'}, status = 400)
             if account_activation_token.check_token(user, token):
                 try:
                     print('Changing password')

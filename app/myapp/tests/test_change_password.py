@@ -1,4 +1,3 @@
-'''
 from django.test import TestCase, Client # client for http requests
 from django.utils import timezone
 from django.urls import reverse
@@ -21,9 +20,9 @@ class test_change_password(TestCase):
     
     def test_reset_password_success(self):
 
-        
+
         response = self.client.post(
-            reverse('change_password_view'),
+            reverse('change_password_view',args=[self.user.email, 'token']),
             data=json.dumps({'email': 'temp@email.com', 'newPassword': 'password1234', 'confirmPassword': 'password1234'}),
             content_type='application/json'  # Ensure request is treated as JSON
         )
@@ -34,7 +33,7 @@ class test_change_password(TestCase):
     def test_reset_missing_value(self):
 
         response = self.client.post(
-            reverse('change_password_view'),
+            reverse('change_password_view',args=[self.user.email, 'token']),
             data = json.dumps({'email':'','newPassword':'','confirmPassword':''}),
             content_type='application/json'
         )
@@ -43,7 +42,7 @@ class test_change_password(TestCase):
     def test_reset_same_password(self):
 
         response = self.client.post(
-            reverse('change_password_view'),
+            reverse('change_password_view', args=[self.user.email, 'token']),
             data =json.dumps ({'email':'temp@email.com','newPassword':'password123','confirmPassword':'password123'}),
             content_type= 'application/json'
             )
@@ -52,7 +51,7 @@ class test_change_password(TestCase):
     def test_new_and_confirm_mismatch(self):
 
         response = self.client.post(
-            reverse('change_password_view'),
+            reverse('change_password_view', args=[self.user.email, 'token']),
             data = json.dumps({'email':'temp@email.com','newPassword':'password1234','confirmPassword':'password1235'}),
             content_type='application/json'
             )

@@ -67,7 +67,7 @@ pipeline {
 
         failure{
             script{
-                def file_contents = readFile('./deployment/tests/test_results.log')
+                def file_contents = readFile('./app/test_results.log')
                 slackSend color: "danger", message: "Build failed :face_with_head_bandage: \n`${env.JOB_NAME}#${env.BUILD_NUMBER}` <${env.BUILD_URL}|Open in Jenkins>"
                 slackSend color: "danger", message: "File Contents:\n\n'''" + file_contents + "'''"
             }

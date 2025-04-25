@@ -144,7 +144,7 @@ def create_user_view(request):
             except ValidationError as e:
                 #print("Password validation errors:", e.messages)
                 #error_string = 'Invalid Password' + str(e.messages)
-                return JsonResponse({'error': "Password cannot be 'password', must have at least 8 characters, and must not consist only of numbers."}, status=400)
+                return JsonResponse({'error': "Password cannot be 'password', must have at least 8 characters, and must have letters."}, status=400)
             try:
                 validate_email(email)
             except ValidationError:

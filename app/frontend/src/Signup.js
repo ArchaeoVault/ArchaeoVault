@@ -143,11 +143,50 @@ const Signup = () => {
           </div>
 
           <form onSubmit={handleSubmit}>
-            <input type="text" placeholder="First Name" name="firstName" value={formData.firstName} onChange={handleChange} required />
-            <input type="text" placeholder="Last Name" name="lastName" value={formData.lastName} onChange={handleChange} required />
-            <input type="email" placeholder="Email" name="email" value={formData.email} onChange={handleChange} required />
-            <input type="password" placeholder="Password" name="password" value={formData.password} onChange={handleChange} required />
-            <input type="password" placeholder="Confirm Password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} required />
+            <input 
+              type="text" 
+              placeholder="First Name" 
+              name="firstName" 
+              value={formData.firstName} 
+              onChange={handleChange} 
+              maxLength={50} 
+              required 
+            />
+            <input 
+              type="text" 
+              placeholder="Last Name" 
+              name="lastName" 
+              value={formData.lastName} 
+              onChange={handleChange} 
+              maxLength={50} 
+              required 
+            />
+            <input 
+              type="email" 
+              placeholder="Email" 
+              name="email" 
+              value={formData.email} 
+              onChange={handleChange} 
+              required 
+            />
+            <input 
+              type="password" 
+              placeholder="Password" 
+              name="password" 
+              value={formData.password} 
+              onChange={handleChange} 
+              maxLength={50}
+              required 
+            />
+            <input 
+              type="password" 
+              placeholder="Confirm Password" 
+              name="confirmPassword" 
+              value={formData.confirmPassword} 
+              onChange={handleChange} 
+              maxLength={50}
+              required 
+            />
             <button type="submit">Sign Up</button>
           </form>
 

@@ -65,12 +65,13 @@ def login_view(request):
                     return JsonResponse({'status':'error','message':'Passwords do not match'}, status = 400)
             
                 if user is not None:
-                    login(request, user)
                     request.session['user_email'] = user.email #stores users email for current session to be used later
+                   
                     return JsonResponse({
                         "status": "ok",
                         "user": {
-                            "email": user.email
+                            "email": user.email,
+                            "upermission": user.upermission.numval
                         }
                     }, status=200)
                 else:

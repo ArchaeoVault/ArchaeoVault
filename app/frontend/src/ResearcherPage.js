@@ -3,9 +3,9 @@ import React, { useState } from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 // import "./NewportArtifacts.css";
-import './AdminPage.css';
+import './ResearcherPage.css';
 
-const AdminPage = () => {
+const ResearcherPage = () => {
   const [artifacts, setArtifacts] = useState([]);
   const [newArtifact, setNewArtifact] = useState({
     name: '',
@@ -41,10 +41,10 @@ const AdminPage = () => {
   };
 
   return (
-    <div className="admin-page">
+    <div className="researcher-page">
       <Header />
-      <div className="admin-container">
-        <h1>Admin Dashboard</h1>
+      <div className="researcher-container">
+        <h1>Researcher Dashboard</h1>
         <div className="add-artifact-form">
           <h2>Add New Artifact</h2>
           <input
@@ -108,4 +108,4 @@ const AdminPage = () => {
   );
 };
 
-export default AdminPage;
+export default ResearcherPage;

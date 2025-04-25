@@ -12,7 +12,7 @@ import Artifacts2 from './Artifacts2';
 import AboutUs from "./AboutUs";
 import Contact from "./Contact";
 import ListPage from "./list";
-import AdminPage from "./AdminPage";
+import ResearcherPage from "./ResearcherPage";
 
 const App = () => {
   const [showLogin, setShowLogin] = useState(false);
@@ -56,7 +56,7 @@ const App = () => {
         {/* Private routes with authentication check */}
         <Route path="/newport-artifacts" element={<PrivateRoute element={<NewportArtifacts />} />} />
         <Route path="/portsmouth-artifacts" element={<PrivateRoute element={<PortsmouthArtifacts />} />} />
-        <Route path="/adminpage" element={<PrivateRoute element={<AdminPage />} />} />
+        <Route path="/researcherpage" element={<PrivateRoute element={<ResearcherPage />} />} />
         
         {/* Default route: show login or homepage */}
         {/* <Route path="/" element={showLogin ? <Login setIsAuthenticated={setIsAuthenticated} /> : <HomePage setShowLogin={setShowLogin} />} /> */}

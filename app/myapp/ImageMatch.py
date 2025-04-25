@@ -1,6 +1,7 @@
 import os
 import sys
 import django
+from django.db.models import Max
 #Setup django environment
 # Add the project root to Python's path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  # Going up two levels
@@ -15,13 +16,11 @@ from myapp.models import your_table
 from myapp.models import imagetable
 #######################
 
-#dir_to_check =  r'/var/www/html/artifact_images/FINISHED JPG'
-dir_to_check =  r'C:\Users\prory\OneDrive\Documents\2024-2025\Spring 2025\Capstone\image_test'
+dir_to_check =  r'/var/www/html/artifact_images/FINISHED JPG'
 
 #Get list of images in the chosen directory
 images = os.listdir(dir_to_check)
 
-image_count = 0
 for image in images:
     catalog_number = ""
 
@@ -38,7 +37,9 @@ for image in images:
     artifacts = your_table.objects.filter(catalog_number__icontains=catalog_number)
     for artifact in artifacts:
         artifact_id = artifact.id
-        imagetable.objects.create(your_table_id=artifact, filepath=image, id=image_count)
+        max_id = your_table.objects.aggregate(Max('id'))['id__max']
+        if max_id is None:
+            max_id = 0
+        imagetable.objects.create(your_table_id=artifact, filepath=image, id=max_id+1)
         print("Artifact ID: ",artifact_id," Catalog Number: ",catalog_number," FileName: ",image, "\n")
-        image_count = image_count+1
 

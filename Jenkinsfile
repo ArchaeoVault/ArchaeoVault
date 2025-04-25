@@ -39,6 +39,7 @@ pipeline {
                 sh  '. env/bin/activate'
                 sh 'env/bin/pip install -r requirements.txt'
 
+
                 //Run back end server
                 sh 'chmod +x ./app/manage.py'
                 sh 'env/bin/python ./app/manage.py runserver > /dev/null 2>&1 &'
@@ -70,6 +71,7 @@ pipeline {
                 slackSend color: "danger", message: "Build failed :face_with_head_bandage: \n`${env.JOB_NAME}#${env.BUILD_NUMBER}` <${env.BUILD_URL}|Open in Jenkins>"
                 slackSend color: "danger", message: "File Contents:\n\n'''" + file_contents + "'''"
             }
+            //sh 'rm test_results.log'
             
         }
         always {

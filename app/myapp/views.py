@@ -109,11 +109,6 @@ def get_csrf_token(request):
     print('Cookie: ', csrf_token)
     return JsonResponse({'csrfToken': csrf_token}, safe=False)
 
-def check_strength(password):
-    if len(password) >= 8:
-        return True
-    else:
-        return False
 
 @csrf_protect
 def create_user_view(request):

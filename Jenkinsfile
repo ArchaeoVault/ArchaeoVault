@@ -28,11 +28,11 @@ pipeline {
                 
 
                 // Start front end and check connection
-                // dir("app/frontend")
-                // {
-                //     sh 'npm install'
-                //     sh 'npm start > /dev/null 2>&1 &'
-                // }
+                dir("app/frontend")
+                {
+                    sh 'npm install'
+                    sh 'npm start > /dev/null 2>&1 &'
+                }
                 
                 //Start virutal environment
                 sh 'python3 -m venv env'

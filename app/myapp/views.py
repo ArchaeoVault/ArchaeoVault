@@ -431,7 +431,7 @@ def redirect_change_password(request, uidb64, token):
                     frontend_url = 'https://www.archaeovault.com'
                 else:
                     frontend_url = 'http://localhost:3000'
-                return redirect(f'{frontend_url}/reset/{uidb64}/{token}')
+                return redirect(f'{frontend_url}/api/change_password/{uidb64}/{token}')
             except Exception as e:
                 return JsonResponse({'error':'Redirect failed'},status = 400)
         else:
@@ -488,7 +488,7 @@ def send_password_reset_view(request):
             print('uid: ', uid)
             token = account_activation_token.make_token(user)
             verification_link = request.build_absolute_uri(
-                reverse('activate', kwargs={'uidb64': uid, 'token': token})
+                reverse('redirect_change_password', kwargs={'uidb64': uid, 'token': token})
             )
             message = Mail(
                 from_email='noreply@archaeovault.com',

@@ -34,7 +34,6 @@ pipeline {
                     sh 'npm start > /dev/null 2>&1 &'
                 }
                 
-
                 //Start virutal environment
                 sh 'python3 -m venv env'
                 sh 'chmod +x env/bin/activate'

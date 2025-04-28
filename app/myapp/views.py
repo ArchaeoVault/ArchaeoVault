@@ -505,6 +505,87 @@ def get_email_from_token(request, uidb64, token):
         return JsonResponse({'email': user.email}, status=200)
     else:
         return JsonResponse({'error': 'Invalid token'}, status=400)
+    
+def delete_artifact_view(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            #print('In try')
+            
+            email = request.session.get('user_email') #gets current sessions email
+            # print(email)
+            artifactId = data.get('id')
+            #print('Getting user')
+            if not users.objects.filter(email=email).exists():
+                #print('User does not exist')
+                return JsonResponse({'error':'User with this email does not exist'}, status = 401)
+            user = users.objects.get(email = email)
+            #print('got user')
+            numberValue = user.upermission.numval
+            if numberValue == 4:
+                #print('Cant be gen pub')
+                return JsonResponse({'error':'General Public can not delete artifacts'}, status = 402)
+            if not your_table.objects.filter(id = artifactId).exists():
+                #print('Artifact dont exist')
+                return JsonResponse({'error':'Artifact you are trying to delete does not exist'}, status = 403)
+            try:
+                artifact = your_table.objects.get(id = artifactId)
+                artifact.delete()
+                if not your_table.objects.filter(id = artifactId).exists():
+                    #print('Artifact delete')
+                    return JsonResponse({'message':'Artifact successfully deleted'}, status = 200)
+            except Exception as e:
+                #print('In inner exception')
+                return JsonResponse ({'error':'Error in deleting artifact'}, status = 400)
+        except Exception as e:
+            #print('Outer exception')
+            return JsonResponse ({'error':'Error in deleting artifact'}, status = 400)
+        
+def edit_artifact_view(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            #print('In try')
+            email = request.session.get('user_email') #gets current sessions email
+            #print(email)
+            artifactId = data.get('id')
+            object_name = data.get('name')
+            location = data.get('location')
+            age = data.get('age')
+            materialId = data.get('material')
+            object_description = data.get('description')
+            #print('Getting user')
+            if not all([email, artifactId,object_name,object_description,location,age,materialId]):
+                return JsonResponse({'error': 'All fields are required'}, status=404)
+            if not users.objects.filter(email=email).exists():
+                #print('User does not exist')
+                return JsonResponse({'error':'User with this email does not exist'}, status = 401)
+            user = users.objects.get(email = email)
+            #print('got user')
+            numberValue = user.upermission.numval
+            material = materialtype.objects.get(id = materialId)
+            #print('got numval')
+            if numberValue == 4:
+                #print('Cant be gen pub')
+                return JsonResponse({'error':'General Public can not edit artifacts'}, status = 402)
+            if not your_table.objects.filter(id = artifactId).exists():
+                #print('Artifact dont exist')
+                return JsonResponse({'error':'Artifact you are trying to edit does not exist'}, status = 403)
+            try:
+                artifact = your_table.objects.get(id = artifactId)
+                artifact.object_description = object_description
+                artifact.object_name = object_name
+                artifact.location = location
+                artifact.object_dated_to = age
+                artifact.material_of_manufacture = material
+                artifact.save()
+                return JsonResponse({'message':'Artifact successfully editied'}, status = 200)
+            except Exception as e:
+                #print('In inner exception')
+                return JsonResponse ({'error':'Error in editing artifact'}, status = 400)
+        except Exception as e:
+            #print('Outer exception')
+            return JsonResponse ({'error':'Error in editing artifact'}, status = 400)
 
 def admin_create_user_view(request):
     if request.method == 'POST':

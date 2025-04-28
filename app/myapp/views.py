@@ -131,11 +131,6 @@ def get_csrf_token(request):
     print('Cookie: ', csrf_token)
     return JsonResponse({'csrfToken': csrf_token}, safe=False)
 
-def check_strength(password):
-    if len(password) >= 8:
-        return True
-    else:
-        return False
 
 @csrf_protect
 def create_user_view(request):
@@ -220,6 +215,7 @@ def newport_artifacts_view(request):
     end_time = time.time()  # End timing
     duration = end_time - start_time
     print("Database fetching: ", duration)
+    
     return JsonResponse({
         'artifacts': artifact_data,
         'page': page,
@@ -252,7 +248,7 @@ def portsmouth_artifacts_view(request):
         for artifact in artifacts
     ]
 
-    return JsonResponse({'artifacts': artifact_data}, status=200)
+    return JsonResponse({'artifacts': artifact_data,}, status=200)
 
 def all_artifacts_view(request):
 
@@ -317,7 +313,89 @@ def all_artifacts_view(request):
     
 
     # Return data as JSON response
-    return JsonResponse({'artifacts': artifact_data}, status = 200)
+    return JsonResponse({'artifacts': artifact_data,}, status = 200)
+
+
+def single_artifact_view(request):
+    if request.method == 'POST':
+        try:
+            # Parsing the incoming JSON data
+            data = json.loads(request.body)
+            provided_id = data.get('id')
+            artifacts = your_table.objects.filter(id = provided_id)
+            artifact_data = [
+                {
+                    'address': artifact.address.id,
+                    'owner': artifact.owner,
+                    'date_collected': artifact.date_collected.isoformat(),
+                    'catalog_number': artifact.catalog_number,
+                    'object_name': artifact.object_name,
+                    'scanned_3d': artifact.scanned_3d.id,
+                    'printed_3d': artifact.printed_3d.id,
+                    'scanned_by': artifact.scanned_by,
+                    'date_excavated': artifact.date_excavated.isoformat(),
+                    'object_dated_to': artifact.object_dated_to,
+                    'object_description': artifact.object_description,
+                    'organic_inorganic': artifact.organic_inorganic.id,
+                    'species': artifact.species.id,
+                    'material_of_manufacture': artifact.material_of_manufacture.id,
+                    'form_object_type': artifact.form_object_type.id,
+                    'quantity': artifact.quantity,
+                    'measurement_diameter': artifact.measurement_diameter,
+                    'length': artifact.length,
+                    'width': artifact.width,
+                    'height': artifact.height,
+                    'measurement_notes': artifact.measurement_notes,
+                    'weight': artifact.weight,
+                    'weight_notes': artifact.weight_notes,
+                    'sivilich_diameter': artifact.sivilich_diameter,
+                    'deformation_index': artifact.deformation_index,
+                    'conservation_condition': artifact.conservation_condition.id,
+                    'cataloguer_name': artifact.cataloguer_name,
+                    'date_catalogued': artifact.date_catalogued.isoformat(),
+                    'location_in_repository': artifact.location_in_repository,
+                    'platlot': artifact.platlot,
+                    'found_at_depth': artifact.found_at_depth,
+                    'longitude': artifact.longitude,
+                    'latitude': artifact.latitude,
+                    'distance_from_datum': artifact.distance_from_datum,
+                    'found_in_grid': artifact.found_in_grid.id,
+                    'excavator': artifact.excavator,
+                    'notes': artifact.notes,
+                    'images': artifact.images,
+                    'data_double_checked_by': artifact.data_double_checked_by,
+                    'qsconcerns': artifact.qsconcerns,
+                    'druhlcheck': artifact.druhlcheck,
+                    'sources_for_id': artifact.sources_for_id,
+                    'location': artifact.location,
+                    'storage_location': artifact.storage_location,
+                    'uhlflages': artifact.uhlflages,
+                    'id': artifact.id
+                } for artifact in artifacts
+            ]
+
+            # Return data as JSON response
+            return JsonResponse({'artifacts': artifact_data,}, status = 200)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON data'}, status=400)
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+
+def all_image_table_view(request):
+    images = imagetable.objects.all()
+
+    image_data = [
+    {
+        'id': image.id,
+        'artifct_id': image.your_table.id,
+        'filepath': image.filepath,
+    }
+        for image in images
+    ]
+
+    return JsonResponse({'images': image_data,}, status = 200)
+
+
 
 def activate(request, uidb64, token):
     #put boolean that sets user active to true

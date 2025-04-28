@@ -39,13 +39,13 @@ class test_admin_reset_password(TestCase):
             typename="Grid A"
         )
         self.permission = permissions.objects.create(numval = 3, givenrole = 'Researchers')
-
+        self.permissionAdmin = permissions.objects.create(numval = 1, givenrole = 'SuperAdmin')
         self.permissionGenPub = permissions.objects.create(numval = 4, givenrole = 'GeneralPublic')
 
         self.users = users.objects.create(
             email="testuser@example.com",
             upassword="securepassword123",
-            upermission=self.permission,
+            upermission=self.permissionAdmin,
             activated=True
         )
         self.usersGenPublic = users.objects.create(
@@ -139,3 +139,52 @@ class test_admin_reset_password(TestCase):
             data = json.dumps({'email':'testuser@example.com','password':'securepassword123'}),
             content_type='application/json'
             )
+    
+    def test_change_password_success(self):
+        
+        response = self.client.post(
+            reverse('admin_reset_user_password_view'),
+            data=json.dumps({'email': 'genPub@email.com', 'newPassword': 'password1234', 'confirmPassword': 'password1234'}),
+            content_type='application/json'  # Ensure request is treated as JSON
+        )
+        self.assertEqual(response.status_code, 200)
+        user = users.objects.get(email = 'genPub@email.com')
+        self.assertTrue('password1234', user.upassword)
+    
+    def test_reset_missing_value(self):
+
+        response = self.client.post(
+            reverse('admin_reset_user_password_view'),
+            data = json.dumps({'email':'','newPassword':'','confirmPassword':''}),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_reset_same_password(self):
+
+        response = self.client.post(
+            reverse('admin_reset_user_password_view'),
+            data =json.dumps ({'email':'genPub@email.com','newPassword':'password123','confirmPassword':'password123'}),
+            content_type= 'application/json'
+            )
+        self.assertEqual(response.status_code, 400)
+    
+    def test_new_and_confirm_mismatch(self):
+
+        response = self.client.post(
+            reverse('admin_reset_user_password_view'),
+            data = json.dumps({'email':'genPub@email.com','newPassword':'password1234','confirmPassword':'password1235'}),
+            content_type='application/json'
+            )
+        self.assertEqual(response.status_code, 400)
+
+    def test_not_valid_permissions(self):
+        perm = self.permissionGenPub
+        self.users.upermission = perm
+        self.users.save()
+        response = self.client.post(
+            reverse('admin_reset_user_password_view'),
+            data = json.dumps({'email':'genPub@email.com','password':'password1234','confirm_password':'password1234'}),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 402) 

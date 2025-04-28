@@ -38,9 +38,9 @@ class test_admin_edit_user(TestCase):
             id=1,
             typename="Grid A"
         )
-        self.permission = permissions.objects.create(numval = 3, givenrole = 'Researchers')
-
+        self.permission = permissions.objects.create(numval = 1, givenrole = 'SuperAdmin')
         self.permissionGenPub = permissions.objects.create(numval = 4, givenrole = 'GeneralPublic')
+        self.permissionResearchers = permissions.objects.create(numval = 3, givenrole = 'Researchers')
 
         self.users = users.objects.create(
             email="testuser@example.com",
@@ -139,3 +139,62 @@ class test_admin_edit_user(TestCase):
             data = json.dumps({'email':'testuser@example.com','password':'securepassword123'}),
             content_type='application/json'
             )
+        
+    def test_succesful_user_edit_researcher(self):
+        self.assertTrue(users.objects.filter(email ='genPub@email.com').exists())
+        response = self.client.post(
+            reverse('admin_edit_user_view'),
+            data = json.dumps({'oldEmail':'genPub@email.com','newEmail':'researcher@email.com','permission':'Researchers'}),
+            content_type='application/json'
+            )
+        self.assertEqual(response.status_code, 200)
+        objectCheck = users.objects.get(email = 'researcher@email.com')
+        self.assertEqual(objectCheck.email,'researcher@email.com')
+        self.assertEqual(objectCheck.upermission.givenrole,'Researchers')
+    
+    def test_succesful_user_edit_admin(self):
+        self.assertTrue(users.objects.filter(email ='genPub@email.com').exists())
+        response = self.client.post(
+            reverse('admin_edit_user_view'),
+            data = json.dumps({'oldEmail':'genPub@email.com','newEmail':'admin@email.com','permission':'SuperAdmin'}),
+            content_type='application/json'
+            )
+        self.assertEqual(response.status_code, 200)
+        objectCheck = users.objects.get(email = 'admin@email.com')
+        self.assertEqual(objectCheck.email,'admin@email.com')
+        self.assertEqual(objectCheck.upermission.givenrole,'SuperAdmin')
+    
+    def test_invalid_email(self):
+        response = self.client.post(
+            reverse('admin_edit_user_view'),
+            data = json.dumps({'oldEmail':'genPub@email.co','newEmail':'researcher@email.com','permission':'Researchers'}),
+            content_type='application/json'
+            )
+        self.assertEqual(response.status_code,400)
+
+    def test_invalid_permissions(self):
+        user = users.objects.get(email='testuser@example.com')
+        user.upermission = self.permissionGenPub
+        user.save()
+        response = self.client.post(
+            reverse('admin_edit_user_view'),
+            data = json.dumps({'oldEmail':'genPub@email.com','newEmail':'researcher@email.com','permission':'Researchers'}),
+            content_type='application/json'
+            )
+        self.assertEqual(response.status_code,402)
+        
+    def test_changing_to_already_taken_email(self):
+        response = self.client.post(
+            reverse('admin_edit_user_view'),
+            data = json.dumps({'oldEmail':'genPub@email.com','newEmail':'testuser@example.com','permission':'Researchers'}),
+            content_type='application/json'
+            )
+        self.assertEqual(response.status_code,400)
+
+    def test_not_all_fields_filled(self):
+        response = self.client.post(
+            reverse('admin_edit_user_view'),
+            data = json.dumps({'oldEmail':'','newEmail':'','permission':''}),
+            content_type='application/json'
+            )
+        self.assertEqual(response.status_code, 400)

@@ -541,19 +541,21 @@ def admin_edit_user_view(request):
                 validate_email(newEmail)
             except ValidationError:
                 return JsonResponse({'error': 'Invalid email address'}, status=400)
-
             # Create the user
-            #print('Creating user')
+            
             if perm == 'SuperAdmin':
-                permission = permissions.objects.get(numVal = 1, givenrol = 'SuperAdmin')
+                permission = permissions.objects.get(givenrole = 'SuperAdmin')
             elif perm == 'Researchers':
-                permission = permissions.objects.get(numVal = 3, givenrole = 'Researchers')
+                permission = permissions.objects.get(givenrole = 'Researchers')
+            else:
+                return JsonResponse({'error':'Invalid Permission'}, status = 400)
+        
             
             user = users.objects.get(email = oldEmail)
+            
             user.email = newEmail
             user.upermission = permission
             user.save()
-            #print('after creating user')
             #print(user.email)
             return JsonResponse({'message': 'User edited successfully'}, status=200)
         except Exception as e:
@@ -581,19 +583,19 @@ def admin_delete_user_view(request):
             if not users.objects.filter(email=email).exists():
                 #print('object already exists')
                 return JsonResponse({'error': 'User with this email does not exist'}, status=400)
-            print('validating email')
+            
             # Create the user
             #print('Creating user')
             
             user = users.objects.get(email = email)
-            print('got user')
+            
             user.delete()
-            print('Delete')
+            
             if not users.objects.filter(email = email).exists():
-                    print('Artifact delete')
+                    
                     return JsonResponse({'message':'User successfully deleted'}, status = 200)
             #print('after creating user')
-            print(user.email)
+            
 
         except Exception as e:
             return JsonResponse({'error':'Error in deleting a user'}, status = 400)
@@ -604,8 +606,8 @@ def admin_see_all_users_view(request):
     all_users_data = [
         {
             'email':user.email,
-            'password':user.password,
-            'permissions':user.upermissions,
+            'password':user.upassword,
+            'permissions':user.upermission.givenrole,
             'activated':user.activated
         } for user in all_users
     ]
@@ -641,10 +643,12 @@ def admin_reset_user_password_view(request):
             user = users.objects.get(email = email)
             if newPassword == user.upassword:
                 return JsonResponse({'error':'New Password can not be the same as the old password'}, status = 400)
+            if newPassword != confirmPassword:
+                return JsonResponse({'error':'New and Confirm passwords do not match'}, status = 400)
             try:
-                print('Changing password')
                 user.upassword = newPassword
                 user.save()
+                return JsonResponse({'message':'Password successfully changed'}, status = 200)
             except Exception as e:
                 return JsonResponse({'error':'Error trying to change password'}, status = 400)
             

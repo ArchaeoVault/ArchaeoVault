@@ -139,3 +139,10 @@ class test_admin_view_all_users(TestCase):
             data = json.dumps({'email':'testuser@example.com','password':'securepassword123'}),
             content_type='application/json'
             )
+        
+    def test_success_return_user_list(self):
+        response = self.client.get(reverse('admin_see_all_users_view'))
+        for user in response:
+            print('user: ',user)
+
+        self.assertEqual(response.status_code, 200)

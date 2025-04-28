@@ -30,7 +30,7 @@ const Signup = () => {
       try {
         const response = await fetch(backend_url + 'get_csrf_token/', {
           method: 'GET',
-          credentials: 'include', // Ensure cookies are included in request
+          credentials: 'include',
         });
         const data = await response.json();
         if (data.csrfToken) {
@@ -41,8 +41,6 @@ const Signup = () => {
         console.error('Error fetching CSRF token:', error);
       }
     };
-    
-    // Fetch CSRF token on component mount
     fetchCsrfToken();
   }, []);
 
@@ -71,6 +69,26 @@ const Signup = () => {
 
     if (password !== confirmPassword) {
       alert('Passwords do not match.');
+      return;
+    }
+
+    if (password.toLowerCase() === "password") {
+      alert('Password cannot be "password".');
+      return;
+    }
+
+    if (/^\d+$/.test(password)) {
+      alert('Password cannot be all numbers.');
+      return;
+    }
+
+    if (password.length < 8) {
+      alert('Password must be at least 8 characters long.');
+      return;
+    }
+
+    if (password.toLowerCase() === firstName.toLowerCase()) {
+      alert('Password cannot be the same as your first name.');
       return;
     }
 
@@ -113,12 +131,62 @@ const Signup = () => {
       <div className="auth-container">
         <div className="auth-card">
           <h2>Sign Up</h2>
+
+          {/* Password Requirements Box */}
+          <div className="password-rules">
+            <h4>Password Requirements</h4>
+            <ul>
+              <li>Must be at least 8 characters</li>
+              <li>Cannot be "password"</li>
+              <li>Cannot be all numbers</li>
+            </ul>
+          </div>
+
           <form onSubmit={handleSubmit}>
-            <input type="text" placeholder="First Name" name="firstName" value={formData.firstName} onChange={handleChange} required />
-            <input type="text" placeholder="Last Name" name="lastName" value={formData.lastName} onChange={handleChange} required />
-            <input type="email" placeholder="Email" name="email" value={formData.email} onChange={handleChange} required />
-            <input type="password" placeholder="Password" name="password" value={formData.password} onChange={handleChange} required />
-            <input type="password" placeholder="Confirm Password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} required />
+            <input 
+              type="text" 
+              placeholder="First Name" 
+              name="firstName" 
+              value={formData.firstName} 
+              onChange={handleChange} 
+              maxLength={50} 
+              required 
+            />
+            <input 
+              type="text" 
+              placeholder="Last Name" 
+              name="lastName" 
+              value={formData.lastName} 
+              onChange={handleChange} 
+              maxLength={50} 
+              required 
+            />
+            <input 
+              type="email" 
+              placeholder="Email" 
+              name="email" 
+              value={formData.email} 
+              onChange={handleChange} 
+              required 
+            />
+            <input 
+              type="password" 
+              placeholder="Password" 
+              name="password" 
+              value={formData.password} 
+              onChange={handleChange} 
+              maxLength={50}
+              required 
+            />
+            <input 
+              type="password" 
+              placeholder="Confirm Password" 
+              name="confirmPassword" 
+              value={formData.confirmPassword} 
+              onChange={handleChange} 
+              maxLength={50}
+              required 
+            />
             <button type="submit">Sign Up</button>
           </form>
 

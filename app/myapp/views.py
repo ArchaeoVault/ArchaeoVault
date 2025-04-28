@@ -307,12 +307,23 @@ def all_artifacts_view(request):
 
 def activate(request, uidb64, token):
     #put boolean that sets user active to true
-    uid = urlsafe_base64_decode(uidb64)
-    user = User.objects.get(email = uid)
-    if user is not None and account_activation_token.check_token(user, token):
-        user.activated = True
-        user.save()
-        return render(request, 'home.html')
+    try:
+        email = urlsafe_base64_decode(uidb64)
+        user = users.objects.get(email = email)
+    except Exception as e:
+        return JsonResponse({'error':'Invalid email'},status = 400)
+    if account_activation_token.check_token(user, token):
+        try:
+            user.activated = True
+            user.save()
+            return JsonResponse({'message':'User activation successful'},status = 200)
+        except Exception as e:
+            return JsonResponse({'error':'User activation failed'},status = 400)
+    else:
+        return JsonResponse({'error':'Invalid token'},status = 400)
+
+    
+
 
     
 
@@ -324,6 +335,7 @@ def resend_verification_view(request):
             #generates the uid and token
             user = users.objects.get(email = email)
             uid = urlsafe_base64_encode(force_bytes(user.email))
+            print('uid: ', uid)
             token = account_activation_token.make_token(user)
             verification_link = request.build_absolute_uri(
                 reverse('activate', kwargs={'uidb64': uid, 'token': token})

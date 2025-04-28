@@ -1,20 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './ForgotPassword.css';
 import Header from "./Header";
 import Footer from "./Footer";
 
+let backend_url = '';
+if (process.env.REACT_APP_DJANGO_ENV === 'production'){ backend_url = 'https://www.archaeovault.com/api/';}
+else{ backend_url = 'http://localhost:8000/api/';}
+
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
-  // const [newPassword, setNewPassword] = useState('');
-  // const [confirmPassword, setConfirmPassword] = useState('');
+  const [csrfToken, setCsrfToken] = useState('');
+
+  // Fetch CSRF token when the component loads
+  useEffect(() => {
+    const fetchCsrfToken = async () => {
+      try {
+        const response = await fetch(backend_url+'get_csrf_token/', {
+          method: 'GET',
+          credentials: 'include', // Ensures cookies are included
+        });
+        const data = await response.json();
+        setCsrfToken(data.csrfToken);
+      } catch (error) {
+        console.error('Error fetching CSRF token:', error);
+      }
+    };
+    fetchCsrfToken();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await fetch('/password_reset/', {
+    const response = await fetch(backend_url+'resend_verification', {
       method: 'POST',
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
+        'X-CSRFToken': csrfToken,
       },
       body: JSON.stringify({ email }),
     });

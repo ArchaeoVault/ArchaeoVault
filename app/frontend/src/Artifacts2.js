@@ -61,6 +61,14 @@ const Artifacts2 = () => {
       const ambientLight = new THREE.AmbientLight(0x333333, 3);
       scene.add(ambientLight);
 
+      const backLight = new THREE.DirectionalLight(0xffffff, 2);
+      backLight.position.set(-500, -500, -500);
+      scene.add(backLight);
+
+      const sideLight = new THREE.DirectionalLight(0xffffff, 1.5);
+      sideLight.position.set(500, -500, 500);
+      scene.add(sideLight);
+
       // Store references
       sceneRef.current = scene;
       cameraRef.current = camera;
@@ -106,6 +114,19 @@ const Artifacts2 = () => {
         `./models/${modelName}/scene.gltf`,
         (gltf) => {
           objectRef.current = gltf.scene;
+          if (["stonewaresurfacefind", "fort"].includes(modelName)) {
+            const box = new THREE.Box3().setFromObject(gltf.scene);
+            const size = new THREE.Vector3();
+            box.getSize(size);
+            const center = new THREE.Vector3();
+            box.getCenter(center);
+            gltf.scene.position.sub(center);
+      
+            const maxDim = Math.max(size.x, size.y, size.z);
+            const desiredSize = 20; // adjust this to fit your preferred size
+            const scale = desiredSize / maxDim;
+            gltf.scene.scale.setScalar(scale);
+          }
           scene.add(gltf.scene);
           console.log(`Model "${modelName}" loaded successfully.`);
         },
@@ -122,30 +143,35 @@ const Artifacts2 = () => {
       <Header />
       <main>
         <div id="infoSection">
-          <label htmlFor="modelSelect">Select Artifact:</label>
+          <label htmlFor="modelSelect"></label>
           <select
-            id="modelSelect"
-            value={selectedArtifact}
-            onChange={(e) => setSelectedArtifact(e.target.value)}>
-            <option value="stonewaresurfacefind">stonewaresurfacefind</option>
-            <option value="tibiawhole">tibiawhole</option>
-            <option value="tibiasmallpiece">tibiasmallpiece</option>
-            <option value="tibiamediumpiece">tibiamediumpiece</option>
-            <option value="tibialargepiece">tibialargepiece</option>
-            <option value="stonewarehandlepiece">stonewarehandlepiece</option>
-            <option value="rhenishstone">rhenishstone</option>
-            <option value="pipestem">pipestem</option>
-            <option value="pigtooth">pigtooth</option>
-            <option value="leftwhitetaileddeermandible">leftwhitetaileddeermandible</option>
-            <option value="largetooth">largetooth</option> 
-            <option value="glassbottletop">glassbottletop</option>
-            <option value="earthenware">earthenware</option>
+  id="modelSelect"
+  className="dropdown-select"
+  value={selectedArtifact}
+  onChange={(e) => setSelectedArtifact(e.target.value)}
+>
+  <option value="" disabled hidden>Select An Artifact!</option>
+  <option value="stonewaresurfacefind">stonewaresurfacefind</option>
+  <option value="tibiawhole">tibiawhole</option>
+  <option value="tibiasmallpiece">tibiasmallpiece</option>
+  <option value="tibiamediumpiece">tibiamediumpiece</option>
+  <option value="tibialargepiece">tibialargepiece</option>
+  <option value="stonewarehandlepiece">stonewarehandlepiece</option>
+  <option value="rhenishstone">rhenishstone</option>
+  <option value="pipestem">pipestem</option>
+  <option value="pigtooth">pigtooth</option>
+  <option value="leftwhitetaileddeermandible">leftwhitetaileddeermandible</option>
+  <option value="largetooth">largetooth</option> 
+  <option value="glassbottletop">glassbottletop</option>
+  <option value="earthenware">earthenware</option>
+  <option value="bridalboss">Bridal Boss</option>
+  <option value="key">Key</option>
+  <option value="musketball">Musket Ball</option>
+  <option value="fort">Fort</option>
+</select>
 
-            <option value="bridalboss">Bridal Boss</option>
-            <option value="key">Key</option>
-            <option value="musketball">Musket Ball</option>
-            <option value="fort">Fort</option>
-          </select>
+          <br />
+          <br />
           <p id="modelDescription">{descriptions[selectedArtifact]}</p>
         </div>
         <div id="container3D" ref={containerRef}></div>

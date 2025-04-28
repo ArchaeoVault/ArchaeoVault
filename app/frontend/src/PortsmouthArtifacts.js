@@ -7,7 +7,7 @@ let backend_url = '';
 if (process.env.REACT_APP_DJANGO_ENV == 'production'){ backend_url = 'https://www.archaeovault.com/api/';}
 else{ backend_url = 'http://localhost:8000/api/';}
 
-const List = () => {
+const PortsmouthArtifacts = () => {
   const [artifacts, setArtifacts] = useState([]);
   const [filteredArtifacts, setFilteredArtifacts] = useState([]);
   const [materialOptions, setMaterialOptions] = useState([]);
@@ -168,4 +168,4 @@ const List = () => {
   );
 };
 
-export default List;
+export default PortsmouthArtifacts;

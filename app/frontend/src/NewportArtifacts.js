@@ -4,10 +4,13 @@ import Footer from "./Footer";
 import "./NewportArtifacts.css";
 
 let backend_url = '';
-if (process.env.REACT_APP_DJANGO_ENV == 'production'){ backend_url = 'https://www.archaeovault.com/api/';}
-else{ backend_url = 'http://localhost:8000/api/';}
+if (process.env.REACT_APP_DJANGO_ENV === 'production') {
+  backend_url = 'https://www.archaeovault.com/api/';
+} else {
+  backend_url = 'http://localhost:8000/api/';
+}
 
-const List = () => {
+const NewportArtifacts = () => {
   const [artifacts, setArtifacts] = useState([]);
   const [filteredArtifacts, setFilteredArtifacts] = useState([]);
   const [materialOptions, setMaterialOptions] = useState([]);
@@ -20,11 +23,12 @@ const List = () => {
   const [materialFilter, setMaterialFilter] = useState("All");
   const [showFilters, setShowFilters] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [expandedArtifactIndex, setExpandedArtifactIndex] = useState(null);
+
   const artifactsPerPage = 9;
 
   useEffect(() => {
-    const startTime = performance.now();
-    fetch(backend_url+"newport_artifacts/")
+    fetch(backend_url + "newport_artifacts/")
       .then((res) => res.json())
       .then((data) => {
         setLoading(false);
@@ -48,13 +52,15 @@ const List = () => {
         setFilteredArtifacts(newportArtifacts);
         setMaterialOptions(materials);
         setYearOptions(years);
-        const endTime = performance.now();  // End the timer
-        console.log(`Data loading took ${(endTime - startTime).toFixed(4)} ms`);
+
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.error("Error fetching artifacts:", error);
       });
   }, []);
 
   useEffect(() => {
-    const startTime = performance.now();
     let filtered = [...artifacts];
 
     if (scannedFilter !== "All") {
@@ -64,16 +70,18 @@ const List = () => {
       filtered = filtered.filter((a) => a.year === yearFilter);
     }
     if (organicFilter !== "All") {
-      filtered = filtered.filter((a) => a.organic?.toLowerCase() === organicFilter.toLowerCase());
+      filtered = filtered.filter(
+        (a) => a.organic?.toLowerCase() === organicFilter.toLowerCase()
+      );
     }
     if (materialFilter !== "All") {
-      filtered = filtered.filter((a) => a.material?.toLowerCase() === materialFilter.toLowerCase());
+      filtered = filtered.filter(
+        (a) => a.material?.toLowerCase() === materialFilter.toLowerCase()
+      );
     }
 
     setFilteredArtifacts(filtered);
     setCurrentPage(0);
-    const endTime = performance.now();  // End the timer for filtering
-    console.log(`Filtering took ${(endTime - startTime).toFixed(4)} ms`);
   }, [artifacts, scannedFilter, yearFilter, organicFilter, materialFilter]);
 
   const startIndex = currentPage * artifactsPerPage;
@@ -136,20 +144,57 @@ const List = () => {
             </div>
           )}
         </div>
-        {loading ? <p>Loading artifacts...</p> : (
+
+        {loading ? (
+          <p>Loading artifacts...</p>
+        ) : (
           <div className="artifacts">
             {displayedArtifacts.length === 0 ? (
               <p>No artifacts match your filters.</p>
             ) : (
-              displayedArtifacts.map((artifact, index) => (
-                <div key={index} className="artifact-item">
-                  <h3>{artifact.object_name}</h3>
-                  <p>{artifact.object_description}</p>
-                </div>
-              ))
+              displayedArtifacts.map((artifact, index) => {
+                const globalIndex = startIndex + index;
+                return (
+                  <div
+                    key={globalIndex}
+                    className="artifact-item"
+                    onClick={() =>
+                      setExpandedArtifactIndex(
+                        expandedArtifactIndex === globalIndex ? null : globalIndex
+                      )
+                    }
+                    style={{ cursor: "pointer" }}
+                  >
+                    <h3>{artifact.object_name}</h3>
+                    <p>{artifact.object_description}</p>
+
+                    {/* Expanded details */}
+                    {expandedArtifactIndex === globalIndex && (
+                      <div className="artifact-details">
+                        {artifact.address && (
+                          <p><strong>Address:</strong> {artifact.address}</p>
+                        )}
+                        {artifact.material && (
+                          <p><strong>Material:</strong> {artifact.material}</p>
+                        )}
+                        {artifact.year && (
+                          <p><strong>Year Excavated:</strong> {artifact.year}</p>
+                        )}
+                        {artifact.organic && (
+                          <p><strong>Organic/Inorganic:</strong> {artifact.organic}</p>
+                        )}
+                        {artifact.scanned && (
+                          <p><strong>3D Scanned:</strong> {artifact.scanned}</p>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+              })
             )}
           </div>
         )}
+
         <div className="pagination">
           <button
             onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 0))}
@@ -174,5 +219,5 @@ const List = () => {
   );
 };
 
-export default List;
+export default NewportArtifacts;
 

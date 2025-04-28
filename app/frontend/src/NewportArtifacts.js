@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
-import Papa from "papaparse";
 import Header from "./Header";
 import Footer from "./Footer";
 import "./NewportArtifacts.css";
+
+let backend_url = '';
+if (process.env.REACT_APP_DJANGO_ENV == 'production'){ backend_url = 'https://www.archaeovault.com/api/';}
+else{ backend_url = 'http://localhost:8000/api/';}
 
 const List = () => {
   const [artifacts, setArtifacts] = useState([]);
@@ -15,109 +18,66 @@ const List = () => {
   const [yearFilter, setYearFilter] = useState("All");
   const [organicFilter, setOrganicFilter] = useState("All");
   const [materialFilter, setMaterialFilter] = useState("All");
-
   const [showFilters, setShowFilters] = useState(false);
-
-  const artifactsPerPage = 5;
+  const [loading, setLoading] = useState(true);
+  const artifactsPerPage = 9;
 
   useEffect(() => {
-    fetch("/cleaned_data.csv")
-      .then((response) => response.text())
-      .then((csvText) => {
-        Papa.parse(csvText, {
-          header: true,
-          skipEmptyLines: true,
-          delimiter: ",",
-          complete: (result) => {
-            const data = result.data.map((artifact) => {
-              const rawDate = artifact["Date excavated (field bag date)"];
-              let year = "";
-              if (rawDate) {
-                const parts = rawDate.split("/");
-                if (parts.length === 3) {
-                  let parsedYear = parts[2];
-                  // Convert 2-digit year to 4-digit year
-                  if (parsedYear.length === 2) {
-                    parsedYear = parseInt(parsedYear) < 50 ? "20" + parsedYear : "19" + parsedYear;
-                  }
-                  year = parsedYear;
-                }
-              }
+    const startTime = performance.now();
+    fetch(backend_url+"newport_artifacts/")
+      .then((res) => res.json())
+      .then((data) => {
+        setLoading(false);
+        console.log("Newport data from backend:", data);
+        const newportArtifacts = data.artifacts;
 
-              return {
-                name: artifact["Object Name"],
-                description: artifact["Object Description"],
-                scanned: artifact["3D Scanned"],
-                year: year,
-                organic: artifact["inorganic/organic"],
-                material: artifact["Material of manufactur"],
-                address: artifact["Address"], // include address for filtering
-              };
-            });
+        const materialSet = new Set();
+        const yearSet = new Set();
 
-            // Filter to only Newport artifacts (case-insensitive "newport" in address)
-            const newportArtifacts = data.filter(
-              (a) => a.address && a.address.toLowerCase().includes("newport")
-            );
-
-            const materialSet = new Set();
-            const yearSet = new Set();
-
-            newportArtifacts.forEach((artifact) => {
-              if (artifact.material) {
-                materialSet.add(artifact.material.trim().toLowerCase());
-              }
-              if (artifact.year) {
-                yearSet.add(artifact.year);
-              }
-            });
-
-            const materials = Array.from(materialSet)
-              .map((mat) => mat.charAt(0).toUpperCase() + mat.slice(1))
-              .sort((a, b) => a.localeCompare(b));
-
-            const years = Array.from(yearSet).sort();
-
-            setArtifacts(newportArtifacts);
-            setMaterialOptions(materials);
-            setYearOptions(years);
-          },
+        newportArtifacts.forEach((artifact) => {
+          if (artifact.material) materialSet.add(artifact.material.trim().toLowerCase());
+          if (artifact.year) yearSet.add(artifact.year);
         });
+
+        const materials = Array.from(materialSet)
+          .map((mat) => mat.charAt(0).toUpperCase() + mat.slice(1))
+          .sort((a, b) => a.localeCompare(b));
+        const years = Array.from(yearSet).sort();
+
+        setArtifacts(newportArtifacts);
+        setFilteredArtifacts(newportArtifacts);
+        setMaterialOptions(materials);
+        setYearOptions(years);
+        const endTime = performance.now();  // End the timer
+        console.log(`Data loading took ${(endTime - startTime).toFixed(4)} ms`);
       });
   }, []);
 
   useEffect(() => {
+    const startTime = performance.now();
     let filtered = [...artifacts];
 
     if (scannedFilter !== "All") {
       filtered = filtered.filter((a) => a.scanned === scannedFilter);
     }
-
     if (yearFilter !== "All") {
       filtered = filtered.filter((a) => a.year === yearFilter);
     }
-
     if (organicFilter !== "All") {
-      filtered = filtered.filter(
-        (a) => a.organic?.toLowerCase() === organicFilter.toLowerCase()
-      );
+      filtered = filtered.filter((a) => a.organic?.toLowerCase() === organicFilter.toLowerCase());
     }
-
     if (materialFilter !== "All") {
-      filtered = filtered.filter(
-        (a) => a.material?.toLowerCase() === materialFilter.toLowerCase()
-      );
+      filtered = filtered.filter((a) => a.material?.toLowerCase() === materialFilter.toLowerCase());
     }
 
     setFilteredArtifacts(filtered);
     setCurrentPage(0);
+    const endTime = performance.now();  // End the timer for filtering
+    console.log(`Filtering took ${(endTime - startTime).toFixed(4)} ms`);
   }, [artifacts, scannedFilter, yearFilter, organicFilter, materialFilter]);
 
   const startIndex = currentPage * artifactsPerPage;
-  const displayedArtifacts = filteredArtifacts.slice(
-    startIndex,
-    startIndex + artifactsPerPage
-  );
+  const displayedArtifacts = filteredArtifacts.slice(startIndex, startIndex + artifactsPerPage);
 
   return (
     <div className="artifact-page">
@@ -125,12 +85,8 @@ const List = () => {
       <div className="artifact-list">
         <h2>Newport, RI Artifacts</h2>
 
-        {/* Filters Toggle */}
         <div className="filters-container">
-          <button
-            className="toggle-filters-btn"
-            onClick={() => setShowFilters(!showFilters)}
-          >
+          <button className="toggle-filters-btn" onClick={() => setShowFilters(!showFilters)}>
             {showFilters ? "Hide Filters ▲" : "Show Filters ▼"}
           </button>
 
@@ -180,20 +136,20 @@ const List = () => {
             </div>
           )}
         </div>
-
-        <div className="artifacts">
-          {displayedArtifacts.length === 0 ? (
-            <p>No artifacts match your filters.</p>
-          ) : (
-            displayedArtifacts.map((artifact, index) => (
-              <div key={index} className="artifact-item">
-                <h3>{artifact.name}</h3>
-                <p>{artifact.description}</p>
-              </div>
-            ))
-          )}
-        </div>
-
+        {loading ? <p>Loading artifacts...</p> : (
+          <div className="artifacts">
+            {displayedArtifacts.length === 0 ? (
+              <p>No artifacts match your filters.</p>
+            ) : (
+              displayedArtifacts.map((artifact, index) => (
+                <div key={index} className="artifact-item">
+                  <h3>{artifact.object_name}</h3>
+                  <p>{artifact.object_description}</p>
+                </div>
+              ))
+            )}
+          </div>
+        )}
         <div className="pagination">
           <button
             onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 0))}
@@ -219,3 +175,4 @@ const List = () => {
 };
 
 export default List;
+

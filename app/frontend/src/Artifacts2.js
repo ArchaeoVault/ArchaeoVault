@@ -17,27 +17,25 @@ const Artifacts2 = () => {
 
   const descriptions = {
     stonewaresurfacefind: "Stoneware; brown salt glaze; rim; with various rows of lines",
-    tibiawhole: "description2",
-    tibiasmallpiece: "description3",
-    tibiamediumpiece: "description4",
-    tibialargepiece: "description5",
+    tibiawhole: "",
+    tibiasmallpiece: "",
+    tibiamediumpiece: "",
+    tibialargepiece: "",
     stonewarehandlepiece: "Curved handle piece",
     rhenishstone: "Salt glazed Rhenish Stoneware",
     pipestem: "Brown smoking stem",
     pigtooth: "Pig; Molar 1; develops at 4-6 months; permenant; less wear; partially broken",
-    leftwhitetaileddeermandible: "description10",
+    leftwhitetaileddeermandible: "",
     largetooth: "Pre-molar; 2nd tooth; bovine; 18-30 months for the growth of said tooth",
-    glassbottletop: "description12",
+    glassbottletop: "",
     earthenware: "A floral motif printed underglazed earthenware (deep blue with white accents) with the makers mark ADA",
-
-    bridalboss: "description14",
-    key: "description15",
-    musketball: "description16",
-    fort: "description17",
+    bridalboss: "",
+    key: "",
+    musketball: "",
+    fort: "",
   };
 
   useEffect(() => {
-    // Initialize Three.js Scene (only once)
     if (!sceneRef.current) {
       const scene = new THREE.Scene();
       const camera = new THREE.PerspectiveCamera(
@@ -49,11 +47,8 @@ const Artifacts2 = () => {
       camera.position.set(0, 0, 50);
       const renderer = new THREE.WebGLRenderer({ alpha: true });
       renderer.setSize(window.innerWidth, window.innerHeight);
-
-      // Attach renderer to the container
       containerRef.current.appendChild(renderer.domElement);
 
-      // Lights
       const topLight = new THREE.DirectionalLight(0xffffff, 4);
       topLight.position.set(500, 500, 500);
       scene.add(topLight);
@@ -61,20 +56,25 @@ const Artifacts2 = () => {
       const ambientLight = new THREE.AmbientLight(0x333333, 3);
       scene.add(ambientLight);
 
-      // Store references
+      const backLight = new THREE.DirectionalLight(0xffffff, 2);
+      backLight.position.set(-500, -500, -500);
+      scene.add(backLight);
+
+      const sideLight = new THREE.DirectionalLight(0xffffff, 1.5);
+      sideLight.position.set(500, -500, 500);
+      scene.add(sideLight);
+
       sceneRef.current = scene;
       cameraRef.current = camera;
       rendererRef.current = renderer;
       controlsRef.current = new OrbitControls(camera, renderer.domElement);
 
-      // Handle resize
       window.addEventListener("resize", () => {
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
       });
 
-      // Animation loop
       const animate = () => {
         requestAnimationFrame(animate);
         renderer.render(scene, camera);
@@ -82,14 +82,12 @@ const Artifacts2 = () => {
       animate();
     }
 
-    // Function to load a model
     const loadModel = (modelName) => {
       console.log(`Loading model from: ./models/${modelName}/scene.gltf`);
 
       const loader = new GLTFLoader();
       const scene = sceneRef.current;
 
-      // Remove previous model
       if (objectRef.current) {
         scene.remove(objectRef.current);
         objectRef.current.traverse((child) => {
@@ -101,11 +99,23 @@ const Artifacts2 = () => {
         objectRef.current = null;
       }
 
-      // Load new model
       loader.load(
         `./models/${modelName}/scene.gltf`,
         (gltf) => {
           objectRef.current = gltf.scene;
+          if (["stonewaresurfacefind", "fort"].includes(modelName)) {
+            const box = new THREE.Box3().setFromObject(gltf.scene);
+            const size = new THREE.Vector3();
+            box.getSize(size);
+            const center = new THREE.Vector3();
+            box.getCenter(center);
+            gltf.scene.position.sub(center);
+
+            const maxDim = Math.max(size.x, size.y, size.z);
+            const desiredSize = 20;
+            const scale = desiredSize / maxDim;
+            gltf.scene.scale.setScalar(scale);
+          }
           scene.add(gltf.scene);
           console.log(`Model "${modelName}" loaded successfully.`);
         },
@@ -115,38 +125,45 @@ const Artifacts2 = () => {
     };
 
     loadModel(selectedArtifact);
-  }, [selectedArtifact]); // Runs every time the selected artifact changes
+  }, [selectedArtifact]);
 
   return (
     <div className="artifacts-page">
       <Header />
       <main>
         <div id="infoSection">
-          <label htmlFor="modelSelect">Select Artifact:</label>
+          <label htmlFor="modelSelect"></label>
           <select
             id="modelSelect"
+            className="dropdown-select"
             value={selectedArtifact}
-            onChange={(e) => setSelectedArtifact(e.target.value)}>
-            <option value="stonewaresurfacefind">stonewaresurfacefind</option>
-            <option value="tibiawhole">tibiawhole</option>
-            <option value="tibiasmallpiece">tibiasmallpiece</option>
-            <option value="tibiamediumpiece">tibiamediumpiece</option>
-            <option value="tibialargepiece">tibialargepiece</option>
-            <option value="stonewarehandlepiece">stonewarehandlepiece</option>
-            <option value="rhenishstone">rhenishstone</option>
-            <option value="pipestem">pipestem</option>
-            <option value="pigtooth">pigtooth</option>
-            <option value="leftwhitetaileddeermandible">leftwhitetaileddeermandible</option>
-            <option value="largetooth">largetooth</option> 
-            <option value="glassbottletop">glassbottletop</option>
-            <option value="earthenware">earthenware</option>
-
+            onChange={(e) => setSelectedArtifact(e.target.value)}
+          >
+            <option value="" disabled hidden>Select An Artifact!</option>
+            <option value="stonewaresurfacefind">Stoneware Surface Find</option>
+            <option value="tibiawhole">Tibia Whole</option>
+            <option value="tibiasmallpiece">Tibia Small Piece</option>
+            <option value="tibiamediumpiece">Tibia Medium Piece</option>
+            <option value="tibialargepiece">Tibia Large Piece</option>
+            <option value="stonewarehandlepiece">Stoneware Handle Piece</option>
+            <option value="rhenishstone">Rhenish Stone</option>
+            <option value="pipestem">Pipestem</option>
+            <option value="pigtooth">Pig tooth</option>
+            <option value="leftwhitetaileddeermandible">Left Whitetailed Deer Mandible</option>
+            <option value="largetooth">Large Tooth</option>
+            <option value="glassbottletop">Glass Bottle Top</option>
+            <option value="earthenware">Earthenware</option>
             <option value="bridalboss">Bridal Boss</option>
             <option value="key">Key</option>
             <option value="musketball">Musket Ball</option>
             <option value="fort">Fort</option>
           </select>
+          <br />
+          <br />
           <p id="modelDescription">{descriptions[selectedArtifact]}</p>
+          {selectedArtifact && (
+            <p id="movementInstructions">Click and drag the artifact to move.</p>
+          )}
         </div>
         <div id="container3D" ref={containerRef}></div>
       </main>

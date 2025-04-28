@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Header from "./Header";
 import Footer from "./Footer";
-import "./NewportArtifacts.css";
+import "./PortsmouthArtifacts.css";
 
 let backend_url = '';
 if (process.env.REACT_APP_DJANGO_ENV == 'production'){ backend_url = 'https://www.archaeovault.com/api/';}

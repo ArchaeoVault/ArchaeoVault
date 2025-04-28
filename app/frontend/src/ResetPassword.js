@@ -74,7 +74,8 @@ const ResetPassword = () => {
       alert("Passwords do not match!");
       return;
     }
-    const response = await fetch(backend_url+`change_password/`, {
+    // const response = await fetch(backend_url+`change_password/`, {
+      const response = await fetch(backend_url+`change_password/${uidb64}/${token}/`, {
       method: 'POST',
       credentials: 'include',
       headers: {

@@ -31,6 +31,7 @@ from django.template.loader import render_to_string
 from .tokens import account_activation_token
 from django.http import FileResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.utils.encoding import force_str
 import json
 import os
 import time
@@ -66,8 +67,9 @@ def login_view(request):
                     return JsonResponse({'status':'error','message':'Passwords do not match'}, status = 400)
             
                 if user is not None:
-                    login(request, user)
+                    # login(request, user)
                     request.session['user_email'] = user.email #stores users email for current session to be used later
+                    request.session['is_authenticated'] = True
                     return JsonResponse({
                         "status": "ok",
                         "user": {
@@ -308,7 +310,8 @@ def all_artifacts_view(request):
 def activate(request, uidb64, token):
     #put boolean that sets user active to true
     try:
-        email = urlsafe_base64_decode(uidb64)
+        email = urlsafe_base64_decode(uidb64) # Decodes the base64 encoded email
+        email = force_str(email)  # Convert bytes to string
         user = users.objects.get(email = email)
     except Exception as e:
         return JsonResponse({'error':'Invalid email'},status = 400)
@@ -316,7 +319,14 @@ def activate(request, uidb64, token):
         try:
             user.activated = True
             user.save()
-            return JsonResponse({'message':'User activation successful'},status = 200)
+            # return JsonResponse({'message':'User activation successful'},status = 200)
+            # Redirect to the frontend verification page
+            if os.environ.get('DJANGO_ENV') == 'production':
+                frontend_url = 'https://www.archaeovault.com'
+            else:
+                frontend_url = 'http://localhost:3000'
+            return redirect(f'{frontend_url}/reset/{uidb64}/{token}')
+        
         except Exception as e:
             return JsonResponse({'error':'User activation failed'},status = 400)
     else:
@@ -362,7 +372,7 @@ def resend_verification_view(request):
             return JsonResponse({'error': 'Email address not associated with an account'}, status=400)
     return JsonResponse({ "status": "ok",}, status=200)
 
-def change_password_view(request):
+def change_password_view(request, uidb64, token):
     if request.method == 'POST':
         try: 
             data = json.loads(request.body)
@@ -382,7 +392,7 @@ def change_password_view(request):
                     user.upassword = newPassword
                     user.save()
                 except Exception as e:
-                    print('Error resetting')
+                    print('Error resetting password', e)
                     return JsonResponse({'error':'Error in updating and saving password'}, status = 400)
             else:
                 return JsonResponse({'error':'Token is invalid'}, status = 400)
@@ -391,3 +401,17 @@ def change_password_view(request):
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
         except Exception as e:
             return JsonResponse({'error':'Error changing password'},status = 400)
+        
+
+
+def get_email_from_token(request, uidb64, token):
+    try:
+        email = force_str(urlsafe_base64_decode(uidb64))
+        user = users.objects.get(email=email)
+    except Exception as e:
+        return JsonResponse({'error': 'Invalid token or email'}, status=400)
+
+    if account_activation_token.check_token(user, token):
+        return JsonResponse({'email': user.email}, status=200)
+    else:
+        return JsonResponse({'error': 'Invalid token'}, status=400)

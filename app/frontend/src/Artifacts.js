@@ -49,7 +49,7 @@ function ArtifactsPage() {
 
       const data = await response.json();
       const permission = data.upermission; // assuming your API returns { permission: 2 } or { permission: 3 }
-      let targetPath = artifact.path.slice(1);
+      let targetPath = artifact.path;
 
       if (permission === 3) {
         targetPath = `/researcher-${artifact.path.slice(1)}`;

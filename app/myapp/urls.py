@@ -34,5 +34,5 @@ urlpatterns = [
     #path('api/send_password_reset/', views.send_password_reset_view, name = 'send_password_reset_view')
     path('api/newport_artifacts/', views.newport_artifacts_view, name = 'newport_artifacts_view'),
     path('api/portsmouth_artifacts/', views.portsmouth_artifacts_view, name = 'portsmouth_artifacts_view'),
-
+    path('api/user_permission/', views.get_user_permission, name = 'get_user_permission'),
 ]

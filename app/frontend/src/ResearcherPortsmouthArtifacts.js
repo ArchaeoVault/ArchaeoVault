@@ -5,7 +5,7 @@ import Footer from "./Footer";
 // import "./NewportArtifacts.css";
 import './ResearcherPage.css';
 
-const ResearcherPage = () => {
+const ResearcherPortsmouthArtifacts = () => {
   const [artifacts, setArtifacts] = useState([]);
   const [newArtifact, setNewArtifact] = useState({
     name: '',
@@ -108,4 +108,4 @@ const ResearcherPage = () => {
   );
 };
 
-export default ResearcherPage;
+export default ResearcherPortsmouthArtifacts;

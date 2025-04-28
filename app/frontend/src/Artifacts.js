@@ -1,8 +1,12 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Header from "./Header";
 import Footer from "./Footer";
 import "./Artifacts.css";
+
+let backend_url = '';
+if (process.env.REACT_APP_DJANGO_ENV == 'production'){ backend_url = 'https://www.archaeovault.com/api/';}
+else{ backend_url = 'http://localhost:8000/api/';}
 
 const artifactsData = [
   {
@@ -19,7 +23,7 @@ const artifactsData = [
   {
     id: 3,
     name: "Newport, RI",
-    imageUrl: "Newport_placeholder.jpg",
+    imageUrl: "/Newport_placeholder.jpg",
     location: "Newport, RI",
     timePeriod: "18th Century",
     material: "Brass",
@@ -30,16 +34,41 @@ const artifactsData = [
 ];
 
 function ArtifactsPage() {
+  const navigate = useNavigate(); // << useNavigate for redirects
+
+  async function handleArtifactClick(artifact) {
+    try {
+      const response = await fetch(backend_url+"user_permission/", {
+        method: "GET",
+        credentials: "include",
+      });
+      
+      if (!response.ok) {
+        throw new Error("Failed to fetch user permission");
+      }
+
+      const data = await response.json();
+      const permission = data.upermission; // assuming your API returns { permission: 2 } or { permission: 3 }
+      let targetPath = artifact.path.slice(1);
+
+      if (permission === 3) {
+        targetPath = `/researcher-${artifact.path.slice(1)}`;
+      }
+      
+      navigate(targetPath);
+    } catch (error) {
+      console.error("Error checking permission:", error);
+      alert("Error checking permission.");
+    }
+  }
   return (
     <>
       <Header />
       <div className="artifacts-page">
-        {/* Top banner/hero area */}
         <header className="artifacts-hero">
           <h1 className="hero-title">Locations</h1>
         </header>
         
-        {/* Main content area */}
         <section className="artifacts-container">
           <div className="artifacts-grid">
             {artifactsData.map((artifact) => (
@@ -48,10 +77,17 @@ function ArtifactsPage() {
                   src={artifact.imageUrl}
                   alt={artifact.name}
                   className="artifact-image"
+                  onClick={() => handleArtifactClick(artifact)} // << add click handler here
+                  style={{ cursor: "pointer" }}
                 />
                 <div className="artifact-info">
                   <h2 className="artifact-name">
-                    <Link to={artifact.path}>{artifact.name}</Link>
+                    <button 
+                      onClick={() => handleArtifactClick(artifact)} 
+                      style={{ background: "none", border: "none", color: "blue", textDecoration: "underline", cursor: "pointer", fontSize: "inherit" }}
+                    >
+                      {artifact.name}
+                    </button>
                   </h2>
                   <p className="artifact-location">Location: {artifact.location}</p>
                   <p className="artifact-timePeriod">Time Period: {artifact.timePeriod}</p>

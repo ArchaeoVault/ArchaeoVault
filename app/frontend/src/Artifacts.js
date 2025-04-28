@@ -14,10 +14,9 @@ const artifactsData = [
     name: "Portsmouth, RI",
     imageUrl: "/Portsmouth_placeholder.png",
     location: "Portsmouth, RI",
-    timePeriod: "Late 1600s",
-    material: "Earthenware",
+    timePeriod: "17th Century",
     description:
-      "Fragments of a Native American clay pot, showcasing intricate hand-etched designs.",
+      "Portsmouth, Rhode Island is a historic town founded in 1638, known for its early colonial settlements, farmland, and important archaeological finds tied to Native American and early European history.",
     path: "/portsmouth-artifacts"
   },
   {
@@ -26,9 +25,8 @@ const artifactsData = [
     imageUrl: "/Newport_placeholder.jpg",
     location: "Newport, RI",
     timePeriod: "18th Century",
-    material: "Brass",
     description:
-      "A brass nautical compass from a merchant vessel that frequented Newport Harbor.",
+      "Newport, Rhode Island is a coastal city famous for its colonial architecture, Gilded Age mansions, and centuries of maritime history that have contributed to rich archaeological discoveries.",
     path: "/newport-artifacts"
   }
 ];
@@ -91,7 +89,6 @@ function ArtifactsPage() {
                   </h2>
                   <p className="artifact-location">Location: {artifact.location}</p>
                   <p className="artifact-timePeriod">Time Period: {artifact.timePeriod}</p>
-                  <p className="artifact-material">Material: {artifact.material}</p>
                   <p className="artifact-description">{artifact.description}</p>
                 </div>
               </article>

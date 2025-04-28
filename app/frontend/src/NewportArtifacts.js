@@ -20,7 +20,7 @@ const List = () => {
   const [materialFilter, setMaterialFilter] = useState("All");
   const [showFilters, setShowFilters] = useState(false);
   const [loading, setLoading] = useState(true);
-  const artifactsPerPage = 5;
+  const artifactsPerPage = 9;
 
   useEffect(() => {
     const startTime = performance.now();

@@ -17,8 +17,10 @@ const ListDB = () => {
 
   const [showFilters, setShowFilters] = useState(false);
 
-  const artifactsPerPage = 5;
+  const artifactsPerPage = 9;
 
+  const [expandedArtifactIndex, setExpandedArtifactIndex] = useState(null);
+  
   // Fetch artifact data on component mount
   useEffect(() => {
     fetch("/api/all_artifacts")
@@ -26,66 +28,154 @@ const ListDB = () => {
       .then((data) => {
         console.log("Fetched data:", data);  // Log to see the structure of the response
   
-        if (Array.isArray(data.artifacts)) {  // Check if 'artifacts' is an array
-          const materialSet = new Set();
-          const yearSet = new Set();
-  
-          data.artifacts.forEach((artifact) => {
-            if (artifact.material) {
-              materialSet.add(artifact.material.trim().toLowerCase());
-            }
-            if (artifact.year) {
-              yearSet.add(artifact.year);
-            }
-          });
-  
-          const materials = Array.from(materialSet)
-            .map((mat) => mat.charAt(0).toUpperCase() + mat.slice(1))
-            .sort((a, b) => a.localeCompare(b));
-  
-          const years = Array.from(yearSet).sort();
-  
-          setArtifacts(data.artifacts);  // Set the artifacts array
-          setMaterialOptions(materials);
-          setYearOptions(years);
-        } else {
-          console.error("API response does not contain 'artifacts' array:", data);
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
-  }, []);
-  
-  
+        const addressMap = {
+          1: "Null",
+          2: "RI; Portsmouth; 66 Freeborn Street",
+          3: "Newport Spring Site; 48 Touro/Spring St. Newport; RI",
+          4: "Butts Hill Fort; Portsmouth; RI",
+        };
 
+        const scannedMap = {
+          1: "Yes",
+          2: "No",
+        };
+        
+        const organicMap = {
+          1: "Organic",
+          2: "Inorganic",
+        };
+        
+        const materialMap = {
+          1: "Animal Bone",
+          2: "Ash",
+          3:"Bone",
+          4:"Brick",
+          5:"Ceramic",
+          6:"Pearlware; edged",
+          7:"Ceramic; earthenware",
+          8:"Charcoal",
+          9:"China",
+          10:"Chinese Hard Paste Porcelain",
+          11:"Clay",
+          12:"Clear Glass",
+          13:"Coal",
+          14:"Coarse Earthenware",
+          15:"Creamware",
+          16:"Earthenware",
+          17:"Earthenware and Soft Paste Porcelain",
+          18:"Embossed Edged Earthenware",
+          19:"Expanded polystyrene (EPS)",
+          20:"Glass",
+          21:"Glazed earthenware",
+          22:"Granite",
+          23:"Greyware",
+          24:"Iron",
+          25:"Iron fragment",
+          26:"Japanese Hard Paste Porcelain",
+          27:"lead or pewter",
+          28:"Majolica",
+          29:"Metal",
+          30:"Nut shell",
+          31:"Pearlware",
+          32:"Porcelain",
+          33:"Possibly Lead",
+          34:"Printed Underglaze Earthenware",
+          35:"Printed Underglazed Earthenware",
+          36:"Quartz",
+          37:"Redware fragment",
+          38:"Refined Earthenware",
+          39:"Refined Earthenware and Flow Blue China",
+          40:"Refined Earthenware and Printed Underglaze Earthenware",
+          41:"Refined Earthenware; Printed Underglaze Earthenware",
+          42:"Rhenish Stoneware",
+          43:"Rock",
+          44:"Salt-glazed Stoneware",
+          45:"Salt-Glazed Stoneware",
+          46:"Shell",
+          47:"Soft Paste Porcelain",
+          48:"Sponge Decorated Ware",
+          49:"Stone",
+          50:"STONEWARE",
+          51:"Stoneware",
+          52:"Stoneware (possible rhenish/salt glazed)",
+          53:"Underglazed Painted Earthenware",
+          54:"Unknown",
+          55:"Very dark olive/Light black glass",
+          56:"Walnut",
+          57:"Whiledon Ware",
+          58:"Wood",
+          59:"Yellow Earthenware",
+          60:"Yellowish olive green glass",
+          61:"Unknown",
+          62:"Pig",
+          63:"Porcelin",
+          64:"Lead",
+          65:"Copper",
+          66:"Metal; Iron",
+          67:"Metal; Iron?",
+          68:"Copper?"};
+
+          if (Array.isArray(data.artifacts)) {
+            const processedArtifacts = data.artifacts.map((artifact) => ({
+              ...artifact,
+              scanned_address_readable: addressMap[artifact.address] || "Unknown",
+              scanned_3d_readable: scannedMap[artifact.scanned_3d] || "Unknown",
+              organic_inorganic_readable: organicMap[artifact.organic_inorganic] || "Unknown",
+              material_of_manufacture_readable: materialMap[artifact.material_of_manufacture] || "Unknown",
+              year_excavated: artifact.date_excavated ? artifact.date_excavated.split("-")[0] : "Unknown",
+            }));
+    
+            const materialSet = new Set();
+            const yearSet = new Set();
+    
+            processedArtifacts.forEach((artifact) => {
+              materialSet.add(artifact.material_of_manufacture_readable);
+              yearSet.add(artifact.year_excavated);
+            });
+    
+            const materials = Array.from(materialSet).sort();
+            const years = Array.from(yearSet).sort();
+    
+            setArtifacts(processedArtifacts);
+            setMaterialOptions(materials);
+            setYearOptions(years);
+          } else {
+            console.error("API response does not contain 'artifacts' array:", data);
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching data:", error);
+        });
+    }, []);
+    
   // Filter artifacts based on the selected filter options
   useEffect(() => {
     let filtered = [...artifacts];
-
+  
     if (scannedFilter !== "All") {
-      filtered = filtered.filter((a) => a.scanned === scannedFilter);
+      filtered = filtered.filter((a) => a.scanned_3d_readable === scannedFilter);
     }
-
+  
     if (yearFilter !== "All") {
-      filtered = filtered.filter((a) => a.year === yearFilter);
+      filtered = filtered.filter((a) => a.year_excavated === yearFilter);
     }
-
+  
     if (organicFilter !== "All") {
       filtered = filtered.filter(
-        (a) => a.organic?.toLowerCase() === organicFilter.toLowerCase()
+        (a) => a.organic_inorganic_readable.toLowerCase() === organicFilter.toLowerCase()
       );
     }
-
+  
     if (materialFilter !== "All") {
       filtered = filtered.filter(
-        (a) => a.material?.toLowerCase() === materialFilter.toLowerCase()
+        (a) => a.material_of_manufacture_readable === materialFilter
       );
     }
-
+  
     setFilteredArtifacts(filtered);
-    setCurrentPage(0); // Reset to the first page when filters change
+    setCurrentPage(0); // Reset to first page when filters change
   }, [artifacts, scannedFilter, yearFilter, organicFilter, materialFilter]);
+  
 
   // Pagination handling
   const startIndex = currentPage * artifactsPerPage;
@@ -155,16 +245,41 @@ const ListDB = () => {
           )}
         </div>
 
-        <div className="artifacts">
+        
+      <div className="artifacts">
   {displayedArtifacts.length === 0 ? (
     <p>No artifacts match your filters.</p>
   ) : (
-    displayedArtifacts.map((artifact, index) => (
-      <div key={index} className="artifact-item">
-        <h3>{artifact.object_name}</h3> {/* Displaying object name */}
-        <p>{artifact.object_description}</p> {/* Displaying object description */}
-      </div>
-    ))
+    displayedArtifacts.map((artifact, index) => {
+      const globalIndex = startIndex + index; // Important: global index across pages
+
+      return (
+        <div
+          key={globalIndex}
+          className="artifact-item"
+          onClick={() =>
+            setExpandedArtifactIndex(
+              expandedArtifactIndex === globalIndex ? null : globalIndex
+            )
+          }
+          style={{ cursor: "pointer" }}
+        >
+          <h3>{artifact.object_name}</h3>
+          <p>{artifact.object_description}</p>
+
+          {/*EXPANDED ARTIFACT INFORMATION */}
+          {expandedArtifactIndex === globalIndex && (
+            <div className="artifact-details">
+              <p><strong>Address:</strong> {artifact.scanned_address_readable}</p>
+              <p><strong>Material:</strong> {artifact.material_of_manufacture_readable}</p>
+              <p><strong>Year Excavated:</strong> {artifact.year_excavated}</p>
+              <p><strong>Organic/Inorganic:</strong> {artifact.organic_inorganic_readable}</p>
+              <p><strong>3D Scanned:</strong> {artifact.scanned_3d_readable}</p>
+            </div>
+          )}
+        </div>
+      );
+    })
   )}
 </div>
 

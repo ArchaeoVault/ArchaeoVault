@@ -25,12 +25,6 @@
     background-color: #444;
 }
 
-.artifact-item {
-  border: 1px solid #ccc;
-  padding: 10px;
-  margin: 10px 0;
-}
-
 .filters {
     display: flex;
     flex-wrap: wrap;
@@ -100,5 +94,36 @@
     padding: 0.5rem;
     border-radius: 4px;
     border: 1px solid #aaa;
+  }
+  
+  .artifacts {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 items per row */
+    gap: 20px; /* Space between items */
+    margin-top: 20px;
+  }
+  
+  .artifact-item {
+    border: 1px solid #ccc;
+    padding: 15px;
+    border-radius: 8px;
+    transition: box-shadow 0.3s;
+    background-color: #fff;
+  }
+  
+  .artifact-item:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  @media (max-width: 768px) {
+    .artifacts {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .artifacts {
+      grid-template-columns: 1fr;
+    }
   }
   

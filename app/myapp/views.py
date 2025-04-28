@@ -201,22 +201,12 @@ def newport_artifacts_view(request):
     end_time = time.time()  # End timing
     duration = end_time - start_time
     print("Database fetching: ", duration)
-    images = imagetable.objects.all()
-
-    image_data = [
-    {
-        'id': image.id,
-        'your_table_id': image.your_table_id,
-        'filepath': image.filepath,
-    }
-        for image in images
-    ]
+    
     return JsonResponse({
         'artifacts': artifact_data,
         'page': page,
         'total_pages': paginator.num_pages,
         'total_artifacts': paginator.count,
-        'images' : image_data,
     }, status=200)
 
 def portsmouth_artifacts_view(request):
@@ -243,18 +233,8 @@ def portsmouth_artifacts_view(request):
         }
         for artifact in artifacts
     ]
-    images = imagetable.objects.all()
 
-    image_data = [
-        {
-            'id': image.id,
-            'your_table_id': image.your_table_id,
-            'filepath': image.filepath,
-        }
-        for image in images
-    ]
-
-    return JsonResponse({'artifacts': artifact_data, 'images' : image_data}, status=200)
+    return JsonResponse({'artifacts': artifact_data,}, status=200)
 
 def all_artifacts_view(request):
 
@@ -315,21 +295,11 @@ def all_artifacts_view(request):
             
         } for artifact in artifacts
     ]
-    images = imagetable.objects.all()
-
-    image_data = [
-        {
-            'id': image.id,
-            'your_table_id': image.your_table_id,
-            'filepath': image.filepath,
-        }
-        for image in images
-    ]
 
     
 
     # Return data as JSON response
-    return JsonResponse({'artifacts': artifact_data, 'images' : image_data}, status = 200)
+    return JsonResponse({'artifacts': artifact_data,}, status = 200)
 
 
 def single_artifact_view(request):
@@ -390,21 +360,28 @@ def single_artifact_view(request):
                 } for artifact in artifacts
             ]
 
-            images = imagetable.objects.all()
-
-            image_data = [
-            {
-                'id': image.id,
-                'your_table_id': image.your_table_id,
-                'filepath': image.filepath,
-            }
-                for image in images
-            ]
             # Return data as JSON response
-            return JsonResponse({'artifacts': artifact_data, 'images' : image_data}, status = 200)
+            return JsonResponse({'artifacts': artifact_data,}, status = 200)
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid JSON data'}, status=400)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+
+def all_image_table_view(request):
+    images = imagetable.objects.all()
+
+    image_data = [
+    {
+        'id': image.id,
+        'artifct_id': image.your_table.id,
+        'filepath': image.filepath,
+    }
+        for image in images
+    ]
+
+    return JsonResponse({'images': image_data,}, status = 200)
+
+
 
 def activate(request, uidb64, token):
     #put boolean that sets user active to true

@@ -13,7 +13,7 @@ class test_create_user(TestCase):
     def test_user_create_success(self):        
         response = self.client.post(
             reverse('create_user_view'),
-            data = json.dumps({'email':'temp@email.com','password':'password123','confirm_password':'password123'}),
+            data = json.dumps({'email':'temp@email.com','password':'ThisIsABetterPassword','confirm_password':'ThisIsABetterPassword'}),
             content_type='application/json'
             )
         self.assertEqual(response.status_code, 200)
@@ -30,28 +30,28 @@ class test_create_user(TestCase):
     def test_create_user_invalid_email(self):        
         response = self.client.post(
             reverse('create_user_view'),
-            data = json.dumps({'email':'temp','password':'password123','confirm_password':'password123'}),
+            data = json.dumps({'email':'temp','password':'ThisIsABetterPassword','confirm_password':'ThisIsABetterPassword'}),
             content_type='application/json'
             )
         self.assertEqual(response.status_code, 400)    
     def test_mismatch_password(self):        
         response = self.client.post(
             reverse('create_user_view'),
-            data = json.dumps({'email':'temp@email.com','password':'password123','confirm_password':'password1234'}),
+            data = json.dumps({'email':'temp@email.com','password':'ThisIsABetterPassword','confirm_password':'ThisIsAPassword'}),
             content_type='application/json'
             )
         self.assertEqual(response.status_code,400)   
     def test_create_user_with_same_email(self):        
         response = self.client.post(
             reverse('create_user_view'),
-            data = json.dumps({'email':'temp@email.com','password':'password123','confirm_password':'password123'}),
+            data = json.dumps({'email':'temp@email.com','password':'ThisIsABetterPassword','confirm_password':'ThisIsABetterPassword'}),
             content_type='application/json'
             )
         self.assertEqual(response.status_code, 200)
         self.assertTrue(users.objects.filter(email ='temp@email.com').exists())
         response = self.client.post(
             reverse('create_user_view'),
-            data = json.dumps({'email':'temp@email.com','password':'password123','confirm_password':'password123'}),
+            data = json.dumps({'email':'temp@email.com','password':'ThisIsABetterPassword','confirm_password':'ThisIsABetterPassword'}),
             content_type='application/json'
             )
         self.assertEqual(response.status_code, 400)

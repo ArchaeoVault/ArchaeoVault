@@ -12,7 +12,8 @@ import Artifacts2 from './Artifacts2';
 import AboutUs from "./AboutUs";
 import Contact from "./Contact";
 import ListPage from "./list";
-
+import ResearcherPortsmouthArtifacts from "./ResearcherPortsmouthArtifacts";
+import ResearcherNewportArtifacts from "./ResearcherNewportArtifacts";
 const App = () => {
   const [showLogin, setShowLogin] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -23,17 +24,16 @@ const App = () => {
     const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true'; // Check authentication state
     const location = useLocation(); // Move useLocation inside PrivateRoute
 
-    // useEffect(() => {
-    //   if (!isAuthenticated && location.pathname !== '/login') {
-    //     setRedirectPath(location.pathname);  // Keep track of the attempted location
-    //   }
-    // }, [location]);  // Only depend on location
-
     if (!isAuthenticated) {
       return <Navigate to="/login" state={{ from: location }} />;
     }
     return element;
   };
+
+  /*const PrivateAdminRoute = ({ element }) => {
+    const isAdmin = localStorage.getItem('isAdmin') === 'true';
+    return isAdmin ? element : <Navigate to="/login" />;
+  };*/
 
   return (
     <Router>
@@ -52,15 +52,19 @@ const App = () => {
         <Route path="/signup" element={<Signup />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset/:uidb64/:token" element={<ResetPassword />} />
-        
+        <Route path="/login" element={<Login />} />
         {/* Private routes with authentication check */}
         <Route path="/newport-artifacts" element={<PrivateRoute element={<NewportArtifacts />} />} />
         <Route path="/portsmouth-artifacts" element={<PrivateRoute element={<PortsmouthArtifacts />} />} />
-        
+        <Route path="/researcher-portsmouth-artifacts" element={<PrivateRoute element={<ResearcherPortsmouthArtifacts />} />} />
+        <Route path="/researcher-newport-artifacts" element={<PrivateRoute element={<ResearcherNewportArtifacts />} />} />
+      
         {/* Default route: show login or homepage */}
         {/* <Route path="/" element={showLogin ? <Login setIsAuthenticated={setIsAuthenticated} /> : <HomePage setShowLogin={setShowLogin} />} /> */}
 
         <Route path="/" element={<HomePage />} />
+
+        {/*<Route path="/adminpage" element={<PrivateAdminRoute element={<AdminPage />} />} />*/}
       </Routes>
     </Router>
   );

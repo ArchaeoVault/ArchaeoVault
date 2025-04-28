@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Header from "./Header";
 import Footer from "./Footer";
-import "./NewportArtifacts.css";
+import "./PortsmouthArtifacts.css";
 
 let backend_url = '';
 if (process.env.REACT_APP_DJANGO_ENV == 'production'){ backend_url = 'https://www.archaeovault.com/api/';}
@@ -20,7 +20,7 @@ const List = () => {
   const [materialFilter, setMaterialFilter] = useState("All");
   const [showFilters, setShowFilters] = useState(false);
   const [loading, setLoading] = useState(true);
-  const artifactsPerPage = 5;
+  const artifactsPerPage = 9;
 
   useEffect(() => {
     fetch(backend_url+"portsmouth_artifacts/")
@@ -77,7 +77,7 @@ const List = () => {
     <div className="artifact-page">
       <Header />
       <div className="artifact-list">
-        <h2>Newport, RI Artifacts</h2>
+        <h2>Portsmouth, RI Artifacts</h2>
 
         <div className="filters-container">
           <button className="toggle-filters-btn" onClick={() => setShowFilters(!showFilters)}>

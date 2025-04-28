@@ -70,7 +70,6 @@ const Header = () => {
       <nav className={`nav-links-mobile ${hamburgerOpen ? 'open' : ''}`}>
         <Link to="/Artifacts" onClick={toggleHamburger}>Artifacts</Link>
         <Link to="/Artifacts2" onClick={toggleHamburger}>3D Scans</Link>
-        <Link to="/Contact" onClick={toggleHamburger}>Contact</Link>
         <Link to="/About" onClick={toggleHamburger}>About Us</Link>
         {!isLoggedIn ? (
           <Link to="/Login" className="login-link" onClick={toggleHamburger}>Login</Link>
@@ -92,7 +91,6 @@ const Header = () => {
       <nav className="nav-links">
         <Link to="/Artifacts">Artifacts</Link>
         <Link to="/Artifacts2">3D Scans</Link>
-        <Link to="/Contact">Contact</Link>
         <Link to="/About">About Us</Link>
 
         {!isLoggedIn ? (

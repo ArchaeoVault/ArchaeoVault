@@ -73,7 +73,8 @@ def login_view(request):
                     return JsonResponse({
                         "status": "ok",
                         "user": {
-                            "email": user.email
+                            "email": user.email,
+                            "upermission": user.upermission.numval
                         }
                     }, status=200)
                 else:
@@ -85,7 +86,18 @@ def login_view(request):
             return JsonResponse({"status": "error", "message": "Invalid JSON format."}, status=400)
 
     return JsonResponse({"status": "error", "message": "Invalid request method."}, status=400)
-  
+
+@csrf_protect
+def get_user_permission(request):
+    email = request.session.get('user_email')
+    if not email:
+        return JsonResponse({'error': 'User not logged in'}, status=401)
+    try:
+        user = users.objects.get(email=email)
+        return JsonResponse({'upermission': user.upermission.numval}, status=200)
+    except users.DoesNotExist:
+        return JsonResponse({'error': 'User not found'}, status=404)
+
 @csrf_exempt
 def signup(request):
     if request.method == 'POST':

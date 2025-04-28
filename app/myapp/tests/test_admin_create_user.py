@@ -38,9 +38,9 @@ class test_admin_create_user(TestCase):
             id=1,
             typename="Grid A"
         )
-        self.permission = permissions.objects.create(numval = 3, givenrole = 'Researchers')
+        self.permission = permissions.objects.create(numval = 1, givenrole = 'SuperAdmin')
 
-        self.permissionGenPub = permissions.objects.create(numval = 4, givenrole = 'GeneralPublic')
+        self.permissionResearchers = permissions.objects.create(numval = 3, givenrole = 'Researchers')
 
         self.users = users.objects.create(
             email="testuser@example.com",
@@ -48,12 +48,7 @@ class test_admin_create_user(TestCase):
             upermission=self.permission,
             activated=True
         )
-        self.usersGenPublic = users.objects.create(
-            email = 'genPub@email.com',
-            upassword = 'password123',
-            upermission = self.permissionGenPub,
-            activated = True
-        )
+        
         # organicinorganic
         self.organicinorganic = organicinorganic.objects.create(
             id=1,
@@ -139,3 +134,81 @@ class test_admin_create_user(TestCase):
             data = json.dumps({'email':'testuser@example.com','password':'securepassword123'}),
             content_type='application/json'
             )
+        
+    def test_user_create_success_admin(self):        
+        response = self.client.post(
+            reverse('admin_create_user_view'),
+            data = json.dumps({'email':'temp@email.com','password':'password123','confirm_password':'password123','permission':'SuperAdmin'}),
+            content_type='application/json'
+            )
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(users.objects.filter(email ='temp@email.com').exists())
+        #check if in database    
+
+    def test_user_create_success_researcher(self):        
+        response = self.client.post(
+            reverse('admin_create_user_view'),
+            data = json.dumps({'email':'temp@email.com','password':'password123','confirm_password':'password123','permission':'Researchers'}),
+            content_type='application/json'
+            )
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(users.objects.filter(email ='temp@email.com').exists())
+        #check if in database    
+
+    def test_create_user_missing_value(self):        
+        response = self.client.post(
+            reverse('admin_create_user_view'),
+            data = json.dumps({'email':'','password':'','confirm_password':'','permission':''}),
+            content_type='application/json'
+            )
+        self.assertEqual(response.status_code, 400)    
+    
+    def test_create_user_invalid_email(self):        
+        response = self.client.post(
+            reverse('admin_create_user_view'),
+            data = json.dumps({'email':'temp','password':'password123','confirm_password':'password123','permission':'SuperAdmin'}),
+            content_type='application/json'
+            )
+        self.assertEqual(response.status_code, 400)  
+          
+    def test_mismatch_password(self):        
+        response = self.client.post(
+            reverse('admin_create_user_view'),
+            data = json.dumps({'email':'temp@email.com','password':'password123','confirm_password':'password1234','permission':'SuperAdmin'}),
+            content_type='application/json'
+            )
+        self.assertEqual(response.status_code,400)  
+
+    def test_create_user_with_same_email(self):        
+        response = self.client.post(
+            reverse('admin_create_user_view'),
+            data = json.dumps({'email':'temp@email.com','password':'password123','confirm_password':'password123','permission':'SuperAdmin'}),
+            content_type='application/json'
+            )
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(users.objects.filter(email ='temp@email.com').exists())
+        response = self.client.post(
+            reverse('admin_create_user_view'),
+            data = json.dumps({'email':'temp@email.com','password':'password123','confirm_password':'password123','permission':'SuperAdmin'}),
+            content_type='application/json'
+            )
+        self.assertEqual(response.status_code, 400)
+
+    def test_create_user_with_invalid_permissions(self):
+        response = self.client.post(
+            reverse('admin_create_user_view'),
+            data = json.dumps({'email':'temp@email.com','password':'password123','confirm_password':'password123','permission':'GenPub'}),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 400)
+    
+    def test_create_user_not_admin(self):
+        perm = self.permissionResearchers
+        self.users.upermission = perm
+        self.users.save()
+        response = self.client.post(
+            reverse('admin_create_user_view'),
+            data = json.dumps({'email':'temp@email.com','password':'password123','confirm_password':'password123','permission':'SuperAdmin'}),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 402) 

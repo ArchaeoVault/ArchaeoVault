@@ -30,5 +30,10 @@ urlpatterns = [
     path('api/delete_artifact/', views.delete_artifact_view, name = 'delete_artifact_view'),
     path('api/edit_artifact/', views.edit_artifact_view, name = 'edit_artifact_view'),
     path('api/logout/', views.logout_view, name = 'logout_view'),
-    path('api/get_csrf_token/', views.get_csrf_token, name = 'get_csrf_token')
+    path('api/get_csrf_token/', views.get_csrf_token, name = 'get_csrf_token'),
+    path('api/admin_create_user/', views.admin_create_user_view, name = 'admin_create_user_view'),
+    path('api/admin_edit_user/', views.admin_edit_user_view, name = 'admin_edit_user_view'),
+    path('api/admin_delete_user/', views.admin_delete_user_view, name = 'admin_delete_user_view'),
+    path('api/admin_see_all_users/', views.admin_see_all_users_view, name = 'admin_see_all_users_view'),
+    path('api/admin_reset_user_password/', views.admin_reset_user_password_view, name = 'admin_reset_user_password_view'),
 ]

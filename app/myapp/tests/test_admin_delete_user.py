@@ -38,7 +38,7 @@ class test_admin_delete_user(TestCase):
             id=1,
             typename="Grid A"
         )
-        self.permission = permissions.objects.create(numval = 3, givenrole = 'Researchers')
+        self.permission = permissions.objects.create(numval = 1, givenrole = 'SuperAdmin')
 
         self.permissionGenPub = permissions.objects.create(numval = 4, givenrole = 'GeneralPublic')
 
@@ -139,3 +139,48 @@ class test_admin_delete_user(TestCase):
             data = json.dumps({'email':'testuser@example.com','password':'securepassword123'}),
             content_type='application/json'
             )
+        self.client.post(
+            reverse('create_user_view'),
+            data = json.dumps({'email':'temp@email.com','password':'password123','confirm_password':'password123'}),
+            content_type='application/json'
+        )
+        
+    def test_delete_user_success(self):
+        self.assertTrue(users.objects.filter(email='temp@email.com').exists())
+        
+        response = self.client.post(
+            reverse('admin_delete_user_view'),
+            data = json.dumps({'email':'temp@email.com'}),
+            content_type='application/json'
+            )
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(users.objects.filter(email ='temp@email.com').exists())
+
+    def test_user_does_not_exist(self):
+        response = self.client.post(
+            reverse('admin_delete_user_view'),
+            data = json.dumps({'email': 'temp@email.con'}),
+            content_type='application/json'
+            )
+        self.assertEqual(response.status_code,400)
+
+    def test_missing_input(self):
+        response = self.client.post(
+            reverse('admin_delete_user_view'),
+            data = json.dumps({'email': ''}),
+            content_type='application/json'
+            )
+        self.assertEqual(response.status_code,400)
+
+    def test_invalid_permissions(self):
+        self.assertTrue(users.objects.filter(email ='temp@email.com').exists())
+        user = users.objects.get(email='testuser@example.com')
+        user.upermission = self.permissionGenPub
+        user.save()
+        response = self.client.post(
+            reverse('admin_delete_user_view'),
+            data = json.dumps({'email':'temp@email.com'}),
+            content_type='application/json'
+            )
+        self.assertEqual(response.status_code,402)
+        self.assertTrue(users.objects.filter(email ='temp@email.com').exists())

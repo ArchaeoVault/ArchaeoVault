@@ -124,32 +124,25 @@ const NewportArtifacts = () => {
           if (Array.isArray(data.artifacts)) {
             const processedArtifacts = data.artifacts.map((artifact) => ({
               ...artifact,
-              scanned_address_readable: addressMap[artifact.address] || "Unknown",
-              scanned_3d_readable: scannedMap[artifact.scanned_3d] || "Unknown",
-              organic_inorganic_readable: organicMap[artifact.organic_inorganic] || "Unknown",
-              material_of_manufacture_readable: materialMap[artifact.material_of_manufacture] || "Unknown",
-              year_excavated: artifact.date_excavated ? artifact.date_excavated.split("-")[0] : "Unknown",
+              address: artifact.address__countyorcity || "Unknown",
+              material: materialMap[artifact.material_of_manufacture] || "Unknown",
+              year: artifact.date_excavated ? artifact.date_excavated.split("-")[0] : "Unknown",
+              organic: organicMap[artifact.organic_inorganic__id] || "Unknown",
+              scanned: scannedMap[artifact.scanned_3d__id] || "Unknown",
             }));
     
             const materialSet = new Set();
             const yearSet = new Set();
     
             processedArtifacts.forEach((artifact) => {
-              materialSet.add(artifact.material_of_manufacture_readable);
-              yearSet.add(artifact.year_excavated);
+              materialSet.add(artifact.material);
+              yearSet.add(artifact.year);
             });
-            
-
-          
-        newportArtifacts.forEach((artifact) => {
-          if (artifact.material) materialSet.add(artifact.material.trim().toLowerCase());
-          if (artifact.year) yearSet.add(artifact.year);
-        });
 
         const materials = Array.from(materialSet).sort();
         const years = Array.from(yearSet).sort();
 
-        setArtifacts(newportArtifacts);
+        setArtifacts(processedArtifacts)
         setMaterialOptions(materials);
         setYearOptions(years);
         }

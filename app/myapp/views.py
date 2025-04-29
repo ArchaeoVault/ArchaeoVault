@@ -120,10 +120,10 @@ def signup(request):
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 def home(request):
-    return redirect('http://localhost:3000')
+    return redirect(frontend_url)
 
 def index(request):
-    return redirect('http://localhost:3000')
+    return redirect(frontend_url)
 
 def get_csrf_token(request):
     #Returns CSRF token to the frontend for client-side use

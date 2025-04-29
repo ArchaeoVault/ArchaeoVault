@@ -15,7 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, re_path
 from . import views
 
 urlpatterns = [
@@ -39,7 +39,12 @@ urlpatterns = [
     path('api/admin_reset_user_password/', views.admin_reset_user_password_view, name = 'admin_reset_user_password_view'),
     path('api/newport_artifacts/', views.all_artifacts_view, name = 'newport_artifacts_view'),
     path('api/portsmouth_artifacts/', views.all_artifacts_view, name = 'portsmouth_artifacts_view'),
-    path('api/user_permission/', views.get_user_permission, name = 'user_permission'),
+
+    re_path(r'^.*$', views.home),
+
+    # path('api/user_permission/', views.get_user_permission, name = 'user_permission'),
+    # path('api/get_email_from_token/<uidb64>/<token>/', views.get_email_from_token, name='get_email_from_token'),
+
 
     path('api/get_email_from_token/<uidb64>/<token>/', views.get_email_from_token, name='get_email_from_token'),
 ]

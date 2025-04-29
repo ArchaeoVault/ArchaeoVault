@@ -138,7 +138,7 @@ const NewportArtifacts = () => {
               materialSet.add(artifact.material_of_manufacture_readable);
               yearSet.add(artifact.year_excavated);
             });
-          
+            
 
           
         newportArtifacts.forEach((artifact) => {
@@ -146,16 +146,13 @@ const NewportArtifacts = () => {
           if (artifact.year) yearSet.add(artifact.year);
         });
 
-        const materials = Array.from(materialSet)
-          .map((mat) => mat.charAt(0).toUpperCase() + mat.slice(1))
-          .sort((a, b) => a.localeCompare(b));
+        const materials = Array.from(materialSet).sort();
         const years = Array.from(yearSet).sort();
 
         setArtifacts(newportArtifacts);
-        setFilteredArtifacts(newportArtifacts);
         setMaterialOptions(materials);
         setYearOptions(years);
-          }
+        }
       })
       .catch((error) => {
         setLoading(false);

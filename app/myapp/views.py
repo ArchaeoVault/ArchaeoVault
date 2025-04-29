@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
+from django.template import TemplateDoesNotExist
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseServerError, JsonResponse
 from django.core.validators import validate_email
@@ -10,7 +11,7 @@ from myapp.forms import *
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import Http404
 from myapp.models import *
-
+from django.views.generic import TemplateView
 from django.http import JsonResponse
 from django.contrib.auth.hashers import check_password
 
@@ -821,3 +822,18 @@ def admin_reset_user_password_view(request):
 def logout_view(request):
     request.session.flush()  # Clears all session data, logs out the user
     return JsonResponse({'status': 'ok', 'message': 'Logged out'})
+
+
+class FrontendAppView(TemplateView):
+    template_name = "index.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        try:
+            return super().dispatch(request, *args, **kwargs)
+        except TemplateDoesNotExist:
+            return HttpResponse(
+                """
+                index.html not found ! Build your React app and place it inside the Django static folder
+                """,
+                status=501,
+            )

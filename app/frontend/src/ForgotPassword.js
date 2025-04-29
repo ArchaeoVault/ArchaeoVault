@@ -36,6 +36,7 @@ const ForgotPassword = () => {
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
+        'credentials': 'include',
         'X-CSRFToken': csrfToken,
       },
       body: JSON.stringify({ email }),

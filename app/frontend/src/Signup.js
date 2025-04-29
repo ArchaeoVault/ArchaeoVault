@@ -97,6 +97,7 @@ const Signup = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'credentials': 'include',
           'X-CSRFToken': token,
         },
         body: JSON.stringify({

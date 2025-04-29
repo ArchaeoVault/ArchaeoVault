@@ -188,43 +188,71 @@ def create_user_view(request):
 
 
 def newport_artifacts_view(request):
+
     # Optimize related lookups and filter by Newport
-    start_time = time.time()
-    page = int(request.GET.get("page", 1))
-    per_page = int(request.GET.get("per_page", 10))
-
-    artifacts = your_table.objects.filter(
-        address__countyorcity__icontains="newport"
-    ).values(
-        'id',
-        'object_name',
-        'object_description',
-        'date_excavated',
-        'scanned_3d__id',
-        'printed_3d__id',
-        'organic_inorganic__id',
-        'material_of_manufacture__id',
-        'address__countyorcity'
-    )
-
-    paginator = Paginator(artifacts, per_page)
-    page_obj = paginator.get_page(page)
-
-    artifact_data = list(page_obj)
-
-    end_time = time.time()  # End timing
-    duration = end_time - start_time
-    print("Database fetching: ", duration)
     
-    return JsonResponse({
-        'artifacts': artifact_data,
-        'page': page,
-        'total_pages': paginator.num_pages,
-        'total_artifacts': paginator.count,
-    }, status=200)
+    artifacts = your_table.objects.select_related(
+        "address",
+        "scanned_3d",
+        "printed_3d",
+        "organic_inorganic",
+        "material_of_manufacture"
+    ).filter(address__countyorcity__icontains="newport")
+
+    artifact_data = [
+        {
+            'id': artifact.id,
+            'object_name': artifact.object_name,
+            'object_description': artifact.object_description,
+            'date_excavated': artifact.date_excavated.isoformat(),
+            'scanned_3d': artifact.scanned_3d.id,
+            'printed_3d': artifact.printed_3d.id,
+            'organic_inorganic': artifact.organic_inorganic.id,
+            'material_of_manufacture': artifact.material_of_manufacture.id,
+            'countyorcity': artifact.address.countyorcity,
+        }
+        for artifact in artifacts
+    ]
+
+    return JsonResponse({'artifacts': artifact_data}, status=200)
+
+#     start_time = time.time()
+#     page = int(request.GET.get("page", 1))
+#     per_page = int(request.GET.get("per_page", 10))
+
+#     artifacts = your_table.objects.filter(
+#         address__countyorcity__icontains="newport"
+#     ).values(
+#         'id',
+#         'object_name',
+#         'object_description',
+#         'date_excavated',
+#         'scanned_3d__id',
+#         'printed_3d__id',
+#         'organic_inorganic__id',
+#         'material_of_manufacture__id',
+#         'address__countyorcity'
+#     )
+
+#     paginator = Paginator(artifacts, per_page)
+#     page_obj = paginator.get_page(page)
+
+#     artifact_data = list(page_obj)
+
+#     end_time = time.time()  # End timing
+#     duration = end_time - start_time
+#     print("Database fetching: ", duration)
+    
+#     return JsonResponse({
+#         'artifacts': artifact_data,
+#         'page': page,
+#         'total_pages': paginator.num_pages,
+#         'total_artifacts': paginator.count,
+#     }, status=200)
+
 
 def portsmouth_artifacts_view(request):
-    # Optimize related lookups and filter by Newport
+    # Optimize related lookups and filter by Portsmouth
     artifacts = your_table.objects.select_related(
         "address",
         "scanned_3d",

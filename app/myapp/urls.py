@@ -40,5 +40,6 @@ urlpatterns = [
     path('api/newport_artifacts/', views.all_artifacts_view, name = 'newport_artifacts_view'),
     path('api/portsmouth_artifacts/', views.all_artifacts_view, name = 'portsmouth_artifacts_view'),
     path('api/user_permission/', views.get_user_permission, name = 'user_permission'),
+
     path('api/get_email_from_token/<uidb64>/<token>/', views.get_email_from_token, name='get_email_from_token'),
 ]

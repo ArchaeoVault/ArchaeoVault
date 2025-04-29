@@ -615,6 +615,72 @@ def edit_artifact_view(request):
         except Exception as e:
             #print('Outer exception')
             return JsonResponse ({'error':'Error in editing artifact'}, status = 400)
+@csrf_protect
+def add_artifact_view(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+
+            # Basic required fields
+            required_fields = ['object_name', 'object_description', 'date_excavated', 'location', 'catalog_number']
+            for field in required_fields:
+                if field not in data or not data[field]:
+                    return JsonResponse({'success': False, 'error': f"Missing required field: {field}"})
+
+            artifact = your_table.objects.create(
+                object_name=data['object_name'],
+                object_description=data['object_description'],
+                date_excavated=data['date_excavated'],
+                location=data['location'],
+
+                # Optional fields
+                address_id=data.get('address'),
+                owner=data.get('owner'),
+                #accessor_number=data.get('accessor_number'),
+                catalog_number=data.get('catalog_number'),
+                scanned_3d_id=data.get('scanned_3d'),
+                printed_3d_id=data.get('printed_3d'),
+                scanned_by=data.get('scanned_by'),
+                object_dated_to=data.get('object_dated_to'),
+                organic_inorganic_id=data.get('organic_inorganic'),
+                species_id=data.get('species'),
+                material_of_manufacture_id=data.get('material_of_manufacture'),
+                form_object_type_id=data.get('form_object_type'),
+                quantity=data.get('quantity'),
+                measurement_diameter=data.get('measurement_diameter'),
+                length=data.get('length'),
+                width=data.get('width'),
+                height=data.get('height'),
+                measurement_notes=data.get('measurement_notes'),
+                weight=data.get('weight'),
+                weight_notes=data.get('weight_notes'),
+                sivilich_diameter=data.get('sivilich_diameter'),
+                deformation_index=data.get('deformation_index'),
+                conservation_condition_id=data.get('conservation_condition'),
+                cataloguer_name=data.get('cataloguer_name'),
+                date_catalogued=data.get('date_catalogued'),
+                location_in_repository=data.get('location_in_repository'),
+                platlot=data.get('platlot'),
+                found_at_depth=data.get('found_at_depth'),
+                longitude=data.get('longitude'),
+                latitude=data.get('latitude'),
+                distance_from_datum=data.get('distance_from_datum'),
+                found_in_grid_id=data.get('found_in_grid'),
+                excavator=data.get('excavator'),
+                notes=data.get('notes'),
+                images=data.get('images'),
+                data_double_checked_by=data.get('data_double_checked_by'),
+                qsconcerns=data.get('qsconcerns'),
+                druhlcheck=data.get('druhlcheck'),
+                sources_for_id=data.get('sources_for_id'),
+                storage_location=data.get('storage_location'),
+                uhlflages=data.get('uhlflages'),
+            )
+
+            return JsonResponse({'success': True, 'catalog_number': artifact.catalog_number})
+
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
 
 def admin_create_user_view(request):
     if request.method == 'POST':

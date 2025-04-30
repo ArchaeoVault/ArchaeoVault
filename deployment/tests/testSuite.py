@@ -25,7 +25,6 @@ sys.path.append("..")
 sys.path.append("../../deployment/tests/UAT_tests")
 def load_tests(loader, standard_tests, pattern):
     test_suite = unittest.TestSuite()
-    """"
     test_suite.addTests(loader.loadTestsFromModule(test_create_user))
     test_suite.addTests(loader.loadTestsFromModule(test_artifact_model))
     test_suite.addTests(loader.loadTestsFromModule(test_change_password))
@@ -36,5 +35,4 @@ def load_tests(loader, standard_tests, pattern):
     test_suite.addTests(loader.loadTestsFromModule(test_login_user))
     test_suite.addTests(loader.loadTestsFromModule(test_send_password_reset))
     test_suite.addTests(loader.loadTestsFromModule(test_single_artifact))
-    """
     return test_suite

@@ -70,7 +70,7 @@ class test_UAT_userstory17(LiveServerTestCase,TransactionTestCase):
 			alert.accept()
 		except TimeoutException:
 			assert False
-		self.assertIn("Sign up successful!",message "failed to make account with valid credentials")
+		self.assertIn("Sign up successful!",message, "failed to make account with valid credentials")
 
 	
 	def test_create_account_with_duplicate_email_with_valid_password(self):

@@ -569,51 +569,91 @@ def delete_artifact_view(request):
             #print('Outer exception')
             return JsonResponse ({'error':'Error in deleting artifact'}, status = 400)
         
+@csrf_protect
 def edit_artifact_view(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-            #print('In try')
-            email = request.session.get('user_email') #gets current sessions email
-            #print(email)
-            artifactId = data.get('id')
-            object_name = data.get('name')
-            location = data.get('location')
-            age = data.get('age')
-            materialId = data.get('material')
-            object_description = data.get('description')
-            #print('Getting user')
-            if not all([email, artifactId,object_name,object_description,location,age,materialId]):
-                return JsonResponse({'error': 'All fields are required'}, status=404)
+            email = request.session.get('user_email')
+            artifact_id = data.get('id')
+
+            if not (email and artifact_id):
+                return JsonResponse({'error': 'Email and artifact ID are required'}, status=400)
+
             if not users.objects.filter(email=email).exists():
-                #print('User does not exist')
-                return JsonResponse({'error':'User with this email does not exist'}, status = 401)
-            user = users.objects.get(email = email)
-            #print('got user')
-            numberValue = user.upermission.numval
-            material = materialtype.objects.get(id = materialId)
-            #print('got numval')
-            if numberValue == 4:
-                #print('Cant be gen pub')
-                return JsonResponse({'error':'General Public can not edit artifacts'}, status = 402)
-            if not your_table.objects.filter(id = artifactId).exists():
-                #print('Artifact dont exist')
-                return JsonResponse({'error':'Artifact you are trying to edit does not exist'}, status = 403)
-            try:
-                artifact = your_table.objects.get(id = artifactId)
-                artifact.object_description = object_description
-                artifact.object_name = object_name
-                artifact.location = location
-                artifact.object_dated_to = age
-                artifact.material_of_manufacture = material
-                artifact.save()
-                return JsonResponse({'message':'Artifact successfully editied'}, status = 200)
-            except Exception as e:
-                #print('In inner exception')
-                return JsonResponse ({'error':'Error in editing artifact'}, status = 400)
+                return JsonResponse({'error': 'User with this email does not exist'}, status=401)
+
+            user = users.objects.get(email=email)
+            if user.upermission.numval == 4:
+                return JsonResponse({'error': 'General Public cannot edit artifacts'}, status=402)
+
+            if not your_table.objects.filter(id=artifact_id).exists():
+                return JsonResponse({'error': 'Artifact does not exist'}, status=403)
+
+            artifact = your_table.objects.get(id=artifact_id)
+
+            # Handle material as a ForeignKey
+            material_id = data.get('material_of_manufacture')
+            if material_id:
+                try:
+                    material = materialtype.objects.get(id=material_id)
+                    artifact.material_of_manufacture = material
+                except materialtype.DoesNotExist:
+                    return JsonResponse({'error': 'Material type not found'}, status=404)
+
+            # Update all other fields safely
+            field_mapping = {
+                'name': 'object_name',
+                'description': 'object_description',
+                'location': 'location',
+                'age': 'object_dated_to',
+                'address': 'address',
+                'organic_inorganic': 'organic_inorganic',
+                'scanned_3d': 'scanned_3d',
+                'printed_3d': 'printed_3d',
+                'length_mm': 'length_mm',
+                'width_mm': 'width_mm',
+                'height_mm': 'height_mm',
+                'measurement_notes': 'measurement_notes',
+                'weight_grams': 'weight_grams',
+                'weight_notes': 'weight_notes',
+                'sivilich_diameter_in': 'sivilich_diameter_in',
+                'deformation_index': 'deformation_index',
+                'condition': 'condition',
+                'cataloger_name': 'cataloger_name',
+                'date_catalogued': 'date_catalogued',
+                'location_repository': 'location_repository',
+                'plat_lot': 'plat_lot',
+                'depth': 'depth',
+                'longitude': 'longitude',
+                'latitude': 'latitude',
+                'distance_from_datum': 'distance_from_datum',
+                'grid': 'grid',
+                'excavator': 'excavator',
+                'notes': 'notes',
+                'image': 'image',
+                'double_checked_by': 'double_checked_by',
+                'questions': 'questions',
+                'uhl_check': 'uhl_check',
+                'sources': 'sources',
+                'location_general': 'location_general',
+                'storage_location': 'storage_location',
+                'uhl_flags': 'uhl_flags',
+                'owner': 'owner',
+                'accessor_number': 'accessor_number',
+                'catalog_number': 'catalog_number',
+            }
+
+            for frontend_key, model_field in field_mapping.items():
+                if frontend_key in data:
+                    setattr(artifact, model_field, data[frontend_key])
+
+            artifact.save()
+            return JsonResponse({'message': 'Artifact successfully edited'}, status=200)
+
         except Exception as e:
-            #print('Outer exception')
-            return JsonResponse ({'error':'Error in editing artifact'}, status = 400)
+            return JsonResponse({'error': f'Error in editing artifact: {str(e)}'}, status=400)
+
 @csrf_protect
 def add_artifact_view(request):
     if request.method == 'POST':

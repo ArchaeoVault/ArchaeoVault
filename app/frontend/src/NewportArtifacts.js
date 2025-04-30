@@ -184,7 +184,6 @@ const NewportArtifacts = () => {
       <Header />
       <div className="artifact-list">
         <h2>Newport, RI Artifacts</h2>
-
         <div className="filters-container">
           <button className="toggle-filters-btn" onClick={() => setShowFilters(!showFilters)}>
             {showFilters ? "Hide Filters ▲" : "Show Filters ▼"}

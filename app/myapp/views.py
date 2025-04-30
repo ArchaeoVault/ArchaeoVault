@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
+from django.template import TemplateDoesNotExist
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseServerError, JsonResponse
 from django.core.validators import validate_email
@@ -10,7 +11,7 @@ from myapp.forms import *
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import Http404
 from myapp.models import *
-
+from django.views.generic import TemplateView
 from django.http import JsonResponse
 from django.contrib.auth.hashers import check_password
 
@@ -120,10 +121,10 @@ def signup(request):
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 def home(request):
-    return redirect('http://localhost:3000')
+    return redirect(frontend_url)
 
 def index(request):
-    return redirect('http://localhost:3000')
+    return redirect(frontend_url)
 
 def get_csrf_token(request):
     #Returns CSRF token to the frontend for client-side use
@@ -188,43 +189,71 @@ def create_user_view(request):
 
 
 def newport_artifacts_view(request):
+
     # Optimize related lookups and filter by Newport
-    start_time = time.time()
-    page = int(request.GET.get("page", 1))
-    per_page = int(request.GET.get("per_page", 10))
-
-    artifacts = your_table.objects.filter(
-        address__countyorcity__icontains="newport"
-    ).values(
-        'id',
-        'object_name',
-        'object_description',
-        'date_excavated',
-        'scanned_3d__id',
-        'printed_3d__id',
-        'organic_inorganic__id',
-        'material_of_manufacture__id',
-        'address__countyorcity'
-    )
-
-    paginator = Paginator(artifacts, per_page)
-    page_obj = paginator.get_page(page)
-
-    artifact_data = list(page_obj)
-
-    end_time = time.time()  # End timing
-    duration = end_time - start_time
-    print("Database fetching: ", duration)
     
-    return JsonResponse({
-        'artifacts': artifact_data,
-        'page': page,
-        'total_pages': paginator.num_pages,
-        'total_artifacts': paginator.count,
-    }, status=200)
+    artifacts = your_table.objects.select_related(
+        "address",
+        "scanned_3d",
+        "printed_3d",
+        "organic_inorganic",
+        "material_of_manufacture"
+    ).filter(address__countyorcity__icontains="newport")
+
+    artifact_data = [
+        {
+            'id': artifact.id,
+            'object_name': artifact.object_name,
+            'object_description': artifact.object_description,
+            'date_excavated': artifact.date_excavated.isoformat(),
+            'scanned_3d': artifact.scanned_3d.id,
+            'printed_3d': artifact.printed_3d.id,
+            'organic_inorganic': artifact.organic_inorganic.id,
+            'material_of_manufacture': artifact.material_of_manufacture.id,
+            'countyorcity': artifact.address.countyorcity,
+        }
+        for artifact in artifacts
+    ]
+
+    return JsonResponse({'artifacts': artifact_data}, status=200)
+
+#     start_time = time.time()
+#     page = int(request.GET.get("page", 1))
+#     per_page = int(request.GET.get("per_page", 10))
+
+#     artifacts = your_table.objects.filter(
+#         address__countyorcity__icontains="newport"
+#     ).values(
+#         'id',
+#         'object_name',
+#         'object_description',
+#         'date_excavated',
+#         'scanned_3d__id',
+#         'printed_3d__id',
+#         'organic_inorganic__id',
+#         'material_of_manufacture__id',
+#         'address__countyorcity'
+#     )
+
+#     paginator = Paginator(artifacts, per_page)
+#     page_obj = paginator.get_page(page)
+
+#     artifact_data = list(page_obj)
+
+#     end_time = time.time()  # End timing
+#     duration = end_time - start_time
+#     print("Database fetching: ", duration)
+    
+#     return JsonResponse({
+#         'artifacts': artifact_data,
+#         'page': page,
+#         'total_pages': paginator.num_pages,
+#         'total_artifacts': paginator.count,
+#     }, status=200)
+
 
 def portsmouth_artifacts_view(request):
-    # Optimize related lookups and filter by Newport
+    # Optimize related lookups and filter by Portsmouth
     artifacts = your_table.objects.select_related(
         "address",
         "scanned_3d",
@@ -636,6 +665,72 @@ def edit_artifact_view(request):
         except Exception as e:
             #print('Outer exception')
             return JsonResponse ({'error':'Error in editing artifact'}, status = 400)
+@csrf_protect
+def add_artifact_view(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+
+            # Basic required fields
+            required_fields = ['object_name', 'object_description', 'date_excavated', 'location', 'catalog_number']
+            for field in required_fields:
+                if field not in data or not data[field]:
+                    return JsonResponse({'success': False, 'error': f"Missing required field: {field}"})
+
+            artifact = your_table.objects.create(
+                object_name=data['object_name'],
+                object_description=data['object_description'],
+                date_excavated=data['date_excavated'],
+                location=data['location'],
+
+                # Optional fields
+                address_id=data.get('address'),
+                owner=data.get('owner'),
+                #accessor_number=data.get('accessor_number'),
+                catalog_number=data.get('catalog_number'),
+                scanned_3d_id=data.get('scanned_3d'),
+                printed_3d_id=data.get('printed_3d'),
+                scanned_by=data.get('scanned_by'),
+                object_dated_to=data.get('object_dated_to'),
+                organic_inorganic_id=data.get('organic_inorganic'),
+                species_id=data.get('species'),
+                material_of_manufacture_id=data.get('material_of_manufacture'),
+                form_object_type_id=data.get('form_object_type'),
+                quantity=data.get('quantity'),
+                measurement_diameter=data.get('measurement_diameter'),
+                length=data.get('length'),
+                width=data.get('width'),
+                height=data.get('height'),
+                measurement_notes=data.get('measurement_notes'),
+                weight=data.get('weight'),
+                weight_notes=data.get('weight_notes'),
+                sivilich_diameter=data.get('sivilich_diameter'),
+                deformation_index=data.get('deformation_index'),
+                conservation_condition_id=data.get('conservation_condition'),
+                cataloguer_name=data.get('cataloguer_name'),
+                date_catalogued=data.get('date_catalogued'),
+                location_in_repository=data.get('location_in_repository'),
+                platlot=data.get('platlot'),
+                found_at_depth=data.get('found_at_depth'),
+                longitude=data.get('longitude'),
+                latitude=data.get('latitude'),
+                distance_from_datum=data.get('distance_from_datum'),
+                found_in_grid_id=data.get('found_in_grid'),
+                excavator=data.get('excavator'),
+                notes=data.get('notes'),
+                images=data.get('images'),
+                data_double_checked_by=data.get('data_double_checked_by'),
+                qsconcerns=data.get('qsconcerns'),
+                druhlcheck=data.get('druhlcheck'),
+                sources_for_id=data.get('sources_for_id'),
+                storage_location=data.get('storage_location'),
+                uhlflages=data.get('uhlflages'),
+            )
+
+            return JsonResponse({'success': True, 'catalog_number': artifact.catalog_number})
+
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
 
 def admin_create_user_view(request):
     if request.method == 'POST':
@@ -843,3 +938,18 @@ def admin_reset_user_password_view(request):
 def logout_view(request):
     request.session.flush()  # Clears all session data, logs out the user
     return JsonResponse({'status': 'ok', 'message': 'Logged out'})
+
+
+class FrontendAppView(TemplateView):
+    template_name = "index.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        try:
+            return super().dispatch(request, *args, **kwargs)
+        except TemplateDoesNotExist:
+            return HttpResponse(
+                """
+                index.html not found ! Build your React app and place it inside the Django static folder
+                """,
+                status=501,
+            )

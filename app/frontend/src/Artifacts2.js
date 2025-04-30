@@ -32,7 +32,6 @@ const Artifacts2 = () => {
     bridalboss: "",
     key: "",
     musketball: "",
-    fort: "",
   };
 
   useEffect(() => {
@@ -156,7 +155,6 @@ const Artifacts2 = () => {
             <option value="bridalboss">Bridal Boss</option>
             <option value="key">Key</option>
             <option value="musketball">Musket Ball</option>
-            <option value="fort">Fort</option>
           </select>
           <br />
           <br />

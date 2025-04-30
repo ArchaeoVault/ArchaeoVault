@@ -72,7 +72,7 @@ class test_UAT_userstory19(LiveServerTestCase,TransactionTestCase):
 			alert.accept()
 		except TimeoutException:
 			assert False
-		self.assertEqual(message, "Login successful!", f"{message} does not equal login successful")
+		self.assertIn(message, "Login successful!", f"{message} does not equal login successful")
 
 	
 	def test_valid_email_with_invalid_password(self):

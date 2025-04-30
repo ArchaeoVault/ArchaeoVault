@@ -166,6 +166,63 @@ class test_UAT_userstory8(LiveServerTestCase,TransactionTestCase):
             uhlflages="None",
             id = 1
         )
+		self.address = address.objects.create(
+			id=2,
+			streetnumber="123",
+			streetname="Main St",
+			state="Massachusetts",
+			countyorcity="portsmouth",
+			site="Site A"
+		)
+		self.your_table = your_table.objects.create(
+            address=self.address,
+            owner="John Doe",
+            date_collected=datetime(2025, 2, 1),
+            catalog_number="CAT12345",
+            object_name="Artifact Sample",
+            scanned_3d=self.threedscannedtable,
+            printed_3d=self.threedprintedtable,
+            scanned_by="Scanner X",
+            date_excavated=datetime(2025, 1, 15),
+            object_dated_to="Object dated to",
+            object_description="Sample Description",
+            organic_inorganic=self.organicinorganic,
+            species=self.speciestype,
+            material_of_manufacture=self.materialtype,
+            form_object_type=self.formtype,
+            quantity="5",
+            measurement_diameter=12.5,
+            length=25.0,
+            width=15.0,
+            height=10.0,
+            measurement_notes="Note A",
+            weight=3.5,
+            weight_notes="Weight Note",
+            sivilich_diameter=8.0,
+            deformation_index=2.1,
+            conservation_condition=self.conservationtype,
+            cataloguer_name=self.users,
+            date_catalogued=datetime(2025, 3, 1),
+            location_in_repository="Shelf A",
+            platlot="Platlot A",
+            found_at_depth="2.5",
+            longitude="42.5",
+            latitude="-71.2",
+            distance_from_datum="10m",
+            found_in_grid=self.gridnames,
+            excavator="Archeologist Y",
+            notes="Some notes",
+            images="Image (add column for each additional image)",
+            data_double_checked_by="Checker Z",
+            qsconcerns="None",
+            druhlcheck="Passed",
+            sources_for_id="Source A",
+            location="Room B",
+            storage_location="Box 1",
+            uhlflages="None",
+            id = 2
+		)
+
 		
 		permission = permissions.objects.create(numval = 4, givenrole = 'GeneralPublic')
 		test_user = users.objects.create(
@@ -194,7 +251,7 @@ class test_UAT_userstory8(LiveServerTestCase,TransactionTestCase):
 		
 	def test_can_see_artifacts_newport(self):
 		self.driver.implicitly_wait(1)
-		self.driver.find_element(by = By.LINK_TEXT, value = "Newport, RI").click()
+		self.driver.find_element(By.XPATH, "//button[contains(text(), 'Newport')]").click()
 		self.driver.implicitly_wait(1)
 		first_artifact = self.driver.find_element(by = By.CLASS_NAME, value = "artifact-item")
 		self.assertIn("Artifact Sample", first_artifact.text, f"Artifact Sample not in {first_artifact.text}")
@@ -203,7 +260,7 @@ class test_UAT_userstory8(LiveServerTestCase,TransactionTestCase):
 		
 	def test_can_see_artifacts_portsmouth(self):
 		self.driver.implicitly_wait(1)
-		self.driver.find_element(by = By.LINK_TEXT, value = "Portsmouth, RI").click()
+		self.driver.find_element(By.XPATH, "//button[contains(text(), 'Portsmouth')]").click()
 		self.driver.implicitly_wait(1)
 		first_artifact = self.driver.find_element(by = By.CLASS_NAME, value = "artifact-item")
 		self.assertIn("Artifact Sample", first_artifact.text, f"Artifact Sample not in artifact text {first_artifact.text}")
@@ -212,7 +269,7 @@ class test_UAT_userstory8(LiveServerTestCase,TransactionTestCase):
 
 	def test_can_turn_pages_forward_newport(self):
 		self.driver.implicitly_wait(1)
-		self.driver.find_element(by = By.LINK_TEXT, value = "Newport, RI").click()
+		self.driver.find_element(By.XPATH, "//button[contains(text(), 'Newport')]").click()
 		self.driver.implicitly_wait(1)
 		WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.XPATH, "//button[text()='Next']")))
 		self.driver.find_element(By.XPATH, "//button[text()='Next']").click()
@@ -222,7 +279,7 @@ class test_UAT_userstory8(LiveServerTestCase,TransactionTestCase):
 	
 	def test_can_turn_pages_forward_portsmouth(self):
 		self.driver.implicitly_wait(1)
-		self.driver.find_element(by = By.LINK_TEXT, value = "Portsmouth, RI").click()
+		self.driver.find_element(By.XPATH, "//button[contains(text(), 'Portsmouth')]").click()
 		self.driver.implicitly_wait(1)
 		WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.XPATH, "//button[text()='Next']")))
 		self.driver.find_element(By.XPATH, "//button[text()='Next']").click()
@@ -232,7 +289,7 @@ class test_UAT_userstory8(LiveServerTestCase,TransactionTestCase):
 
 	def test_can_turn_pages_forward_backward_newport(self):
 		self.driver.implicitly_wait(1)
-		self.driver.find_element(by = By.LINK_TEXT, value = "Newport, RI").click()
+		self.driver.find_element(By.XPATH, "//button[contains(text(), 'Newport')]").click()
 		self.driver.implicitly_wait(1)
 		first_artifact = self.driver.find_element(by = By.CLASS_NAME, value = "artifact-item")
 		self.driver.find_element(By.XPATH, "//button[text()='Next']").click()
@@ -243,17 +300,17 @@ class test_UAT_userstory8(LiveServerTestCase,TransactionTestCase):
 		
 	def test_can_turn_pages_forward_backward_portsmouth(self):
 		self.driver.implicitly_wait(1)
-		self.driver.find_element(by = By.LINK_TEXT, value = "Portsmouth, RI").click()
+		self.driver.find_element(By.XPATH, "//button[contains(text(), 'Portsmouth')]").click()
 		self.driver.implicitly_wait(1)
 		first_artifact = self.driver.find_element(by = By.CLASS_NAME, value = "artifact-item")
 		self.driver.find_element(By.XPATH, "//button[text()='Next']").click()
 		self.driver.find_element(By.XPATH, "//button[text()='Previous']").click()
 		first_artifact_after_clicks = self.driver.find_element(by = By.CLASS_NAME, value = "artifact-item")
 		self.assertEqual(first_artifact, first_artifact_after_clicks, f"artifact not the same after going forward and backward, artifact was {first_artifact} now is {first_artifact_after_clicks}")
-	"""
+	
 	def test_turn_pages_to_end_newport(self):
 		self.driver.implicitly_wait(1)
-		self.driver.find_element(by = By.LINK_TEXT, value = "Newport, RI").click()
+		self.driver.find_element(By.XPATH, "//button[contains(text(), 'Newport')]").click()
 		self.driver.implicitly_wait(1)
 		while(True):
 			WebDriverWait(self.driver, 10).until(
@@ -265,11 +322,11 @@ class test_UAT_userstory8(LiveServerTestCase,TransactionTestCase):
 			else:
 				break
 		self.assertTrue(True)
-	"""
+	
 
 	def test_turn_pages_to_end_portsmouth(self):
 		self.driver.implicitly_wait(1)
-		self.driver.find_element(by = By.LINK_TEXT, value = "Portsmouth, RI").click()
+		self.driver.find_element(By.XPATH, "//button[contains(text(), 'Portsmouth')]").click()
 		self.driver.implicitly_wait(1)
 		while(True):
 			WebDriverWait(self.driver, 10).until(
@@ -284,14 +341,14 @@ class test_UAT_userstory8(LiveServerTestCase,TransactionTestCase):
 
 	def test_previous_on_first_page_newport(self):
 		self.driver.implicitly_wait(1)
-		self.driver.find_element(by = By.LINK_TEXT, value = "Newport, RI").click()
+		self.driver.find_element(By.XPATH, "//button[contains(text(), 'Newport')]").click()
 		self.driver.implicitly_wait(1)
 		previous_button = self.driver.find_element(By.XPATH, "//button[text()='Previous']")
 		self.assertFalse(previous_button.is_enabled())
 
 	def test_previous_on_first_page_portsmouth(self):
 		self.driver.implicitly_wait(1)
-		self.driver.find_element(by = By.LINK_TEXT, value = "Portsmouth, RI").click()
+		self.driver.find_element(By.XPATH, "//button[contains(text(), 'Portsmouth')]").click()
 		self.driver.implicitly_wait(1)
 		previous_button = self.driver.find_element(By.XPATH, "//button[text()='Previous']")
 		self.assertFalse(previous_button.is_enabled())

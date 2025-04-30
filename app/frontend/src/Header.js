@@ -71,8 +71,6 @@ const Header = () => {
         <Link to="/Artifacts" onClick={toggleHamburger}>Artifacts</Link>
         <Link to="/Artifacts2" onClick={toggleHamburger}>3D Scans</Link>
         <Link to="/About" onClick={toggleHamburger}>About Us</Link>
-        <Link to="/NewportArtifacts" onClick={toggleHamburger}>NEWPORT TEST</Link>
-        <Link to="/PortsmouthArtifacts" onClick={toggleHamburger}>PORTSMOUTH TEST</Link>
 
         {!isLoggedIn ? (
           <Link to="/Login" className="login-link" onClick={toggleHamburger}>Login</Link>
@@ -95,8 +93,6 @@ const Header = () => {
         <Link to="/Artifacts">Artifacts</Link>
         <Link to="/Artifacts2">3D Scans</Link>
         <Link to="/About">About Us</Link>
-        <Link to="/NewportArtifacts">NEWPORT TEST</Link>
-        <Link to="/PortsmouthArtifacts">PORTSMOUTH TEST</Link>
 
         {!isLoggedIn ? (
           <Link to="/Login" className="login-link">Login</Link>

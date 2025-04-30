@@ -428,28 +428,47 @@ def all_image_table_view(request):
 
 def activate(request, uidb64, token):
     #put boolean that sets user active to true
-    try:
-        email = urlsafe_base64_decode(uidb64) # Decodes the base64 encoded email
-        email = force_str(email)  # Convert bytes to string
-        user = users.objects.get(email = email)
-    except Exception as e:
-        return JsonResponse({'error':'Invalid email'},status = 400)
-    if account_activation_token.check_token(user, token):
+    if(request.method == 'GET'):
         try:
-            user.activated = True
-            user.save()
-            # return JsonResponse({'message':'User activation successful'},status = 200)
-            # Redirect to the frontend verification page
-            if os.environ.get('DJANGO_ENV') == 'production':
-                frontend_url = 'https://www.archaeovault.com'
-            else:
-                frontend_url = 'http://localhost:3000'
-            return redirect(f'{frontend_url}/reset/{uidb64}/{token}')
-        
+            email = urlsafe_base64_decode(uidb64) # Decodes the base64 encoded email
+            email = force_str(email)  # Convert bytes to string
+            user = users.objects.get(email = email)
         except Exception as e:
-            return JsonResponse({'error':'User activation failed'},status = 400)
+            return JsonResponse({'error':'Invalid email'},status = 400)
+        if account_activation_token.check_token(user, token):
+            try:
+                user.activated = True
+                user.save()
+                return JsonResponse({'message':'User activation successful'},status = 200)
+                # Redirect to the frontend verification page
+            except Exception as e:
+                return JsonResponse({'error':'User activation failed'},status = 400)
+        else:
+            return JsonResponse({'error':'Invalid token'},status = 400)
     else:
-        return JsonResponse({'error':'Invalid token'},status = 400)
+        return JsonResponse({'error':'Invalid request method'},status = 400)
+
+def redirect_change_password(request, uidb64, token):
+    if(request.method == 'GET'):
+        try:
+            email = urlsafe_base64_decode(uidb64) # Decodes the base64 encoded email
+            email = force_str(email)  # Convert bytes to string
+            user = users.objects.get(email = email)
+        except Exception as e:
+            return JsonResponse({'error':'Invalid email'},status = 400)
+        if account_activation_token.check_token(user, token):
+            try:
+                if os.environ.get('DJANGO_ENV') == 'production':
+                    frontend_url = 'https://www.archaeovault.com'
+                else:
+                    frontend_url = 'http://localhost:3000'
+                return redirect(f'{frontend_url}/api/change_password/{uidb64}/{token}')
+            except Exception as e:
+                return JsonResponse({'error':'Redirect failed'},status = 400)
+        else:
+            return JsonResponse({'error':'Invalid token'},status = 400)
+    else:
+        return JsonResponse({'error':'Invalid request method'},status = 400)
 
     
 
@@ -474,8 +493,43 @@ def resend_verification_view(request):
                 to_emails=user.email,
                 subject='Welcome to ArchaeoVault!',
                 html_content=(
-                    f'<h2>Follow this link below to verify account and reset password.</h2>'
+                    f'<h2>Follow this link below to verify account.</h2>'
                     f'<a href="{verification_link}">Verify your email address</a>'
+                )
+            )
+            try:
+                sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
+                response = sg.send(message)
+                print(response.status_code)
+                #print(response.body)
+                # #print(response.headers)
+            except Exception as e:
+                print(str(e) + ' didnt work')
+            return JsonResponse({'message': 'Verification email has been sent'}, status=200)
+        else:
+            return JsonResponse({'error': 'Email address not associated with an account'}, status=400)
+    return JsonResponse({ "status": "ok",}, status=200)
+
+def send_password_reset_view(request):
+    if(request.method == 'POST'):
+        data = json.loads(request.body)
+        email = data.get('email')
+        if(users.objects.filter(email = email).exists()):
+            #generates the uid and token
+            user = users.objects.get(email = email)
+            uid = urlsafe_base64_encode(force_bytes(user.email))
+            print('uid: ', uid)
+            token = account_activation_token.make_token(user)
+            verification_link = request.build_absolute_uri(
+                reverse('redirect_change_password', kwargs={'uidb64': uid, 'token': token})
+            )
+            message = Mail(
+                from_email='noreply@archaeovault.com',
+                to_emails=user.email,
+                subject='Welcome to ArchaeoVault!',
+                html_content=(
+                    f'<h2>Follow this link below to reset password.</h2>'
+                    f'<a href="{verification_link}">Change your password</a>'
                 )
             )
             try:
@@ -495,7 +549,7 @@ def change_password_view(request, uidb64, token):
     if request.method == 'POST':
         try: 
             data = json.loads(request.body)
-            email = data.get('email')
+            email = urlsafe_base64_decode(uidb64)
             newPassword = data.get('newPassword')
             confirmPassword = data.get('confirmPassword')
             if not users.objects.filter(email=email).exists():

@@ -113,6 +113,6 @@ class your_table(models.Model):
 
 class imagetable(models.Model):
     id = models.BigAutoField(primary_key=True)
-    your_table_id = models.ForeignKey(your_table, on_delete=models.CASCADE,db_column='your_table_id', null = True) #foriegn key
+    your_table = models.ForeignKey(your_table, on_delete=models.CASCADE,db_column='your_table_id', null = True) #foriegn key
     filepath = models.CharField(max_length=100,db_column='filepath')
     

@@ -124,11 +124,10 @@ const NewportArtifacts = () => {
           if (Array.isArray(data.artifacts)) {
             const processedArtifacts = data.artifacts.map((artifact) => ({
               ...artifact,
-              address: artifact.address__countyorcity || "Unknown",
               material: materialMap[artifact.material_of_manufacture] || "Unknown",
               year: artifact.date_excavated ? artifact.date_excavated.split("-")[0] : "Unknown",
-              organic: organicMap[artifact.organic_inorganic__id] || "Unknown",
-              scanned: scannedMap[artifact.scanned_3d__id] || "Unknown",
+              organic: organicMap[artifact.organic_inorganic] || "Unknown",
+              scanned: scannedMap[artifact.scanned_3d] || "Unknown",
             }));
     
             const materialSet = new Set();
@@ -185,7 +184,7 @@ const NewportArtifacts = () => {
       <Header />
       <div className="artifact-list">
         <h2>Newport, RI Artifacts</h2>
-
+        
         <div className="filters-container">
           <button className="toggle-filters-btn" onClick={() => setShowFilters(!showFilters)}>
             {showFilters ? "Hide Filters ▲" : "Show Filters ▼"}

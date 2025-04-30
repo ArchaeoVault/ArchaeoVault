@@ -1,4 +1,5 @@
 import unittest
+import time
 from datetime import datetime
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -19,6 +20,7 @@ from myapp.models import (
     your_table
 )
 from selenium.common.exceptions import StaleElementReferenceException
+import tempfile
 
 class test_UAT_userstory8(LiveServerTestCase,TransactionTestCase):
 	port = 8000
@@ -367,4 +369,3 @@ def safe_click(driver, by, value, retries=3):
         except StaleElementReferenceException:
             time.sleep(0.5)
     raise Exception("Element kept going stale: {} {}".format(by, value))
-import tempfile

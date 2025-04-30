@@ -462,7 +462,7 @@ def redirect_change_password(request, uidb64, token):
                     frontend_url = 'https://www.archaeovault.com'
                 else:
                     frontend_url = 'http://localhost:3000'
-                return redirect(f'{frontend_url}/api/change_password/{uidb64}/{token}')
+                return redirect(f'{frontend_url}/api/change_password/{uidb64}/{token}/')
             except Exception as e:
                 return JsonResponse({'error':'Redirect failed'},status = 400)
         else:
@@ -574,6 +574,13 @@ def change_password_view(request, uidb64, token):
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
         except Exception as e:
             return JsonResponse({'error':'Error changing password'},status = 400)
+    elif(request.method == 'GET'):
+        try:
+            return render(request, 'frontend/src/ResetPassword.js')
+        except Exception as e:
+            return JsonResponse({'error':'Render failed'},status = 400)
+    else:
+        return JsonResponse({'error':'Invalid request method'},status = 400)
         
 
 

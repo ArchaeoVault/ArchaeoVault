@@ -20,7 +20,6 @@ import test_send_password_reset
 import test_single_artifact
 
 sys.path.append("..")
-#print("Current working directory:", os.getcwd())
 
 sys.path.append("../../deployment/tests/UAT_tests")
 def load_tests(loader, standard_tests, pattern):

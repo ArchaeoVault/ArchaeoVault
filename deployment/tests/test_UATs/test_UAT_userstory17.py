@@ -118,7 +118,7 @@ class test_UAT_userstory17(LiveServerTestCase,TransactionTestCase):
 			alert.accept()
 		except TimeoutException:
 			assert False
-		self.assertIn("password is too short",message, "Using a short password threw an error")
+		self.assertIn("Password must be at least 8 characters",message, "Using a short password threw an error")
 
 
 	def test_create_account_with_valid_email_with_mismatched_password(self):
@@ -165,7 +165,7 @@ class test_UAT_userstory17(LiveServerTestCase,TransactionTestCase):
 			alert.accept()
 		except TimeoutException:
 			assert False
-		self.assertIn("This password is entirely numeric",message, "password with no letters threw an error")
+		self.assertIn("Password cannot be all numbers",message, "password with no letters threw an error")
 
 	def test_create_account_with_duplicate_email_with_a_no_number_password(self):
 		self.driver.implicitly_wait(1)
@@ -177,8 +177,8 @@ class test_UAT_userstory17(LiveServerTestCase,TransactionTestCase):
 		firstNameBox.send_keys("John")
 		laststNameBox.send_keys("Smith")
 		emailBox.send_keys("temp@email.com")
-		passwordBox.send_keys("password")
-		confirmPasswordBox.send_keys("password")
+		passwordBox.send_keys("mysecrets")
+		confirmPasswordBox.send_keys("mysecrets")
 		submitButton = self.driver.find_element(By.XPATH, "//button[text()='Sign Up']")
 		submitButton.click()
 		try:
@@ -211,7 +211,7 @@ class test_UAT_userstory17(LiveServerTestCase,TransactionTestCase):
 			alert.accept()
 		except TimeoutException:
 			assert False
-		self.assertIn("User with this email already exists", message, "Creating account with duplicate email threw an error")
+		self.assertIn("cannot be all numbers", message, "Creating account with no numbers in password threw an error")
 
 	def test_create_account_with_duplicate_email_with_a_short_password(self):
 		self.driver.implicitly_wait(1)
@@ -234,7 +234,7 @@ class test_UAT_userstory17(LiveServerTestCase,TransactionTestCase):
 			alert.accept()
 		except TimeoutException:
 			assert False
-		self.assertIn("User with this email already exists", message, "Creating account with duplicate email threw an error")
+		self.assertIn("Password must be at least 8 characters", message, "Creating account with duplicate email threw an error")
 	"""
 	def test_create_account_with_a_long_first_name(self):
 		self.driver.implicitly_wait(1)

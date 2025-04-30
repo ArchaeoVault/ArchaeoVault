@@ -50,7 +50,7 @@ class test_UAT_userstory19(LiveServerTestCase,TransactionTestCase):
 		permission = permissions.objects.create(numval = 4, givenrole = 'GeneralPublic')
 		test_user = users.objects.create(
         email='temp@email.com',
-        upassword='archaeovault',
+        upassword='archaeovault25',
         activated=True,
         upermission=permission
     	)
@@ -61,7 +61,7 @@ class test_UAT_userstory19(LiveServerTestCase,TransactionTestCase):
 		emailBox = self.driver.find_element(by = By.XPATH, value = "//input[@placeholder='Email']")
 		passwordBox = self.driver.find_element(by = By.XPATH, value = "//input[@placeholder='Password']")
 		emailBox.send_keys('temp@email.com')
-		passwordBox.send_keys('archaeovault')
+		passwordBox.send_keys('archaeovault25')
 		submitButton = self.driver.find_element(By.XPATH, "//button[text()='Log In']")
 		submitButton.click()
 

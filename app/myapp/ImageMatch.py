@@ -22,7 +22,7 @@ from myapp.models import your_table
 from myapp.models import imagetable
 #######################
 
-dir_to_check =  r'/var/www/html/artifact_images/FINISHED JPG'
+dir_to_check =  r'/var/www/html/artifact_images'
 
 #Get list of images in the chosen directory
 images = os.listdir(dir_to_check)
@@ -73,7 +73,7 @@ for image in images:
             
             existing_record = imagetable.objects.filter(filepath=image,your_table_id=artifact.id)
             if(len(existing_record)==0):
-                imagetable.objects.create(your_table_id=artifact, filepath=image, id=max_id+1)
+                imagetable.objects.create(your_table_id=artifact.id, filepath=image, id=max_id+1)
                 print("Artifact ID: ",artifact_id," Catalog Number: ",catalog_number," FileName: ",image, "\n")
             else:
                 print("Already exists ","Artifact ID: ",artifact_id," Catalog Number: ",catalog_number," FileName: ",image, "\n")

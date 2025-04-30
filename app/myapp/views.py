@@ -416,7 +416,7 @@ def all_image_table_view(request):
     image_data = [
     {
         'id': image.id,
-        'artifct_id': image.your_table.id,
+        'artifact_id': image.your_table.id,
         'filepath': image.filepath,
     }
         for image in images

@@ -184,6 +184,12 @@ const NewportArtifacts = () => {
       <Header />
       <div className="artifact-list">
         <h2>Newport, RI Artifacts</h2>
+
+        <img src="/var/www/html/artifact_images/FINISHED JPG/2024-0-00-2.jpeg.jpeg" alt="artifacttest1"/>
+        <img src="/var/www/html/artifact_images/FINISHED%20JPG/2024-0-00-2.jpeg" alt="artifacttest2"/>
+        <img src="/var/www/html/artifact_images/'FINISHED JPG'/2024-0-00-2.jpeg" alt="artifacttest3"/>
+        <img src="/var/www/html/artifact_images/'FINISHED%20JPG'/2024-0-00-2.jpeg" alt="artifacttest4"/>
+        
         <div className="filters-container">
           <button className="toggle-filters-btn" onClick={() => setShowFilters(!showFilters)}>
             {showFilters ? "Hide Filters ▲" : "Show Filters ▼"}

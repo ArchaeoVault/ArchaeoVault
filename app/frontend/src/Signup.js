@@ -122,6 +122,7 @@ const Signup = () => {
       alert('Error: Something went wrong.');
     }
   };
+  
 
   return (
     <>

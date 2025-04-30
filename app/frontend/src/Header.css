@@ -193,7 +193,7 @@ html, body {
 
 .nav-links-mobile .login-link {
   position: absolute;
-  bottom: 2rem;
+  bottom: 4.5rem;
   font-size: 2rem;
   padding: 0.5rem 1rem;
   border: 2px solid white;
@@ -270,6 +270,7 @@ html, body {
 
   .nav-links-mobile {
     display: flex;
+    overflow-y: auto;
   }
 
   .close-btn {
@@ -360,5 +361,5 @@ html, body {
 
 .footer {
   position: relative;
-  z-index: 1; /* Low z-index to stay below hamburger */
+  z-index: 0; /* Low z-index to stay below hamburger */
 }

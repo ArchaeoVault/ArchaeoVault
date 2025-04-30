@@ -23,6 +23,7 @@ const Header = () => {
 
   const toggleHamburger = () => {
     setHamburgerOpen(!hamburgerOpen);
+    document.body.style.overflow = !hamburgerOpen ? 'hidden' : 'auto';
   };
 
   const handleResize = () => {
@@ -48,6 +49,7 @@ const Header = () => {
     document.addEventListener('mousedown', handleClickOutside);
     window.addEventListener('resize', handleResize);
     return () => {
+      document.body.style.overflow = 'auto';
       document.removeEventListener('mousedown', handleClickOutside);
       window.removeEventListener('resize', handleResize);
     };

@@ -160,7 +160,7 @@ const Artifacts2 = () => {
           <br />
           <p id="modelDescription">{descriptions[selectedArtifact]}</p>
           {selectedArtifact && (
-            <p id="movementInstructions">Click and drag the artifact to move.</p>
+            <p id="movementInstructions">Click and drag the artifact to move. <br /> Zoom in to enlarge the model size</p>
           )}
         </div>
         <div id="container3D" ref={containerRef}></div>

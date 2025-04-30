@@ -428,26 +428,28 @@ def all_image_table_view(request):
 
 def activate(request, uidb64, token):
     #put boolean that sets user active to true
-    try:
-        email = urlsafe_base64_decode(uidb64) # Decodes the base64 encoded email
-        email = force_str(email)  # Convert bytes to string
-        user = users.objects.get(email = email)
-    except Exception as e:
-        return JsonResponse({'error':'Invalid email'},status = 400)
-    if account_activation_token.check_token(user, token):
+    if(request.method == 'GET'):
         try:
-            user.activated = True
-            user.save()
-            # return JsonResponse({'message':'User activation successful'},status = 200)
-            # Redirect to the frontend verification page
+            email = urlsafe_base64_decode(uidb64) # Decodes the base64 encoded email
+            email = force_str(email)  # Convert bytes to string
+            user = users.objects.get(email = email)
         except Exception as e:
-            return JsonResponse({'error':'User activation failed'},status = 400)
+            return JsonResponse({'error':'Invalid email'},status = 400)
+        if account_activation_token.check_token(user, token):
+            try:
+                user.activated = True
+                user.save()
+                return JsonResponse({'message':'User activation successful'},status = 200)
+                # Redirect to the frontend verification page
+            except Exception as e:
+                return JsonResponse({'error':'User activation failed'},status = 400)
+        else:
+            return JsonResponse({'error':'Invalid token'},status = 400)
     else:
-        return JsonResponse({'error':'Invalid token'},status = 400)
+        return JsonResponse({'error':'Invalid request method'},status = 400)
 
 def redirect_change_password(request, uidb64, token):
-    if(request.method == 'POST'):
-        #put boolean that sets user active to true
+    if(request.method == 'GET'):
         try:
             email = urlsafe_base64_decode(uidb64) # Decodes the base64 encoded email
             email = force_str(email)  # Convert bytes to string
@@ -465,6 +467,8 @@ def redirect_change_password(request, uidb64, token):
                 return JsonResponse({'error':'Redirect failed'},status = 400)
         else:
             return JsonResponse({'error':'Invalid token'},status = 400)
+    else:
+        return JsonResponse({'error':'Invalid request method'},status = 400)
 
     
 

@@ -31,7 +31,7 @@ const ForgotPassword = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await fetch(backend_url+'send_password_reset/', {
+    const response = await fetch(backend_url+'resend_verification', {
       method: 'POST',
       credentials: 'include',
       headers: {

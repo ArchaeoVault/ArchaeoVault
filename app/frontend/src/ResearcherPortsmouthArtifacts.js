@@ -97,15 +97,26 @@ const ResearcherPortsmouthArtifacts = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [expandedArtifactIndex, setExpandedArtifactIndex] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
-
   const [materialFilter, setMaterialFilter] = useState("All");
   const [yearFilter, setYearFilter] = useState("All");
   const [scannedFilter, setScannedFilter] = useState("All");
   const [organicFilter, setOrganicFilter] = useState("All");
-
+  const [showForm, setShowForm] = useState(false);
+  const [showMoreFields, setShowMoreFields] = useState(false);
   const [csrfToken, setCsrfToken] = useState('');
   const [newArtifact, setNewArtifact] = useState({
-    name: '', location: '', material: '', age: '', description: '', catalog_number: '',
+    name: '', location: '', material: '', age: '', description: '', catalog_number: '', address: '', owner: '', accessor_number: '', catalog_day: '', object_name: '',
+    scanned_3d: '', printed_3d: '', scanned_by: '', date_excavated: '',
+    object_dated_to: '', object_description: '', organic_inorganic: '',
+    species: '', material_of_manufacture: '', object_type: '', quantity: '',
+    measurements: '', length_mm: '', width_mm: '', height_mm: '',
+    measurement_notes: '', weight_grams: '', weight_notes: '', sivilich_diameter_in: '',
+    deformation_index: '', condition: '', cataloger_name: '', date_catalogued: '',
+    location_repository: '', plat_lot: '', depth: '', longitude: '',
+    latitude: '', distance_from_datum: '', grid: '', excavator: '',
+    notes: '', image: '', image2: '', image3: '', double_checked_by: '',
+    questions: '', uhl_check: '', sources: '', location_general: '',
+    storage_location: '', uhl_flags: '',
   });
 
   const artifactsPerPage = 9;
@@ -172,6 +183,13 @@ const ResearcherPortsmouthArtifacts = () => {
       location: parseInt(newArtifact.location),
       material_of_manufacture: parseInt(newArtifact.material),
       catalog_number: newArtifact.catalog_number,
+      owner: newArtifact.owner,
+      accessor_number: newArtifact.accessor_number,
+      object_type: newArtifact.object_type,
+      printed_3d: newArtifact.printed_3d,
+      length_mm: newArtifact.length_mm,
+      weight_grams: newArtifact.weight_grams,
+      // ...add other fields accordingly
     };
     console.log(payload);
     try {
@@ -205,28 +223,83 @@ const ResearcherPortsmouthArtifacts = () => {
       <Header />
       <div className="researcher-container">
         <h1>Researcher Dashboard</h1>
-
-        <div className="add-artifact-form">
-          <h2>Add New Artifact</h2>
-          <input type="text" name="name" placeholder="Artifact Name" value={newArtifact.name} onChange={handleInputChange} />
-          <input type="text" name="catalog_number" placeholder="Catalog Number" value={newArtifact.catalog_number} onChange={handleInputChange}/>
-          <select name="location" value={newArtifact.location} onChange={handleInputChange}>
-            <option value="">Select Location</option>
-            {Object.entries(addressMap).map(([id, label]) => (
-              <option key={id} value={id}>{label}</option>
-            ))}
-          </select>
-          <select name="material" value={newArtifact.material} onChange={handleInputChange}>
-            <option value="">Select Material</option>
-            {Object.entries(materialMap).map(([id, label]) => (
-              <option key={id} value={id}>{label}</option>
-            ))}
-          </select>
-          <input type="date" name="age" value={newArtifact.age} onChange={handleInputChange} />
-          <textarea name="description" placeholder="Description" value={newArtifact.description} onChange={handleInputChange} />
-          <button onClick={handleAddArtifact}>Add Artifact</button>
-        </div>
-
+        <button className="add-toggle-button" onClick={() => setShowForm(!showForm)}>
+          {showForm ? "Close Form ▲" : "Add New Artifact ▼"}
+        </button>
+        {showForm && (
+          <div className="add-artifact-form">
+            <h2>Add New Artifact</h2>
+            <div className="form-card">
+              <div className="form-group">
+                <label>Artifact Name *</label>
+                <input type="text" name="name" value={newArtifact.name} onChange={handleInputChange} placeholder="e.g., Ceramic Shard" />
+              </div>
+              <div className="form-group">
+                <label>Catalog Number</label>
+                <input type="text" name="catalog_number" value={newArtifact.catalog_number} onChange={handleInputChange} placeholder="e.g., CAT123" />
+              </div>
+              <div className="form-group">
+                <label>Location *</label>
+                <select name="location" value={newArtifact.location} onChange={handleInputChange}>
+                  <option value="">Select Location</option>
+                  {Object.entries(addressMap).map(([id, label]) => (
+                    <option key={id} value={id}>{label}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="form-group">
+                <label>Material</label>
+                <select name="material" value={newArtifact.material} onChange={handleInputChange}>
+                  <option value="">Select Material</option>
+                  {Object.entries(materialMap).map(([id, label]) => (
+                    <option key={id} value={id}>{label}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="form-group">
+                <label>Date Excavated *</label>
+                <input type="date" name="age" value={newArtifact.age} onChange={handleInputChange} />
+              </div>
+              <div className="form-group">
+                <label>Description *</label>
+                <textarea name="description" value={newArtifact.description} onChange={handleInputChange} placeholder="Describe the artifact..." rows="4" />
+              </div>
+              <button className="add-toggle-button" onClick={() => setShowMoreFields(!showMoreFields)}>
+                {showMoreFields ? "Hide Extra Fields ▲" : "Add More Description ▼"}
+              </button>
+              {showMoreFields && (
+                <div className="more-fields">
+                  <div className="form-group">
+                    <label>Owner</label>
+                    <input type="text" name="owner" value={newArtifact.owner} onChange={handleInputChange} />
+                  </div>
+                  <div className="form-group">
+                    <label>Accessor Number (Date Collected)</label>
+                    <input type="text" name="accessor_number" value={newArtifact.accessor_number} onChange={handleInputChange} />
+                  </div>
+                  <div className="form-group">
+                    <label>Object Type</label>
+                    <input type="text" name="object_type" value={newArtifact.object_type} onChange={handleInputChange} />
+                  </div>
+                  <div className="form-group">
+                    <label>3D Printed</label>
+                    <input type="text" name="printed_3d" value={newArtifact.printed_3d} onChange={handleInputChange} />
+                  </div>
+                  <div className="form-group">
+                    <label>Length (mm)</label>
+                    <input type="number" name="length_mm" value={newArtifact.length_mm} onChange={handleInputChange} />
+                  </div>
+                  <div className="form-group">
+                    <label>Weight (grams)</label>
+                    <input type="number" name="weight_grams" value={newArtifact.weight_grams} onChange={handleInputChange} />
+                  </div>
+                  {/* Add more fields as needed following the same pattern */}
+                </div>
+                )}
+                <button className="button add-button" onClick={handleAddArtifact}>Add Artifact</button>
+            </div>
+          </div>
+        )}
         <div className="filters-container">
           <button className="toggle-filters-btn" onClick={() => setShowFilters(!showFilters)}>
             {showFilters ? "Hide Filters ▲" : "Show Filters ▼"}
@@ -263,8 +336,7 @@ const ResearcherPortsmouthArtifacts = () => {
             </div>
           )}
         </div>
-
-        <div className="artifact-list">
+        <div className ="artifacts">
           {displayedArtifacts.map((artifact, index) => {
             const globalIndex = startIndex + index;
             return (
@@ -285,7 +357,6 @@ const ResearcherPortsmouthArtifacts = () => {
             );
           })}
         </div>
-
         <div className="pagination">
           <button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 0))} disabled={currentPage === 0}>Previous</button>
           <button onClick={() => setCurrentPage((prev) =>

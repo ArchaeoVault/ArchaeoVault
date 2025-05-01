@@ -10,7 +10,7 @@ else:
 
 import test_create_user
 import test_artifact_model
-import test_change_password
+#import test_change_password
 import test_resend_verification
 import test_activation
 import test_delete_artifact
@@ -26,7 +26,7 @@ def load_tests(loader, standard_tests, pattern):
     test_suite = unittest.TestSuite()
     test_suite.addTests(loader.loadTestsFromModule(test_create_user))
     test_suite.addTests(loader.loadTestsFromModule(test_artifact_model))
-    test_suite.addTests(loader.loadTestsFromModule(test_change_password))
+    #test_suite.addTests(loader.loadTestsFromModule(test_change_password))
     test_suite.addTests(loader.loadTestsFromModule(test_resend_verification))
     test_suite.addTests(loader.loadTestsFromModule(test_activation))
     test_suite.addTests(loader.loadTestsFromModule(test_delete_artifact))

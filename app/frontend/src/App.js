@@ -53,6 +53,8 @@ const App = () => {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset/:uidb64/:token" element={<ResetPassword />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/NewportArtifacts" element={<NewportArtifacts />} />
+        <Route path="PortsmouthArtifacts" element={<PortsmouthArtifacts />} />
         {/* Private routes with authentication check */}
         <Route path="/newport-artifacts" element={<PrivateRoute element={<NewportArtifacts />} />} />
         <Route path="/portsmouth-artifacts" element={<PrivateRoute element={<PortsmouthArtifacts />} />} />

@@ -18,7 +18,7 @@ from django.contrib.auth.hashers import check_password
 from django.http import JsonResponse
 from django.middleware.csrf import get_token
 from django.views.decorators.csrf import csrf_protect
-
+from datetime import datetime
 from django.core.mail import send_mail
 from django.conf import settings
 from sendgrid import SendGridAPIClient
@@ -615,72 +615,302 @@ def edit_artifact_view(request):
         except Exception as e:
             #print('Outer exception')
             return JsonResponse ({'error':'Error in editing artifact'}, status = 400)
+        
+def parse_datetime_flexible(date_str):
+    """
+    Tries to parse a date string using multiple common formats.
+    Returns a datetime object or raises a ValueError if none match.
+    """
+    if not date_str:
+        return None
+    # formats = [
+    #     "%b %d, %Y"
+    # ]
+    formats = [
+        "%Y-%m-%dT%H:%M:%S",        # ISO format (e.g., 2025-04-29T14:30:00)
+        "%Y-%m-%d",                 # Date only (e.g., 2025-04-29)
+        "%b %d, %Y",                # Jan 01, 2000
+        "%B %d, %Y",                # January 01, 2000
+        "%m/%d/%Y",                 # 01/01/2000
+        "%d-%m-%Y",                 # 01-01-2000
+    ]
+
+    for fmt in formats:
+        try:
+            return datetime.strptime(date_str, fmt)
+        except ValueError:
+            continue
+
+    raise ValueError(f"Unrecognized date format: {date_str}")
 @csrf_protect
 def add_artifact_view(request):
     if request.method == 'POST':
-        try:
+        #try:
+            adminEmail = request.session.get('user_email') #gets current sessions email
+            if not users.objects.filter(email=adminEmail).exists():
+                #print('User does not exist')
+                return JsonResponse({'error':'User with this email does not exist'}, status = 401)
+            user = users.objects.get(email = adminEmail)
+            numberValue = user.upermission.numval
+            if numberValue == 4:
+                return JsonResponse({'error':'Must be an admin to create another user'}, status = 402)
             data = json.loads(request.body)
-
+            print('got here')
             # Basic required fields
             required_fields = ['object_name', 'object_description', 'date_excavated', 'location', 'catalog_number']
             for field in required_fields:
                 if field not in data or not data[field]:
-                    return JsonResponse({'success': False, 'error': f"Missing required field: {field}"})
-
+                    return JsonResponse({'success': False, 'error': f"Missing required field: {field}"}, status = 400)
+            print('After checking required fields')
+            # get foreign key objects
+            max_id = your_table.objects.aggregate(max_id=models.Max('id'))['max_id']
+            max_id += 1
+            object_name=data['object_name']
+            if object_name == None:
+                object_name = 'Unknown'
+            object_description=data['object_description']
+            if object_description == None:
+                object_description = 'No description'
+            date_excavated=data.get('date_excavated') #change to do parse datetime after if
+            if date_excavated == None:
+                date_excavated = parse_datetime_flexible('Apr 11, 2025')
+            else:
+                date_excavated = parse_datetime_flexible(date_excavated)
+            location=data['location']
+            if location == None:
+                location = 'Unknown'
+            date_collected = data.get('date_collected')
+            if date_collected == None:
+                date_collected = parse_datetime_flexible('Apr 11, 2025')
+            else:
+                date_collected = parse_datetime_flexible(date_collected)
+            # Optional fields
+            address_id=data.get('address')
+            if address_id == None:
+                address_id = 1
+            owner=data.get('owner')
+            if owner == None:
+                owner = 'Unknown'
+            #accessor_number=data.get('accessor_number'),
+            catalog_number=data.get('catalog_number')
+            if catalog_number == None:
+                catalog_number = 'Unprovenced'
+            scanned_3d_id=data.get('scanned_3d')
+            if scanned_3d_id == None:
+                scanned_3d_id = 2
+            printed_3d_id=data.get('printed_3d')
+            if printed_3d_id == None:
+                printed_3d_id = 2
+            scanned_by=data.get('scanned_by')
+            if scanned_by == None:
+                scanned_by = 'Unknown'
+            object_dated_to=data.get('object_dated_to')
+            if object_dated_to == None:
+                object_dated_to = parse_datetime_flexible('Jan 01, 2000')
+            else:
+                object_dated_to = parse_datetime_flexible(object_dated_to)
+            organic_inorganic_id=data.get('organic_inorganic')
+            if organic_inorganic_id == None:
+                organic_inorganic_id = 3
+            species_id=data.get('species')
+            if species_id == None:
+                species_id = 1
+            material_of_manufacture_id=data.get('material_of_manufacture')
+            if material_of_manufacture_id == None:
+                material_of_manufacture_id = 61
+            form_object_type_id=data.get('form_object_type')
+            if form_object_type_id == None:
+                form_object_type_id = 16
+            quantity=data.get('quantity')
+            if quantity == None:
+                quantity = -1
+            measurement_diameter=data.get('measurement_diameter')
+            if measurement_diameter == None:
+                measurement_diameter = -1
+            length=data.get('length')
+            if length == None:
+                length = -1
+            width=data.get('width')
+            if width == None:
+                width = -1
+            height=data.get('height')
+            if height == None:
+                height = -1
+            measurement_notes=data.get('measurement_notes')
+            if measurement_notes == None:
+                measurement_notes = 'No notes'
+            weight=data.get('weight')
+            if weight == None:
+                weight = -1
+            weight_notes=data.get('weight_notes')
+            if weight_notes == None:
+                weight_notes = 'No notes'
+            sivilich_diameter=data.get('sivilich_diameter')
+            if sivilich_diameter == None:
+                sivilich_diameter = -1
+            deformation_index=data.get('deformation_index')
+            if deformation_index == None:
+                deformation_index = -1
+            conservation_condition_id=data.get('conservation_condition')
+            if conservation_condition_id == None:
+                conservation_condition_id = 1
+            cataloguer_name=data.get('cataloguer_name')
+            if cataloguer_name == None:
+                cataloguer_name = 'Unknown'
+            date_catalogued = data.get('date_catalogued')
+            if date_catalogued == None:
+                date_catalogued = parse_datetime_flexible('Apr 11, 2025')
+            else:
+                date_catalogued = parse_datetime_flexible(date_catalogued)
+            location_in_repository=data.get('location_in_repository')
+            if location_in_repository == None:
+                location_in_repository = 'Unknown'
+            platlot=data.get('platlot')
+            if platlot == None:
+                platlot = 'Unknown'
+            found_at_depth=data.get('found_at_depth')
+            if found_at_depth == None:
+                found_at_depth = 'Unknown'
+            longitude=data.get('longitude')
+            if longitude == None:
+                longitude = 'Unknown'
+            latitude=data.get('latitude')
+            if latitude == None:
+                latitude = 'Unknown'
+            distance_from_datum=data.get('distance_from_datum')
+            if distance_from_datum == None:
+                distance_from_datum = 'Unknown'
+            found_in_grid_id=data.get('found_in_grid')
+            if found_in_grid_id == None:
+                found_in_grid_id = 20
+            excavator=data.get('excavator')
+            if excavator == None:
+                excavator = 'Unknown'
+            notes=data.get('notes')
+            if notes == None:
+                notes = 'No notes'
+            images=data.get('images')
+            if images == None:
+                images = 'No image path'
+            data_double_checked_by=data.get('data_double_checked_by')
+            if data_double_checked_by == None:
+                data_double_checked_by = 'No double checked'
+            qsconcerns=data.get('qsconcerns')
+            if qsconcerns == None:
+                qsconcerns = 'No questions or concerns'
+            druhlcheck=data.get('druhlcheck')
+            if druhlcheck == None:
+                druhlcheck = 'Not checked'
+            sources_for_id=data.get('sources_for_id')
+            if sources_for_id == None:
+                sources_for_id = 'No sources(s) provided'
+            storage_location=data.get('storage_location')
+            if storage_location == None:
+                storage_location = 'Unknown location'
+            uhlflages=data.get('uhlflags')
+            if uhlflages == None:
+                uhlflages = 'No flags'
+            # for key,value in data.items():
+            #     print('Value: ', value) #making sure there are no null values and setting those values to the default stuff in the db
+            #     if value == 'null':
+            #         print('Value is none')
+            #         if key == 'owner' or 'object_name' or 'scanned_by' or 'object_dated_to' or 'cataloguer_name' or 'location_in_repository' or 
+            #         'platlot' or 'found_at_depth' or 'longitude' or 'latitude' or 'distance_from_datum' or 'excavator' or 'location':#string values
+            #             data[key] = 'Unknown'
+            #         elif key == 'measurement_notes' or 'weight_notes' or 'notes':
+            #             data[key] = 'No Notes'
+            #         elif key == 'quantity'or 'measurement_diameter' or 'length' or 'width' or 'height'or 'weight' or 'sivilich_diameter' 
+            #         or 'deformation_index':#int values
+            #             data[key] = -1
+            #         elif key == 'date_collected' or 'date_excavated' or 'date_catalogued':#datetime values
+            #             data[key] = '2262-04-11'
+            #         elif key == 'address' or 'species' or 'conservation_condition': #foreign keys
+            #             data[key] = 1
+            #         elif key == 'catalog_number':
+            #             data[key] = 'Unprovenanced'
+            #         elif key == 'scanned_3d' or 'printed_3d':
+            #             data[key] = 2
+            #         elif key == 'object_description':
+            #             data[key] = 'No description'
+            #         elif key == 'organic_inorganic':
+            #             data[key] = 3
+            #         elif key == 'material_of_manufacture':
+            #             data[key] = 61
+            #         elif key == 'form_object_type':
+            #             data[key] = 16
+            #         elif key == 'found_in_grid':
+            #             data[key] = 20
+            #         elif key == 'images':
+            #             data[key] = 'No image path'
+            #         elif key == 'data_double_checked_by':
+            #             data[key] = 'No double checked'
+            #         elif key == 'qsconcerns':
+            #             data[key] = 'No questions or concerns'
+            #         elif key == 'druhlcheck':
+            #             data[key] = 'Not checked'
+            #         elif key == 'sources_for_id':
+            #             data[key] = 'No sources(s) provided'
+            #         elif key == 'storage_location':
+            #             data[key] = 'Unknown location'
+            #         elif key == 'uhlflags':
+            #             data[key] = 'No flags'
+                
             artifact = your_table.objects.create(
-                object_name=data['object_name'],
-                object_description=data['object_description'],
-                date_excavated=data['date_excavated'],
-                location=data['location'],
-
-                # Optional fields
-                address_id=data.get('address'),
-                owner=data.get('owner'),
-                #accessor_number=data.get('accessor_number'),
-                catalog_number=data.get('catalog_number'),
-                scanned_3d_id=data.get('scanned_3d'),
-                printed_3d_id=data.get('printed_3d'),
-                scanned_by=data.get('scanned_by'),
-                object_dated_to=data.get('object_dated_to'),
-                organic_inorganic_id=data.get('organic_inorganic'),
-                species_id=data.get('species'),
-                material_of_manufacture_id=data.get('material_of_manufacture'),
-                form_object_type_id=data.get('form_object_type'),
-                quantity=data.get('quantity'),
-                measurement_diameter=data.get('measurement_diameter'),
-                length=data.get('length'),
-                width=data.get('width'),
-                height=data.get('height'),
-                measurement_notes=data.get('measurement_notes'),
-                weight=data.get('weight'),
-                weight_notes=data.get('weight_notes'),
-                sivilich_diameter=data.get('sivilich_diameter'),
-                deformation_index=data.get('deformation_index'),
-                conservation_condition_id=data.get('conservation_condition'),
-                cataloguer_name=data.get('cataloguer_name'),
-                date_catalogued=data.get('date_catalogued'),
-                location_in_repository=data.get('location_in_repository'),
-                platlot=data.get('platlot'),
-                found_at_depth=data.get('found_at_depth'),
-                longitude=data.get('longitude'),
-                latitude=data.get('latitude'),
-                distance_from_datum=data.get('distance_from_datum'),
-                found_in_grid_id=data.get('found_in_grid'),
-                excavator=data.get('excavator'),
-                notes=data.get('notes'),
-                images=data.get('images'),
-                data_double_checked_by=data.get('data_double_checked_by'),
-                qsconcerns=data.get('qsconcerns'),
-                druhlcheck=data.get('druhlcheck'),
-                sources_for_id=data.get('sources_for_id'),
-                storage_location=data.get('storage_location'),
-                uhlflages=data.get('uhlflages'),
-            )
-
-            return JsonResponse({'success': True, 'catalog_number': artifact.catalog_number})
-
-        except Exception as e:
-            return JsonResponse({'success': False, 'error': str(e)})
+                 object_name=object_name,
+                 object_description=object_description,
+                 date_excavated=date_excavated,
+                 location=location,
+                 date_collected = date_collected,
+                 # Optional fields
+                 address_id=address_id,
+                 owner=owner,
+                 #accessor_number=data.get('accessor_number'),
+                 catalog_number=catalog_number,
+                 scanned_3d_id=scanned_3d_id,
+                 printed_3d_id=printed_3d_id,
+                 scanned_by=scanned_by,
+                 object_dated_to=object_dated_to,
+                 organic_inorganic_id=organic_inorganic_id,
+                 species_id=species_id,
+                 material_of_manufacture_id=material_of_manufacture_id,
+                 form_object_type_id=form_object_type_id,
+                 quantity=quantity,
+                 measurement_diameter=measurement_diameter,
+                 length=length,
+                 width=width,
+                 height=height,
+                 measurement_notes=measurement_notes,
+                 weight=weight,
+                 weight_notes=weight_notes,
+                 sivilich_diameter=sivilich_diameter,
+                 deformation_index=deformation_index,
+                 conservation_condition_id=conservation_condition_id,
+                 cataloguer_name=cataloguer_name,
+                 date_catalogued = date_catalogued,
+                 location_in_repository=location_in_repository,
+                 platlot=platlot,
+                 found_at_depth=found_at_depth,
+                 longitude=longitude,
+                 latitude=latitude,
+                 distance_from_datum=distance_from_datum,
+                 found_in_grid_id=found_in_grid_id,
+                 excavator=excavator,
+                 notes=notes,
+                 images=images,
+                 data_double_checked_by=data_double_checked_by,
+                 qsconcerns=qsconcerns,
+                 druhlcheck=druhlcheck,
+                 sources_for_id=sources_for_id,
+                 storage_location=storage_location,
+                 uhlflages=uhlflages,
+                 id = max_id,
+             )
+ 
+            return JsonResponse({'success': True, 'catalog_number': artifact.catalog_number}, status = 200)
+    
+        #except Exception as e:
+            # print('In outer exception')
+            #return JsonResponse({'success': False, 'error': str(e)}, status = 400)
 
 def admin_create_user_view(request):
     if request.method == 'POST':

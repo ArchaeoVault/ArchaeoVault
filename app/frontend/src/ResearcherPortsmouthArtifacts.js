@@ -110,16 +110,16 @@ const ResearcherPortsmouthArtifacts = () => {
   const artifactsPerPage = 9;
   const [newArtifact, setNewArtifact] = useState({
     name: '', age: '', description: '', catalog_number: '', address: '', owner: '', accessor_number: '', catalog_day: '', object_name: '',
-    scanned_3d: '', printed_3d: '', scanned_by: '', date_excavated: '',
+    scanned_3d: '', printed_3d: '', scanned_by: '', date_excavated: '2262-04-01 00:00:00',
     object_dated_to: '', object_description: '', organic_inorganic: '',
     species: '', material_of_manufacture: '', quantity: '',
     measurements: '', length_mm: '', width_mm: '', height_mm: '',
     measurement_notes: '', weight_grams: '', weight_notes: '', sivilich_diameter_in: '',
-    deformation_index: '', condition: '', cataloger_name: '', date_catalogued: '',
+    deformation_index: -1, condition: '', cataloger_name: '', date_catalogued: '',
     location_repository: '', plat_lot: '', depth: '', longitude: '',
     latitude: '', distance_from_datum: '', grid: '', excavator: '',
     notes: '', image: '', image2: '', image3: '', double_checked_by: '',
-    questions: '', uhl_check: '', sources: '', location_general: '',
+    questions: '', uhl_check: '', sources: '', location: '', location_general: '',
     storage_location: '', uhl_flags: '',
   });
   const handleInputChange = (e) => {
@@ -130,7 +130,9 @@ const ResearcherPortsmouthArtifacts = () => {
       [name]: value,
     });
   };
+
   const handleEditClick = (artifact) => {
+    console.log("Editing artifact:", artifact);
     setEditingArtifact({
       ...artifact,
       name: artifact.object_name || artifact.name || '',
@@ -139,7 +141,7 @@ const ResearcherPortsmouthArtifacts = () => {
       organic_inorganic: artifact.organic_inorganic || '',
       scanned_3d: artifact.scanned_3d || '',
       printed_3d: artifact.printed_3d || '',
-      address: artifact.address_id || artifact.address || '',
+      address: artifact.address || '',
     });
     setShowEditForm(true);
   };
@@ -187,6 +189,7 @@ const ResearcherPortsmouthArtifacts = () => {
           questions: editingArtifact.questions,
           uhl_check: editingArtifact.uhl_check,
           sources: editingArtifact.sources,
+          location: editingArtifact.location,
           location_general: editingArtifact.location_general,
           storage_location: editingArtifact.storage_location,
           uhl_flags: editingArtifact.uhl_flags,
@@ -199,9 +202,17 @@ const ResearcherPortsmouthArtifacts = () => {
       const data = await response.json();
       if (response.ok) {
         alert("Artifact updated successfully!");
-        setArtifacts(prev =>
-          prev.map(a => a.id === editingArtifact.id ? editingArtifact : a)
-        );
+        const res = await fetch(backend_url + "portsmouth_artifacts/");
+        const json = await res.json();
+        const processed = json.artifacts.map((a) => ({
+          ...a,
+          address: addressMap[a.address_id] || "Unknown",
+          material: materialMap[a.material_of_manufacture] || "Unknown",
+          scanned: scannedMap[a.scanned_3d] || "Unknown",
+          organic: organicMap[a.organic_inorganic] || "Unknown",
+          year: a.date_excavated?.split("-")[0] || "Unknown",
+        }));
+        setArtifacts(processed);
         setShowEditForm(false);
       } else {
         alert("Failed to update artifact: " + data.error);
@@ -210,39 +221,46 @@ const ResearcherPortsmouthArtifacts = () => {
       alert("Error updating artifact");
     }
   };
+
+  const loadArtifacts = async () => {
+    const res = await fetch(backend_url + "portsmouth_artifacts/");
+    const data = await res.json();
+    const processed = data.artifacts.map((a) => ({
+      ...a,
+      address: addressMap[a.address_id] || "Unknown",
+      material: materialMap[a.material_of_manufacture] || "Unknown",
+      scanned: scannedMap[a.scanned_3d] || "Unknown",
+      organic: organicMap[a.organic_inorganic] || "Unknown",
+      year: a.date_excavated?.split("-")[0] || "Unknown",
+    }));
+    setArtifacts(processed);
   
+    const materialSet = new Set();
+    const yearSet = new Set();
+    processed.forEach((a) => {
+      materialSet.add(a.material);
+      yearSet.add(a.year);
+    });
+    setMaterialOptions([...materialSet].sort());
+    setYearOptions([...yearSet].sort());
+  };
+  
+  const fetchCsrf = async () => {
+    const res = await fetch(backend_url + "get_csrf_token/", { credentials: "include" });
+    const data = await res.json();
+    setCsrfToken(data.csrfToken);
+  };
+  
+  // Only runs once on page load
   useEffect(() => {
-    const fetchData = async () => {
-      const res = await fetch(backend_url + "portsmouth_artifacts/");
-      const data = await res.json();
-      const processed = data.artifacts.map((a) => ({
-        ...a,
-        material: materialMap[a.material_of_manufacture] || "Unknown",
-        scanned: scannedMap[a.scanned_3d] || "Unknown",
-        organic: organicMap[a.organic_inorganic] || "Unknown",
-        year: a.date_excavated?.split("-")[0] || "Unknown",
-      }));
-      setArtifacts(processed);
-
-      const materialSet = new Set();
-      const yearSet = new Set();
-      processed.forEach((a) => {
-        materialSet.add(a.material);
-        yearSet.add(a.year);
-      });
-      setMaterialOptions([...materialSet].sort());
-      setYearOptions([...yearSet].sort());
+    const initialize = async () => {
+      await loadArtifacts();
+      await fetchCsrf();
     };
-
-    const fetchCsrf = async () => {
-      const res = await fetch(backend_url + "get_csrf_token/", { credentials: "include" });
-      const data = await res.json();
-      setCsrfToken(data.csrfToken);
-    };
-
-    fetchData();
-    fetchCsrf();
+    initialize();
   }, []);
+  
+  
 
   useEffect(() => {
     let filtered = [...artifacts];
@@ -260,15 +278,11 @@ const ResearcherPortsmouthArtifacts = () => {
   };
 
   const handleAddArtifact = async () => {
-    if (!newArtifact.name || !newArtifact.description || !newArtifact.age || !newArtifact.address) {
-      alert('Please fill in required fields: name, description, date, and location.');
-      return;
-    }
 
     const payload = {
       object_name: newArtifact.name,
       object_description: newArtifact.description,
-      date_excavated: newArtifact.age,
+      date_excavated: newArtifact.date_excavated,
       address: parseInt(newArtifact.address),
       material_of_manufacture: parseInt(newArtifact.material),
       catalog_number: newArtifact.catalog_number,
@@ -278,15 +292,42 @@ const ResearcherPortsmouthArtifacts = () => {
       printed_3d: newArtifact.printed_3d,
       length_mm: newArtifact.length_mm,
       weight_grams: newArtifact.weight_grams,
-      weight_notes: newArtifact.weight_notes, sivilich_diameter_in: newArtifact.sivilich_diameter_in,
-      deformation_index: newArtifact.deformation_index, condition: newArtifact.condition, cataloger_name: newArtifact.cataloger_name, date_catalogued: newArtifact.date_catalogued,
-      location_repository: newArtifact.location_repository, plat_lot: newArtifact.plat_lot, depth: newArtifact.depth, longitude: newArtifact.longitude,
-      latitude: newArtifact.latitude, distance_from_datum: newArtifact.distance_from_datum, grid: newArtifact.grid, excavator: newArtifact.excavator,
-      notes: newArtifact.notes, image: newArtifact.image, double_checked_by: newArtifact.double_checked_by,
-      questions: newArtifact.questions, uhl_check: newArtifact.uhl_check, sources: newArtifact.sources, location_general: newArtifact.location_general,
-      storage_location: newArtifact.storage_location, uhl_flags: newArtifact.uhl_flags,
+      weight_notes: newArtifact.weight_notes, 
+      sivilich_diameter_in: newArtifact.sivilich_diameter_in,
+      deformation_index: newArtifact.deformation_index, 
+      condition: newArtifact.condition, 
+      cataloger_name: newArtifact.cataloger_name, 
+      date_catalogued: newArtifact.date_catalogued,
+      location_repository: newArtifact.location_repository, 
+      plat_lot: newArtifact.plat_lot, 
+      depth: newArtifact.depth, 
+      longitude: newArtifact.longitude,
+      latitude: newArtifact.latitude, 
+      distance_from_datum: newArtifact.distance_from_datum, 
+      grid: newArtifact.grid, 
+      excavator: newArtifact.excavator,
+      notes: newArtifact.notes, 
+      image: newArtifact.image, 
+      double_checked_by: newArtifact.double_checked_by,
+      questions: newArtifact.questions, 
+      uhl_check: newArtifact.uhl_check, 
+      sources: newArtifact.sources, 
+      location: newArtifact.location,
+      location_general: newArtifact.location_general,
+      storage_location: newArtifact.storage_location, 
+      uhl_flags: newArtifact.uhl_flags,
     };
-    console.log(payload);
+    const cleanedData = Object.keys(payload).reduce((acc, key) => {
+      const value = payload[key];
+      // Assuming date fields are named like 'date_excavated', 'date_catalogued', etc.
+      if ((key.includes('date') || key.includes('time')) && value === "") {
+          acc[key] = null; // Set empty strings to null for date/time fields
+      } else {
+          acc[key] = value || null; // Other fields can also be set to null if empty
+      }
+      return acc;
+  }, {});
+    console.log(cleanedData);
     try {
       const response = await fetch(backend_url + 'add_artifact/', {
         method: 'POST',
@@ -295,25 +336,25 @@ const ResearcherPortsmouthArtifacts = () => {
           'Content-Type': 'application/json',
           'X-CSRFToken': csrfToken,
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(cleanedData),
       });
 
       const data = await response.json();
       if (data.success) {
         alert("Artifact added successfully!");
         setNewArtifact({
-          name: '', location: '', material: '', age: '',
+          name: '', address: '', material: '', age: '',
           catalog_number: '', owner: '',
           scanned_3d: '', printed_3d: '', scanned_by: '', date_excavated: '',
           object_dated_to: '', object_description: '', organic_inorganic: '',
           species: '', material_of_manufacture: '', quantity: '',
           measurements: '', length_mm: '', width_mm: '', height_mm: '',
           measurement_notes: '', weight_grams: '', weight_notes: '', sivilich_diameter_in: '',
-          deformation_index: '', condition: '', cataloger_name: '', date_catalogued: '',
+          deformation_index: -1, condition: '', cataloger_name: '', date_catalogued: '',
           location_repository: '', plat_lot: '', depth: '', longitude: '',
           latitude: '', distance_from_datum: '', grid: '', excavator: '',
           notes: '', image: '', double_checked_by: '',
-          questions: '', uhl_check: '', sources: '', location_general: '',
+          questions: '', uhl_check: '', sources: '', location: '', location_general: '',
           storage_location: '', uhl_flags: '',
         });        
       } else {
@@ -462,7 +503,7 @@ const ResearcherPortsmouthArtifacts = () => {
               <div className="form-group"><label>description</label><input type="text" name="description" value={editingArtifact.description} onChange={handleInputChange} /></div>
               <div className="form-group"><label>Owner</label><input type="text" name="owner" value={editingArtifact.owner} onChange={handleInputChange} /></div>
               <div className="form-group"><label>Accessor Number (Date Collected)</label><input type="text" name="accessor_number" value={editingArtifact.accessor_number} onChange={handleInputChange} /></div>
-              <div className="form-group"><label>Address</label><select name="address" value={editingArtifact.address} onChange={handleInputChange}>
+              <div className="form-group"><label>Address</label><select name="address" value={editingArtifact.address_id} onChange={handleInputChange}>
                   <option value="">Select Address</option>
                   {Object.entries(addressMap).map(([key, label]) => (
                   <option key={key} value={key}>{label}
@@ -526,10 +567,9 @@ const ResearcherPortsmouthArtifacts = () => {
                 setExpandedArtifactIndex(expandedArtifactIndex === globalIndex ? null : globalIndex)}>
                 <h3>{artifact.object_name}</h3>
                 <p>{artifact.object_description}</p>
-                <button onClick={() => handleEditClick(artifact)}>Edit</button>
+                <button onClick={(e) => { e.stopPropagation();handleEditClick(artifact);}}>Edit</button>
                 {expandedArtifactIndex === globalIndex && (
                   <div className="artifact-details">
-                    <p><strong>Location:</strong> {artifact.address}</p>
                     <p><strong>Material:</strong> {artifact.material}</p>
                     <p><strong>Year:</strong> {artifact.year}</p>
                     <p><strong>Organic:</strong> {artifact.organic}</p>

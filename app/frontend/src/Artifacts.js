@@ -52,7 +52,9 @@ function ArtifactsPage() {
       if (permission === 3) {
         targetPath = `/researcher-${artifact.path.slice(1)}`;
       }
-      
+      if (permission === 1) {
+        targetPath = `/admin-${artifact.path.slice(1)}`;
+      }
       navigate(targetPath);
     } catch (error) {
       console.error("Error checking permission:", error);

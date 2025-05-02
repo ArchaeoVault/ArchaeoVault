@@ -124,11 +124,11 @@ const PortsmouthArtifacts = () => {
           if (Array.isArray(data.artifacts)) {
             const processedArtifacts = data.artifacts.map((artifact) => ({
               ...artifact,
-              address: artifact.address__countyorcity || "Unknown",
-              material: materialMap[artifact.material_of_manufacture__id] || "Unknown",
+              address: addressMap[artifact.address__countyorcity] || "Unknown",
+              material: materialMap[artifact.material_of_manufacture] || "Unknown",
               year: artifact.date_excavated ? artifact.date_excavated.split("-")[0] : "Unknown",
-              organic: organicMap[artifact.organic_inorganic__id] || "Unknown",
-              scanned: scannedMap[artifact.scanned_3d__id] || "Unknown",
+              organic: organicMap[artifact.organic_inorganic] || "Unknown",
+              scanned: scannedMap[artifact.scanned_3d] || "Unknown",
             }));
     
             const materialSet = new Set();
@@ -152,30 +152,16 @@ const PortsmouthArtifacts = () => {
         console.error("Error fetching artifacts:", error);
       });
   }, []);
-
+  
   useEffect(() => {
     let filtered = [...artifacts];
-
-    if (scannedFilter !== "All") {
-      filtered = filtered.filter((a) => a.scanned === scannedFilter);
-    }
-    if (yearFilter !== "All") {
-      filtered = filtered.filter((a) => a.year === yearFilter);
-    }
-    if (organicFilter !== "All") {
-      filtered = filtered.filter(
-        (a) => a.organic?.toLowerCase() === organicFilter.toLowerCase()
-      );
-    }
-    if (materialFilter !== "All") {
-      filtered = filtered.filter(
-        (a) => a.material?.toLowerCase() === materialFilter.toLowerCase()
-      );
-    }
-
+    if (materialFilter !== "All") filtered = filtered.filter((a) => a.material === materialFilter);
+    if (yearFilter !== "All") filtered = filtered.filter((a) => a.year === yearFilter);
+    if (scannedFilter !== "All") filtered = filtered.filter((a) => a.scanned === scannedFilter);
+    if (organicFilter !== "All") filtered = filtered.filter((a) => a.organic === organicFilter);
     setFilteredArtifacts(filtered);
     setCurrentPage(0);
-  }, [artifacts, scannedFilter, yearFilter, organicFilter, materialFilter]);
+  }, [artifacts, materialFilter, yearFilter, scannedFilter, organicFilter]);
 
   const startIndex = currentPage * artifactsPerPage;
   const displayedArtifacts = filteredArtifacts.slice(startIndex, startIndex + artifactsPerPage);
@@ -248,41 +234,20 @@ const PortsmouthArtifacts = () => {
               displayedArtifacts.map((artifact, index) => {
                 const globalIndex = startIndex + index;
                 return (
-                  <div
-                    key={globalIndex}
-                    className="artifact-item"
-                    onClick={() =>
-                      setExpandedArtifactIndex(
-                        expandedArtifactIndex === globalIndex ? null : globalIndex
-                      )
-                    }
-                    style={{ cursor: "pointer" }}
-                  >
+                  <div key={globalIndex} className="artifact-item" onClick={() =>
+                    setExpandedArtifactIndex(expandedArtifactIndex === globalIndex ? null : globalIndex)}>
                     <h3>{artifact.object_name}</h3>
                     <p>{artifact.object_description}</p>
-
-                    {/* Expanded details */}
                     {expandedArtifactIndex === globalIndex && (
                       <div className="artifact-details">
-                        {artifact.address && (
-                          <p><strong>Address:</strong> {artifact.address}</p>
-                        )}
-                        {artifact.material && (
-                          <p><strong>Material:</strong> {artifact.material}</p>
-                        )}
-                        {artifact.year && (
-                          <p><strong>Year Excavated:</strong> {artifact.year}</p>
-                        )}
-                        {artifact.organic && (
-                          <p><strong>Organic/Inorganic:</strong> {artifact.organic}</p>
-                        )}
-                        {artifact.scanned && (
-                          <p><strong>3D Scanned:</strong> {artifact.scanned}</p>
-                        )}
+                        <p><strong>Material:</strong> {artifact.material}</p>
+                        <p><strong>Year:</strong> {artifact.year}</p>
+                        <p><strong>Organic:</strong> {artifact.organic}</p>
+                        <p><strong>3D Scanned:</strong> {artifact.scanned}</p>
                       </div>
                     )}
                   </div>
-                );
+                );              
               })
             )}
           </div>

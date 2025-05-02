@@ -209,6 +209,7 @@ def newport_artifacts_view(request):
             'printed_3d': artifact.printed_3d.id,
             'organic_inorganic': artifact.organic_inorganic.id,
             'material_of_manufacture': artifact.material_of_manufacture.id,
+            'address_id': artifact.address.id,
             'countyorcity': artifact.address.countyorcity,
         }
         for artifact in artifacts
@@ -271,6 +272,7 @@ def portsmouth_artifacts_view(request):
             'printed_3d': artifact.printed_3d.id,
             'organic_inorganic': artifact.organic_inorganic.id,
             'material_of_manufacture': artifact.material_of_manufacture.id,
+            'address_id': artifact.address.id,
             'countyorcity': artifact.address.countyorcity,
         }
         for artifact in artifacts
@@ -569,6 +571,18 @@ def delete_artifact_view(request):
             #print('Outer exception')
             return JsonResponse ({'error':'Error in deleting artifact'}, status = 400)
         
+
+def assign_optional_fk(obj, field_name, model, data_value):
+    if data_value == '':
+        data_value = None
+    if data_value is not None:
+        try:
+            setattr(obj, field_name, model.objects.get(id=data_value))
+        except model.DoesNotExist:
+            raise ValueError(f'{field_name} with id={data_value} not found')
+    else:
+        setattr(obj, field_name, None)
+
 @csrf_protect
 def edit_artifact_view(request):
     if request.method == 'POST':
@@ -587,30 +601,24 @@ def edit_artifact_view(request):
             if user.upermission.numval == 4:
                 return JsonResponse({'error': 'General Public cannot edit artifacts'}, status=402)
 
-            if not your_table.objects.filter(id=artifact_id).exists():
+            artifact = your_table.objects.filter(id=artifact_id).first()
+            if not artifact:
                 return JsonResponse({'error': 'Artifact does not exist'}, status=403)
 
-            artifact = your_table.objects.get(id=artifact_id)
+            # Optional FKs
+            try:
+                assign_optional_fk(artifact, 'material_of_manufacture', materialtype, data.get('material_of_manufacture'))
+                assign_optional_fk(artifact, 'address', address, data.get('address'))
+                # Add others here as needed
+            except ValueError as e:
+                return JsonResponse({'error': str(e)}, status=404)
 
-            # Handle material as a ForeignKey
-            material_id = data.get('material_of_manufacture')
-            if material_id:
-                try:
-                    material = materialtype.objects.get(id=material_id)
-                    artifact.material_of_manufacture = material
-                except materialtype.DoesNotExist:
-                    return JsonResponse({'error': 'Material type not found'}, status=404)
-
-            # Update all other fields safely
+            # Non-FK fields
             field_mapping = {
                 'name': 'object_name',
                 'description': 'object_description',
                 'location': 'location',
                 'age': 'object_dated_to',
-                'address': 'address',
-                'organic_inorganic': 'organic_inorganic',
-                'scanned_3d': 'scanned_3d',
-                'printed_3d': 'printed_3d',
                 'length_mm': 'length_mm',
                 'width_mm': 'width_mm',
                 'height_mm': 'height_mm',
@@ -646,26 +654,19 @@ def edit_artifact_view(request):
 
             for frontend_key, model_field in field_mapping.items():
                 if frontend_key in data:
-                    setattr(artifact, model_field, data[frontend_key])
+                    setattr(artifact, model_field, data[frontend_key] or None)
 
             artifact.save()
             return JsonResponse({'message': 'Artifact successfully edited'}, status=200)
 
         except Exception as e:
             return JsonResponse({'error': f'Error in editing artifact: {str(e)}'}, status=400)
-
 @csrf_protect
 def add_artifact_view(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-
             # Basic required fields
-            required_fields = ['object_name', 'object_description', 'date_excavated', 'location', 'catalog_number']
-            for field in required_fields:
-                if field not in data or not data[field]:
-                    return JsonResponse({'success': False, 'error': f"Missing required field: {field}"})
-
             artifact = your_table.objects.create(
                 object_name=data['object_name'],
                 object_description=data['object_description'],
@@ -716,7 +717,7 @@ def add_artifact_view(request):
                 uhlflages=data.get('uhlflages'),
             )
 
-            return JsonResponse({'success': True, 'catalog_number': artifact.catalog_number})
+            return JsonResponse({'success': True, 'id': artifact.id})
 
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)})

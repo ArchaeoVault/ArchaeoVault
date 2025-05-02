@@ -653,7 +653,7 @@ def add_artifact_view(request):
             user = users.objects.get(email = adminEmail)
             numberValue = user.upermission.numval
             if numberValue == 4:
-                return JsonResponse({'error':'Must be an admin to create another user'}, status = 402)
+                return JsonResponse({'error':'Must be an admin to create an object'}, status = 402)
             data = json.loads(request.body)
             print('got here')
             # Basic required fields
@@ -673,7 +673,7 @@ def add_artifact_view(request):
                 object_description = 'No description'
             date_excavated=data.get('date_excavated') #change to do parse datetime after if
             if date_excavated == None:
-                date_excavated = parse_datetime_flexible('Apr 11, 2025')
+                date_excavated = parse_datetime_flexible('2262-04-11')
             else:
                 date_excavated = parse_datetime_flexible(date_excavated)
             location=data['location']
@@ -681,7 +681,7 @@ def add_artifact_view(request):
                 location = 'Unknown'
             date_collected = data.get('date_collected')
             if date_collected == None:
-                date_collected = parse_datetime_flexible('Apr 11, 2025')
+                date_collected = parse_datetime_flexible('2262-04-11')
             else:
                 date_collected = parse_datetime_flexible(date_collected)
             # Optional fields
@@ -706,7 +706,7 @@ def add_artifact_view(request):
                 scanned_by = 'Unknown'
             object_dated_to=data.get('object_dated_to')
             if object_dated_to == None:
-                object_dated_to = parse_datetime_flexible('Jan 01, 2000')
+                object_dated_to = parse_datetime_flexible('2262-04-11')
             else:
                 object_dated_to = parse_datetime_flexible(object_dated_to)
             organic_inorganic_id=data.get('organic_inorganic')
@@ -759,7 +759,7 @@ def add_artifact_view(request):
                 cataloguer_name = 'Unknown'
             date_catalogued = data.get('date_catalogued')
             if date_catalogued == None:
-                date_catalogued = parse_datetime_flexible('Apr 11, 2025')
+                date_catalogued = parse_datetime_flexible('2262-04-11')
             else:
                 date_catalogued = parse_datetime_flexible(date_catalogued)
             location_in_repository=data.get('location_in_repository')

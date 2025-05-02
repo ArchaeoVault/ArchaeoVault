@@ -71,6 +71,7 @@ const Header = () => {
         <Link to="/Artifacts" onClick={toggleHamburger}>Artifacts</Link>
         <Link to="/Artifacts2" onClick={toggleHamburger}>3D Scans</Link>
         <Link to="/About" onClick={toggleHamburger}>About Us</Link>
+
         {!isLoggedIn ? (
           <Link to="/Login" className="login-link" onClick={toggleHamburger}>Login</Link>
         ) : (

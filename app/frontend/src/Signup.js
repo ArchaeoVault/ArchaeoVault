@@ -53,45 +53,45 @@ const Signup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     const token = Cookies.get('csrftoken');
     if (!token) {
       alert('CSRF token is missing. Please try again.');
       return;
     }
-
+  
     const { firstName, lastName, email, password, confirmPassword } = formData;
-
+  
     if (!firstName || !lastName || !email || !password || !confirmPassword) {
       alert('Please fill in all fields.');
       return;
     }
-
+  
     if (password !== confirmPassword) {
       alert('Passwords do not match.');
       return;
     }
-
+  
     if (password.toLowerCase() === "password") {
       alert('Password cannot be "password".');
       return;
     }
-
+  
     if (/^\d+$/.test(password)) {
       alert('Password cannot be all numbers.');
       return;
     }
-
+  
     if (password.length < 8) {
       alert('Password must be at least 8 characters long.');
       return;
     }
-
+  
     if (password.toLowerCase() === firstName.toLowerCase()) {
       alert('Password cannot be the same as your first name.');
       return;
     }
-
+  
     try {
       const response = await fetch(backend_url + 'create_user/', {
         method: 'POST',
@@ -108,12 +108,10 @@ const Signup = () => {
           confirm_password: confirmPassword
         }),
       });
-
+  
       if (response.ok) {
-        localStorage.setItem('isAuthenticated', true);
-        localStorage.setItem('userName', firstName);
-        alert('Sign up successful!');
-        navigate('/artifacts');
+        alert('Sign up successful! Please log in.');
+        navigate('/login');  // 🔄 redirect to login
       } else {
         const errorText = await response.text();
         console.error('Error Response:', errorText);
@@ -124,6 +122,7 @@ const Signup = () => {
       alert('Error: Something went wrong.');
     }
   };
+  
 
   return (
     <>

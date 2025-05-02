@@ -22,7 +22,7 @@ class test_send_password_reset(TestCase):
     def test_verify_nonexistent_account(self):
 
         response = self.client.post(
-            reverse('resend_verification_view'),
+            reverse('send_password_reset_view'),
             data = json.dumps({'email': 'temp2@email.com'}),
             content_type='application/json'
             )
@@ -31,7 +31,7 @@ class test_send_password_reset(TestCase):
     def test_verify_email_exists(self):
         
         response = self.client.post(
-            reverse('resend_verification_view'),
+            reverse('send_password_reset_view'),
             data = json.dumps({'email': 'temp@email.com'}),
             content_type='application/json'
             )
@@ -40,7 +40,7 @@ class test_send_password_reset(TestCase):
     def test_missing_value(self):
 
         response = self.client.post(
-            reverse('resend_verification_view'),
+            reverse('send_password_reset_view'),
             data = json.dumps({'email': ''}),
             content_type='application/json'
             )

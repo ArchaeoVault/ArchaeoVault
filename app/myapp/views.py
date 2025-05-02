@@ -865,7 +865,6 @@ def add_artifact_view(request):
             return JsonResponse({'success': True, 'catalog_number': artifact.catalog_number}, status = 200)
     
         except Exception as e:
-            print('In outer exception')
             return JsonResponse({'success': False, 'error': str(e)}, status = 400)
 
 def admin_create_user_view(request):

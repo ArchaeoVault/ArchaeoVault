@@ -944,7 +944,10 @@ const NewportArtifacts = () => {
                           <p><strong>Material:</strong> {artifact.material}</p>
                         )}
                         {artifact.year && (
-                          <p><strong>Year Excavated:</strong> {artifact.year}</p>
+                        <p>
+                        <strong>Year Excavated:</strong>{" "}
+                        {artifact.year === "2262" ? "No year found" : artifact.year}
+                        </p>
                         )}
                         {artifact.organic && (
                           <p><strong>Organic/Inorganic:</strong> {artifact.organic}</p>

@@ -813,7 +813,7 @@ const NewportArtifacts = () => {
             });
 
         const materials = Array.from(materialSet).sort();
-        const years = Array.from(yearSet).sort();
+        const years = Array.from(yearSet).filter(year => year !== "2262").sort();
 
         setArtifacts(processedArtifacts)
         setMaterialOptions(materials);

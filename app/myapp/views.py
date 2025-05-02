@@ -62,7 +62,7 @@ def login_view(request):
 
             try:
                 user = users.objects.get(email=email)
-
+                print("user found in database")
                 # Now authenticate using the user's username and password
                 if password != user.upassword:  # Compare hashed password
                     return JsonResponse({'status':'error','message':'Passwords do not match'}, status = 400)
@@ -552,6 +552,7 @@ def change_password_view(request, uidb64, token):
             email = urlsafe_base64_decode(uidb64)
             newPassword = data.get('newPassword')
             confirmPassword = data.get('confirmPassword')
+
             if not users.objects.filter(email=email).exists():
                 return JsonResponse({'error':'User with this email does not exist'}, status = 400)
             if newPassword != confirmPassword:
@@ -559,6 +560,8 @@ def change_password_view(request, uidb64, token):
             user = users.objects.get(email = email)
             if newPassword == user.upassword:
                 return JsonResponse({'error':'New Password can not be the same as the old password'}, status = 400)
+            if newPassword == "":
+                return JsonResponse({'error':'Password must not be empty'}, status = 400)
             if account_activation_token.check_token(user, token):
                 try:
                     print('Changing password')

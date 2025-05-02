@@ -10,6 +10,11 @@ from pyvirtualdisplay import Display
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.firefox.options import Options
 import chromedriver_autoinstaller
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from django.test import TestCase, Client, LiveServerTestCase,TransactionTestCase
+from django.contrib.auth.hashers import make_password, check_password
+from myapp.models import users, permissions
+import json
 import os
 import tempfile
 import shutil
@@ -17,10 +22,8 @@ import time
 import subprocess
 
 
-
-
-class test_UAT_userstory19(unittest.TestCase):
-
+class test_UAT_userstory19(LiveServerTestCase,TransactionTestCase):
+	port = 8000
 	def setUp(self):
 		env = os.environ.get('DJANGO_ENV', 'None')
 		if env == 'production':
@@ -36,25 +39,32 @@ class test_UAT_userstory19(unittest.TestCase):
 			# Start the browser
 			self.driver = webdriver.Firefox(options=options)
 		else:
-			self.driver = webdriver.Chrome()
+			options = Options()
+			options.set_capability("goog:loggingPrefs", {"performance": "ALL"})
+			options.headless = True
+			self.driver = webdriver.Chrome(options = options)
 		
-		# if env == 'production':
-		# 	self.driver.get("http://152.42.155.23:3000/")
-		# else:
-		self.driver.get("http://localhost:3000")
-		login_page_button = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.LINK_TEXT, "Login")))
-		login_page_button.click()
-		
+		self.driver.get('http://localhost:3000/login')
 
-	"""
+		# Create a test user
+		permission = permissions.objects.create(numval = 4, givenrole = 'GeneralPublic')
+		test_user = users.objects.create(
+        email='temp@email.com',
+        upassword='archaeovault25',
+        activated=True,
+        upermission=permission
+    	)
+		test_user.save()
+
 	def test_valid_email_with_valid_password(self):
 		self.driver.implicitly_wait(1)
 		emailBox = self.driver.find_element(by = By.XPATH, value = "//input[@placeholder='Email']")
 		passwordBox = self.driver.find_element(by = By.XPATH, value = "//input[@placeholder='Password']")
-		emailBox.send_keys("temp@email.com")
-		passwordBox.send_keys("password123")
+		emailBox.send_keys('temp@email.com')
+		passwordBox.send_keys('archaeovault25')
 		submitButton = self.driver.find_element(By.XPATH, "//button[text()='Log In']")
 		submitButton.click()
+
 		try:
 			WebDriverWait(self.driver, 3).until(EC.alert_is_present())
 			alert = self.driver.switch_to.alert
@@ -62,7 +72,7 @@ class test_UAT_userstory19(unittest.TestCase):
 			alert.accept()
 		except TimeoutException:
 			assert False
-		assert message == "Login successful!"
+		self.assertIn(message, "Login successful!", f"{message} does not equal login successful")
 
 	
 	def test_valid_email_with_invalid_password(self):
@@ -80,8 +90,7 @@ class test_UAT_userstory19(unittest.TestCase):
 			alert.accept()
 		except TimeoutException:
 			assert False
-		assert message == "Invalid Email or Password"
-
+		self.assertEqual(message,"Passwords do not match", f"The alert says{message} instead of Passwords do not match")
 	def test_long_password(self):
 		self.driver.implicitly_wait(1)
 		emailBox = self.driver.find_element(by = By.XPATH, value = "//input[@placeholder='Email']")
@@ -97,10 +106,9 @@ class test_UAT_userstory19(unittest.TestCase):
 			alert.accept()
 		except TimeoutException:
 			assert False
-		assert message == "Invalid Email or Password"
+		self.assertEqual(message,"Passwords do not match", f"The alert says{message} instead of Passwords do not match")
 
-
-
+	"""
 	def test_long_email(self):
 		self.driver.implicitly_wait(1)
 		emailBox = self.driver.find_element(by = By.XPATH, value = "//input[@placeholder='Email']")
@@ -116,8 +124,7 @@ class test_UAT_userstory19(unittest.TestCase):
 			alert.accept()
 		except TimeoutException:
 			assert False
-		assert message == "Invalid Email or Password"
-
+		self.assertEqual(message,"Invalid credentials", "long password has messed up the login process")
 	"""
 	
 	def test_no_email_no_password(self):
@@ -130,6 +137,7 @@ class test_UAT_userstory19(unittest.TestCase):
 			validation_message = emailBox.get_attribute("validationMessage")
 		except:
 			print("No validation message found.")
+		self.assertEqual(validation_message,"Please fill out this field.", "failed to handle no username or password")
 
 
 	def test_valid_email_no_password(self):
@@ -142,7 +150,7 @@ class test_UAT_userstory19(unittest.TestCase):
 			validation_message = passwordBox.get_attribute("validationMessage")
 		except:
 			print("No validation message found.")
-		assert validation_message == "Please fill out this field."
+		self.assertEqual(validation_message,"Please fill out this field.", "failed to valid username with no password")
 	
 
 	def test_no_email_valid_password(self):
@@ -155,7 +163,7 @@ class test_UAT_userstory19(unittest.TestCase):
 			validation_message = emailBox.get_attribute("validationMessage")
 		except:
 			print("No validation message found.")
-		assert validation_message == "Please fill out this field."
+		self.assertEqual(validation_message,"Please fill out this field.", "failed to handle no username with valid password")
 
 	def test_email_sql_injection(self):
 		self.driver.implicitly_wait(1)
@@ -170,7 +178,7 @@ class test_UAT_userstory19(unittest.TestCase):
 		except:
 			print("No validation message found.")
 		assert (validation_message == "A part following '@' should not contain the symbol ' '." or validation_message == "Please enter an email address.")
-	"""
+
 	def test_password_sql_injection(self):
 		self.driver.implicitly_wait(1)
 		emailBox = self.driver.find_element(by = By.XPATH, value = "//input[@placeholder='Email']")
@@ -186,17 +194,8 @@ class test_UAT_userstory19(unittest.TestCase):
 			alert.accept()
 		except TimeoutException:
 			assert False
-		assert message == "Invalid Username or Password"
-		
-	def test_forgot_password_button(self):
-		self.driver.implicitly_wait(1)
-		forgotPasswordButton = self.driver.find_element(by = By.LINK_TEXT, value = "Forgot Password?")
-		forgotPasswordButton.click()
-		assert True"""
+		self.assertEqual(message,"Passwords do not match", "failed to handle sql injection properly")
 
 	def tearDown(self):
 		self.driver.close()
 		self.driver.quit()
-
-if __name__ == "__main__":
-	unittest.main()

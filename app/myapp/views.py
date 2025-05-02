@@ -526,7 +526,7 @@ def send_password_reset_view(request):
             message = Mail(
                 from_email='noreply@archaeovault.com',
                 to_emails=user.email,
-                subject='Welcome to ArchaeoVault!',
+                subject='Reset ArchaeoVault Password!',
                 html_content=(
                     f'<h2>Follow this link below to reset password.</h2>'
                     f'<a href="{verification_link}">Change your password</a>'

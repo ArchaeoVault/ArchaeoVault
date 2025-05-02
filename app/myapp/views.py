@@ -645,7 +645,7 @@ def parse_datetime_flexible(date_str):
 @csrf_protect
 def add_artifact_view(request):
     if request.method == 'POST':
-        #try:
+        try:
             adminEmail = request.session.get('user_email') #gets current sessions email
             if not users.objects.filter(email=adminEmail).exists():
                 #print('User does not exist')
@@ -810,51 +810,7 @@ def add_artifact_view(request):
             uhlflages=data.get('uhlflags')
             if uhlflages == None:
                 uhlflages = 'No flags'
-            # for key,value in data.items():
-            #     print('Value: ', value) #making sure there are no null values and setting those values to the default stuff in the db
-            #     if value == 'null':
-            #         print('Value is none')
-            #         if key == 'owner' or 'object_name' or 'scanned_by' or 'object_dated_to' or 'cataloguer_name' or 'location_in_repository' or 
-            #         'platlot' or 'found_at_depth' or 'longitude' or 'latitude' or 'distance_from_datum' or 'excavator' or 'location':#string values
-            #             data[key] = 'Unknown'
-            #         elif key == 'measurement_notes' or 'weight_notes' or 'notes':
-            #             data[key] = 'No Notes'
-            #         elif key == 'quantity'or 'measurement_diameter' or 'length' or 'width' or 'height'or 'weight' or 'sivilich_diameter' 
-            #         or 'deformation_index':#int values
-            #             data[key] = -1
-            #         elif key == 'date_collected' or 'date_excavated' or 'date_catalogued':#datetime values
-            #             data[key] = '2262-04-11'
-            #         elif key == 'address' or 'species' or 'conservation_condition': #foreign keys
-            #             data[key] = 1
-            #         elif key == 'catalog_number':
-            #             data[key] = 'Unprovenanced'
-            #         elif key == 'scanned_3d' or 'printed_3d':
-            #             data[key] = 2
-            #         elif key == 'object_description':
-            #             data[key] = 'No description'
-            #         elif key == 'organic_inorganic':
-            #             data[key] = 3
-            #         elif key == 'material_of_manufacture':
-            #             data[key] = 61
-            #         elif key == 'form_object_type':
-            #             data[key] = 16
-            #         elif key == 'found_in_grid':
-            #             data[key] = 20
-            #         elif key == 'images':
-            #             data[key] = 'No image path'
-            #         elif key == 'data_double_checked_by':
-            #             data[key] = 'No double checked'
-            #         elif key == 'qsconcerns':
-            #             data[key] = 'No questions or concerns'
-            #         elif key == 'druhlcheck':
-            #             data[key] = 'Not checked'
-            #         elif key == 'sources_for_id':
-            #             data[key] = 'No sources(s) provided'
-            #         elif key == 'storage_location':
-            #             data[key] = 'Unknown location'
-            #         elif key == 'uhlflags':
-            #             data[key] = 'No flags'
-                
+               
             artifact = your_table.objects.create(
                  object_name=object_name,
                  object_description=object_description,
@@ -908,9 +864,9 @@ def add_artifact_view(request):
  
             return JsonResponse({'success': True, 'catalog_number': artifact.catalog_number}, status = 200)
     
-        #except Exception as e:
-            # print('In outer exception')
-            #return JsonResponse({'success': False, 'error': str(e)}, status = 400)
+        except Exception as e:
+            print('In outer exception')
+            return JsonResponse({'success': False, 'error': str(e)}, status = 400)
 
 def admin_create_user_view(request):
     if request.method == 'POST':

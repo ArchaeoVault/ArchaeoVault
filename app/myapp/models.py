@@ -108,8 +108,8 @@ class your_table(models.Model):
     location = models.CharField(max_length=100,db_column='Location',blank = True, null=True)
     storage_location = models.CharField(max_length=50,db_column='Storage Location',blank = True, null=True)
     uhlflages = models.CharField(max_length=250,db_column='Uhl Flags',blank = True, null=True)
-    #id = models.AutoField(primary_key=True)
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
+    #id = models.IntegerField(primary_key=True)
 
 
 class imagetable(models.Model):

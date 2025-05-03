@@ -82,9 +82,6 @@ const Login = () => {
               Sign Up
             </Link>
           </div>
-          <p className="forgot-password">
-            <Link to="/forgot-password">Forgot Password?</Link>
-          </p>
         </div>
       </div>
       <Footer />

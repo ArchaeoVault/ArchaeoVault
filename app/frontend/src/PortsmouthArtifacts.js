@@ -798,10 +798,7 @@ const PortsmouthArtifacts = () => {
           if (Array.isArray(data.artifacts)) {
             const processedArtifacts = data.artifacts.map((artifact) => ({
               ...artifact,
-<<<<<<< HEAD
               address: addressMap[artifact.address__countyorcity] || "Unknown",
-=======
->>>>>>> cd18fa72a46f913dec8b935d3c01ddda693e5e95
               material: materialMap[artifact.material_of_manufacture] || "Unknown",
               year: artifact.date_excavated ? artifact.date_excavated.split("-")[0] : "Unknown",
               organic: organicMap[artifact.organic_inorganic] || "Unknown",

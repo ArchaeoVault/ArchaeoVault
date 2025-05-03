@@ -914,12 +914,6 @@ const PortsmouthArtifacts = () => {
                     <p>{artifact.object_description}</p>
                     {expandedArtifactIndex === globalIndex && (
                       <div className="artifact-details">
-<<<<<<< HEAD
-                        <p><strong>Material:</strong> {artifact.material}</p>
-                        <p><strong>Year:</strong> {artifact.year}</p>
-                        <p><strong>Organic:</strong> {artifact.organic}</p>
-                        <p><strong>3D Scanned:</strong> {artifact.scanned}</p>
-=======
                         {artifact.address && (
                           <p><strong>Address:</strong> {artifact.address}</p>
                         )}
@@ -955,7 +949,6 @@ const PortsmouthArtifacts = () => {
     </p>
   );
 })()}
->>>>>>> cd18fa72a46f913dec8b935d3c01ddda693e5e95
                       </div>
                     )}
                   </div>

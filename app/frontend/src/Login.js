@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import './Login.css';
 import Header from './Header';
 import Footer from './Footer';
+import Cookies from 'js-cookie'; 
 
 let backend_url = '';
 if (process.env.REACT_APP_DJANGO_ENV === 'production'){ backend_url = 'https://www.archaeovault.com/api/';}
@@ -20,7 +21,11 @@ const Login = () => {
           credentials: 'include', // Ensures cookies are included
         });
         const data = await response.json();
-        setCsrfToken(data.csrfToken);
+        if (data.csrfToken) {
+          Cookies.set('csrftoken', data.csrfToken);
+          setCsrfToken(data.csrfToken);
+        }
+
       } catch (error) {
         console.error('Error fetching CSRF token:', error);
       }

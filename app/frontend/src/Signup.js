@@ -95,6 +95,7 @@ const Signup = () => {
     try {
       const response = await fetch(backend_url + 'create_user/', {
         method: 'POST',
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
           'X-CSRFToken': token,
@@ -106,7 +107,6 @@ const Signup = () => {
           password: password,
           confirm_password: confirmPassword
         }),
-        credentials: 'include',
       });
   
       if (response.ok) {

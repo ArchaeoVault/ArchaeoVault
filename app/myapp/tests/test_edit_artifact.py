@@ -72,7 +72,7 @@ class test_edit_artifact(TestCase):
             typename="Metal"
         )
         self.materialtypeChange = materialtype.objects.create(
-            id=2,
+            id=61,
             typename="Copper"
         )
         # formtype
@@ -145,7 +145,7 @@ class test_edit_artifact(TestCase):
         
         response = self.client.post(
             reverse('edit_artifact_view'),
-            data = json.dumps({'id':1,'name':'test object','description':'this is a description for a test object','age':'Jan,01,2000','location':'Stonehill', 'material':2}),
+            data = json.dumps({'id':1,'name':'test object','description':'this is a description for a test object','age':'Jan,01,2000','location':'Stonehill', 'material':61}),
             content_type='application/json'
             )
         self.assertEqual(response.status_code, 200)
@@ -154,7 +154,7 @@ class test_edit_artifact(TestCase):
         self.assertEqual(objectCheck.object_description,'this is a description for a test object')
         self.assertEqual(objectCheck.object_dated_to,'Jan,01,2000')
         self.assertEqual(objectCheck.location,'Stonehill')
-        self.assertEqual(objectCheck.material_of_manufacture.id,2)
+        self.assertEqual(objectCheck.material_of_manufacture.id,61)
        
     def test_invalid_id_number(self):
         response = self.client.post(
@@ -194,4 +194,4 @@ class test_edit_artifact(TestCase):
             data = json.dumps({'id':'','name':'','description':'','age':'','location':'', 'material':''}),
             content_type='application/json'
             )
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 400)

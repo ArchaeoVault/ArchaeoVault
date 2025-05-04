@@ -414,7 +414,7 @@ def redirect_change_password(request, uidb64, token):
                     frontend_url = 'https://www.archaeovault.com'
                 else:
                     frontend_url = 'http://localhost:3000'
-                return redirect(f'{frontend_url}/api/change_password/{uidb64}/{token}')
+                return redirect(f'{frontend_url}/api/change_password/{uidb64}/{token}/')
             except Exception as e:
                 return JsonResponse({'error':'Redirect failed'},status = 400)
         else:
@@ -529,6 +529,13 @@ def change_password_view(request, uidb64, token):
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
         except Exception as e:
             return JsonResponse({'error':'Error changing password'},status = 400)
+    elif(request.method == 'GET'):
+        try:
+            return render(request, 'frontend/src/ResetPassword.js')
+        except Exception as e:
+            return JsonResponse({'error':'Render failed'},status = 400)
+    else:
+        return JsonResponse({'error':'Invalid request method'},status = 400)
         
 
 
@@ -598,7 +605,7 @@ def edit_artifact_view(request):
             data = json.loads(request.body)
             email = request.session.get('user_email')
             artifact_id = data.get('id')
-
+            
             if not (email and artifact_id):
                 return JsonResponse({'error': 'Email and artifact ID are required'}, status=400)
 
@@ -608,12 +615,13 @@ def edit_artifact_view(request):
             user = users.objects.get(email=email)
             if user.upermission.numval == 4:
                 return JsonResponse({'error': 'General Public cannot edit artifacts'}, status=402)
-
+            
             artifact = your_table.objects.filter(id=artifact_id).first()
             if not artifact:
                 return JsonResponse({'error': 'Artifact does not exist'}, status=403)
 
             # Optional FKs
+            
             try:
                 assign_optional_fk(artifact, 'material_of_manufacture', materialtype, data.get('material_of_manufacture'))
                 assign_optional_fk(artifact, 'address', address, data.get('address'))
@@ -622,6 +630,7 @@ def edit_artifact_view(request):
                 return JsonResponse({'error': str(e)}, status=404)
 
             # Non-FK fields
+            
             field_mapping = {
                 'name': 'object_name',
                 'description': 'object_description',
@@ -659,15 +668,20 @@ def edit_artifact_view(request):
                 'accessor_number': 'accessor_number',
                 'catalog_number': 'catalog_number',
             }
-
+            
             for frontend_key, model_field in field_mapping.items():
                 if frontend_key in data:
                     setattr(artifact, model_field, data[frontend_key] or None)
-
+            if artifact.address_id == None:
+                artifact.address_id = 1
+            if artifact.material_of_manufacture_id == None:
+                artifact.material_of_manufacture_id = 61
+            
             artifact.save()
             return JsonResponse({'message': 'Artifact successfully edited'}, status=200)
 
         except Exception as e:
+            print('In outer exception')
             return JsonResponse({'error': f'Error in editing artifact: {str(e)}'}, status=400)
 @csrf_protect
 def add_artifact_view(request):

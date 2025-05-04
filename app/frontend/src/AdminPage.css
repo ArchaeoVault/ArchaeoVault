@@ -1,0 +1,149 @@
+.admin-users-dashboard {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #f9f9fb;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+    font-family: 'Segoe UI', sans-serif;
+  }
+  
+.admin-users-dashboard h2,
+.admin-users-dashboard h3 {
+text-align: center;
+margin-bottom: 1.5rem;
+color: #333;
+}
+
+table {
+width: 100%;
+border-collapse: collapse;
+margin-bottom: 2rem;
+}
+
+th, td {
+padding: 0.75rem 1rem;
+text-align: left;
+border-bottom: 1px solid #ddd;
+}
+
+th {
+background-color: #f0f0f5;
+color: #444;
+}
+
+tr:hover {
+background-color: #f5f8ff;
+}
+
+input, select {
+display: block;
+width: 100%;
+padding: 0.5rem;
+margin-bottom: 1rem;
+border: 1px solid #ccc;
+border-radius: 6px;
+font-size: 1rem;
+}
+
+label {
+display: flex;
+align-items: center;
+margin-bottom: 1rem;
+font-size: 0.95rem;
+color: #333;
+}
+
+label input[type="checkbox"] {
+margin-right: 0.5rem;
+transform: scale(1.2);
+}
+
+button {
+background-color: #4a67ff;
+color: white;
+padding: 0.6rem 1.2rem;
+margin-right: 0.5rem;
+margin-top: 0.5rem;
+border: none;
+border-radius: 6px;
+cursor: pointer;
+transition: background-color 0.2s ease;
+}
+
+button:hover {
+background-color: #3248d8;
+}
+
+button:disabled {
+background-color: #999;
+cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+.admin-users-dashboard {
+    padding: 1rem;
+}
+
+table, thead, tbody, th, td, tr {
+    display: block;
+}
+
+tr {
+    margin-bottom: 1.5rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 0.5rem;
+}
+
+td {
+    border: none;
+    position: relative;
+    padding-left: 50%;
+}
+
+td:before {
+    position: absolute;
+    left: 0.75rem;
+    width: 45%;
+    white-space: nowrap;
+    font-weight: bold;
+}
+
+td:nth-of-type(1):before { content: "Email"; }
+td:nth-of-type(2):before { content: "Password"; }
+td:nth-of-type(3):before { content: "Permissions"; }
+td:nth-of-type(4):before { content: "Activated"; }
+td:nth-of-type(5):before { content: "Actions"; }
+}
+
+.user-search {
+padding: 8px;
+margin-bottom: 16px;
+width: 100%;
+max-width: 300px;
+font-size: 16px;
+}
+.create-user-form {
+margin-bottom: 20px;
+}
+.create-user-toggle {
+margin-bottom: 20px;
+}
+
+.create-user-toggle button {
+padding: 8px 16px;
+font-size: 16px;
+background-color: #4CAF50; /* green */
+color: white;
+border: none;
+border-radius: 6px;
+cursor: pointer;
+}
+
+.create-user-toggle button:hover {
+background-color: #45a049;
+}
+
+
+

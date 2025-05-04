@@ -14,6 +14,8 @@ import Contact from "./Contact";
 import ListPage from "./list";
 import ResearcherPortsmouthArtifacts from "./ResearcherPortsmouthArtifacts";
 import ResearcherNewportArtifacts from "./ResearcherNewportArtifacts";
+import AdminPage from "./AdminPage";
+
 const App = () => {
   const [showLogin, setShowLogin] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -60,7 +62,7 @@ const App = () => {
         <Route path="/portsmouth-artifacts" element={<PrivateRoute element={<PortsmouthArtifacts />} />} />
         <Route path="/researcher-portsmouth-artifacts" element={<PrivateRoute element={<ResearcherPortsmouthArtifacts />} />} />
         <Route path="/researcher-newport-artifacts" element={<PrivateRoute element={<ResearcherNewportArtifacts />} />} />
-      
+        <Route path="/admin-page" element={<PrivateRoute element={<AdminPage />} />} />
         {/* Default route: show login or homepage */}
         {/* <Route path="/" element={showLogin ? <Login setIsAuthenticated={setIsAuthenticated} /> : <HomePage setShowLogin={setShowLogin} />} /> */}
 

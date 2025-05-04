@@ -107,10 +107,11 @@ const ResearcherPortsmouthArtifacts = () => {
   const [csrfToken, setCsrfToken] = useState('');
   const [editingArtifact, setEditingArtifact] = useState(null);
   const [showEditForm, setShowEditForm] = useState(false);
+  const [permission, setPermission] = useState(0);
   const artifactsPerPage = 9;
   const [newArtifact, setNewArtifact] = useState({
-    name: '', age: '', description: '', catalog_number: '', address: '', owner: '', accessor_number: '', catalog_day: '', object_name: '',
-    scanned_3d: '', printed_3d: '', scanned_by: '', date_excavated: '2262-04-01 00:00:00',
+    name: '', description: '', catalog_number: '', address: '', owner: '', accessor_number: '', catalog_day: '', object_name: '',
+    scanned_3d: '', printed_3d: '', scanned_by: '', date_excavated: '',
     object_dated_to: '', object_description: '', organic_inorganic: '',
     species: '', material_of_manufacture: '', quantity: '',
     measurements: '', length_mm: '', width_mm: '', height_mm: '',
@@ -118,7 +119,7 @@ const ResearcherPortsmouthArtifacts = () => {
     deformation_index: -1, condition: '', cataloger_name: '', date_catalogued: '',
     location_repository: '', plat_lot: '', depth: '', longitude: '',
     latitude: '', distance_from_datum: '', grid: '', excavator: '',
-    notes: '', image: '', image2: '', image3: '', double_checked_by: '',
+    notes: '', image: '', double_checked_by: '',
     questions: '', uhl_check: '', sources: '', location: '', location_general: '',
     storage_location: '', uhl_flags: '',
   });
@@ -159,7 +160,6 @@ const ResearcherPortsmouthArtifacts = () => {
           name: editingArtifact.name,
           description: editingArtifact.description,
           address: editingArtifact.address,
-          age: editingArtifact.age,
           material_of_manufacture: editingArtifact.material_of_manufacture,
           organic_inorganic: editingArtifact.organic_inorganic,
           scanned_3d: editingArtifact.scanned_3d,
@@ -225,6 +225,7 @@ const ResearcherPortsmouthArtifacts = () => {
   const loadArtifacts = async () => {
     const res = await fetch(backend_url + "portsmouth_artifacts/");
     const data = await res.json();
+    console.log("Fetched artifacts:", data.artifacts); // Log the fetched data
     const processed = data.artifacts.map((a) => ({
       ...a,
       address: addressMap[a.address_id] || "Unknown",
@@ -250,12 +251,32 @@ const ResearcherPortsmouthArtifacts = () => {
     const data = await res.json();
     setCsrfToken(data.csrfToken);
   };
+  const fetchPermission = async () => {
+    try {
+      const response = await fetch(backend_url + 'user_permission/', {
+        method: 'GET',
+        credentials: 'include',
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to fetch user permission');
+      }
+  
+      const data = await response.json();
+      const userPermission = data.upermission || 0;
+      setPermission(userPermission);
+    } catch (error) {
+      console.error(error);
+      setPermission(0);
+    }
+  };
   
   // Only runs once on page load
   useEffect(() => {
     const initialize = async () => {
       await loadArtifacts();
       await fetchCsrf();
+      await fetchPermission();
     };
     initialize();
   }, []);
@@ -276,7 +297,36 @@ const ResearcherPortsmouthArtifacts = () => {
     const { name, value } = e.target;
     setNewArtifact({ ...newArtifact, [name]: value });
   };
-
+  const handleDeleteArtifact = async (artifactId) => {
+    if (!window.confirm("Are you sure you want to delete this artifact?")) {
+      return;
+    }
+  
+    try {
+      const response = await fetch(backend_url + 'delete_artifact/', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrfToken,
+        },
+        body: JSON.stringify({ id: artifactId }),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        alert("Artifact deleted successfully.");
+        await loadArtifacts(); // Refresh artifacts list
+      } else {
+        alert("Error: " + data.error);
+      }
+    } catch (error) {
+      alert("Unexpected error occurred while deleting artifact.");
+      console.error(error);
+    }
+  };
+  
   const handleAddArtifact = async () => {
 
     const payload = {
@@ -343,7 +393,7 @@ const ResearcherPortsmouthArtifacts = () => {
       if (data.success) {
         alert("Artifact added successfully!");
         setNewArtifact({
-          name: '', address: '', material: '', age: '',
+          name: '', address: '', material: '',
           catalog_number: '', owner: '',
           scanned_3d: '', printed_3d: '', scanned_by: '', date_excavated: '',
           object_dated_to: '', object_description: '', organic_inorganic: '',
@@ -356,7 +406,8 @@ const ResearcherPortsmouthArtifacts = () => {
           notes: '', image: '', double_checked_by: '',
           questions: '', uhl_check: '', sources: '', location: '', location_general: '',
           storage_location: '', uhl_flags: '',
-        });        
+        }); 
+        await loadArtifacts();       
       } else {
         alert('Failed to add artifact: ' + data.error);
       }
@@ -372,7 +423,7 @@ const ResearcherPortsmouthArtifacts = () => {
     <div className="researcher-page">
       <Header />
       <div className="researcher-container">
-        <h1>Researcher Dashboard</h1>
+        <h1>Researcher Portsmouth Dashboard</h1>
         <button className="add-toggle-button" onClick={() => setShowForm(!showForm)}>
           {showForm ? "Close Form ▲" : "Add New Artifact ▼"}
         </button>
@@ -409,7 +460,7 @@ const ResearcherPortsmouthArtifacts = () => {
                 </div>
                 <div className="form-group">
                   <label>Date Excavated </label>
-                  <input type="date" name="age" value={newArtifact.age} onChange={handleNewArtifactInputChange} />
+                  <input type="date" name="date_excavated" value={newArtifact.date_excavated} onChange={handleNewArtifactInputChange} />
                 </div>
                 <div className="form-group">
                   <label>Description </label>
@@ -568,6 +619,17 @@ const ResearcherPortsmouthArtifacts = () => {
                 <h3>{artifact.object_name}</h3>
                 <p>{artifact.object_description}</p>
                 <button onClick={(e) => { e.stopPropagation();handleEditClick(artifact);}}>Edit</button>
+                {permission === 1 && (
+                  
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDeleteArtifact(artifact.id); // Define this function elsewhere
+                    }}
+                  >
+                    Delete
+                  </button>
+                )}
                 {expandedArtifactIndex === globalIndex && (
                   <div className="artifact-details">
                     <p><strong>Material:</strong> {artifact.material}</p>

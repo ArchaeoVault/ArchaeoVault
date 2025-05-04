@@ -47,14 +47,12 @@ else:
 
 @csrf_protect
 def login_view(request):
-    # print(request.body)
     if request.method == 'POST':
         try:
             # Parse JSON body manually since it's being sent as JSON
             data = json.loads(request.body)
             email = data.get('email')
             password = data.get('password')
-            #print('Checking all fields are filled')
             if not email or not password:
                 return JsonResponse({"status": "error", "message": "Email and password are required."}, status=400)
 
@@ -68,7 +66,6 @@ def login_view(request):
                     return JsonResponse({'status':'error','message':'Passwords do not match'}, status = 400)
             
                 if user is not None:
-                    # login(request, user)
                     request.session['user_email'] = user.email #stores users email for current session to be used later
                     request.session['is_authenticated'] = True
                     return JsonResponse({
@@ -135,7 +132,6 @@ def get_csrf_token(request):
 
 @csrf_protect
 def create_user_view(request):
-    #print(request)
     if request.method == 'POST':
         try:
             # Parsing the incoming JSON data
@@ -146,31 +142,21 @@ def create_user_view(request):
             confirm_password = data.get('confirm_password')
 
             # Validation logic
-            #print('checking if all fields filled')
             if not all([email, password,confirm_password]):
                 return JsonResponse({'error': 'All fields are required'}, status=400)
-            #print('checking if password match')
             if password != confirm_password:
                 return JsonResponse({'error': 'Passwords do not match'}, status=400)
-            #print('checking if object already exists')
             if users.objects.filter(email=email).exists():
-                #print('object already exists')
                 return JsonResponse({'error': 'User with this email already exists'}, status=400)
-            #print('validating email')
             try:
                 validate_password(password)
-                #print("Password is valid.")
             except ValidationError as e:
-                #print("Password validation errors:", e.messages)
-                #error_string = 'Invalid Password' + str(e.messages)
                 return JsonResponse({'error': "Password cannot be 'password', must have at least 8 characters, and must have letters."}, status=400)
             try:
                 validate_email(email)
             except ValidationError:
                 return JsonResponse({'error': 'Invalid email address'}, status=400)
 
-            # Create the user
-            #print('Creating user')
             permission = permissions.objects.get(numval = 4, givenrole = 'GeneralPublic')
             user = users.objects.create(
                 email=email,
@@ -178,8 +164,6 @@ def create_user_view(request):
                 activated = True,
                 upermission = permission
             )
-            #print('after creating user')
-            #print(user.email)
             return JsonResponse({'message': 'User created successfully'}, status=200)
 
         except json.JSONDecodeError:
@@ -217,40 +201,6 @@ def newport_artifacts_view(request):
     ]
 
     return JsonResponse({'artifacts': artifact_data}, status=200)
-
-#     start_time = time.time()
-#     page = int(request.GET.get("page", 1))
-#     per_page = int(request.GET.get("per_page", 10))
-
-#     artifacts = your_table.objects.filter(
-#         address__countyorcity__icontains="newport"
-#     ).values(
-#         'id',
-#         'object_name',
-#         'object_description',
-#         'date_excavated',
-#         'scanned_3d__id',
-#         'printed_3d__id',
-#         'organic_inorganic__id',
-#         'material_of_manufacture__id',
-#         'address__countyorcity'
-#     )
-
-#     paginator = Paginator(artifacts, per_page)
-#     page_obj = paginator.get_page(page)
-
-#     artifact_data = list(page_obj)
-
-#     end_time = time.time()  # End timing
-#     duration = end_time - start_time
-#     print("Database fetching: ", duration)
-    
-#     return JsonResponse({
-#         'artifacts': artifact_data,
-#         'page': page,
-#         'total_pages': paginator.num_pages,
-#         'total_artifacts': paginator.count,
-#     }, status=200)
 
 
 def portsmouth_artifacts_view(request):
@@ -774,7 +724,7 @@ def add_artifact_view(request):
                 storage_location=data.get('storage_location'),
                 uhlflages=data.get('uhlflages'),
             )
-
+            print(f"Added artifact with ID {artifact.id}")
             return JsonResponse({'success': True, 'id': artifact.id})
 
         except Exception as e:
@@ -818,8 +768,10 @@ def admin_create_user_view(request):
             if perm == 'SuperAdmin': 
                 permission = permissions.objects.get(givenrole = 'SuperAdmin')
                 #print('getting perm')
-            elif perm == 'Researchers':
+            if perm == 'Researchers':
                 permission = permissions.objects.get(givenrole = 'Researchers')
+            elif perm == 'GeneralPublic':
+                permission = permissions.objects.get(givenrole = 'GeneralPublic')
                 #print('getting perm')
             else:
                 return JsonResponse({'error':'Invalid Permission'}, status = 400)
@@ -838,55 +790,55 @@ def admin_create_user_view(request):
 def admin_edit_user_view(request):
     if request.method == 'POST':
         try:
-            adminEmail = request.session.get('user_email') #gets current sessions email
+            adminEmail = request.session.get('user_email')
             if not users.objects.filter(email=adminEmail).exists():
-                #print('User does not exist')
-                return JsonResponse({'error':'User with this email does not exist'}, status = 401)
-            user = users.objects.get(email = adminEmail)
-            numberValue = user.upermission.numval
-            if numberValue != 1:
-                return JsonResponse({'error':'Must be an admin to edit another user'}, status = 402)
+                return JsonResponse({'error': 'Admin user does not exist'}, status=401)
+
+            adminUser = users.objects.get(email=adminEmail)
+            if adminUser.upermission.numval != 1:
+                return JsonResponse({'error': 'Only admins can edit users'}, status=402)
+
             data = json.loads(request.body)
             oldEmail = data.get('oldEmail')
             newEmail = data.get('newEmail')
-            perm = data.get('permission')
+            password = data.get('password')
+            permission = data.get('permission')
+            activated = data.get('activated')
 
-            # Validation logic
-            #print('checking if all fields filled')
-            if not all([oldEmail, newEmail,perm]):
-                return JsonResponse({'error': 'All fields are required'}, status=400)
-            #print('checking if object already exists')
+            if not oldEmail:
+                return JsonResponse({'error': 'Old email is required'}, status=400)
+
             if not users.objects.filter(email=oldEmail).exists():
-                #print('object already exists')
-                return JsonResponse({'error': 'User with this old email does not exist'}, status=400)
+                return JsonResponse({'error': 'User with the old email does not exist'}, status=400)
+
+            user = users.objects.get(email=oldEmail)
+
+            if newEmail:
+                if newEmail != oldEmail and users.objects.filter(email=newEmail).exists():
+                    return JsonResponse({'error': 'User with the new email already exists'}, status=400)
+                try:
+                    validate_email(newEmail)
+                except ValidationError:
+                    return JsonResponse({'error': 'Invalid email address'}, status=400)
+                user.email = newEmail
+
+            if password:
+                user.upassword = password  # Replace with hashed password if possible
+
+            if permission:
+                if permission not in ['SuperAdmin', 'Researchers', 'GeneralPublic']:
+                    return JsonResponse({'error': 'Invalid permission'}, status=400)
+                user.upermission = permissions.objects.get(givenrole=permission)
             
-            if users.objects.filter(email=newEmail).exists():
-                #print('object already exists')
-                return JsonResponse({'error': 'User with this new email already exists'}, status=400)
-            #print('validating email')
-            try:
-                validate_email(newEmail)
-            except ValidationError:
-                return JsonResponse({'error': 'Invalid email address'}, status=400)
-            # Create the user
-            
-            if perm == 'SuperAdmin':
-                permission = permissions.objects.get(givenrole = 'SuperAdmin')
-            elif perm == 'Researchers':
-                permission = permissions.objects.get(givenrole = 'Researchers')
-            else:
-                return JsonResponse({'error':'Invalid Permission'}, status = 400)
-        
-            
-            user = users.objects.get(email = oldEmail)
-            
-            user.email = newEmail
-            user.upermission = permission
+            if activated is not None:
+                user.activated = activated
+
+
             user.save()
-            #print(user.email)
-            return JsonResponse({'message': 'User edited successfully'}, status=200)
+            return JsonResponse({'message': 'User updated successfully'}, status=200)
+
         except Exception as e:
-            return JsonResponse({'error':'Error in editing a user'}, status = 400)
+            return JsonResponse({'error': f'Error editing user: {str(e)}'}, status=400)
         
 def admin_delete_user_view(request):
     if request.method == 'POST':
@@ -934,7 +886,7 @@ def admin_see_all_users_view(request):
         {
             'email':user.email,
             'password':user.upassword,
-            'permissions':user.upermission.givenrole,
+            'permission':user.upermission.givenrole,
             'activated':user.activated
         } for user in all_users
     ]

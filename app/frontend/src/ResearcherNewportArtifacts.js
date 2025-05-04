@@ -107,10 +107,11 @@ const ResearcherNewportArtifacts = () => {
   const [csrfToken, setCsrfToken] = useState('');
   const [editingArtifact, setEditingArtifact] = useState(null);
   const [showEditForm, setShowEditForm] = useState(false);
+  const [permission, setPermission] = useState(0);
   const artifactsPerPage = 9;
   const [newArtifact, setNewArtifact] = useState({
     name: '', age: '', description: '', catalog_number: '', address: '', owner: '', accessor_number: '', catalog_day: '', object_name: '',
-    scanned_3d: '', printed_3d: '', scanned_by: '', date_excavated: '2262-04-01 00:00:00',
+    scanned_3d: '', printed_3d: '', scanned_by: '', date_excavated: '',
     object_dated_to: '', object_description: '', organic_inorganic: '',
     species: '', material_of_manufacture: '', quantity: '',
     measurements: '', length_mm: '', width_mm: '', height_mm: '',
@@ -250,12 +251,32 @@ const ResearcherNewportArtifacts = () => {
     const data = await res.json();
     setCsrfToken(data.csrfToken);
   };
+  const fetchPermission = async () => {
+    try {
+      const response = await fetch(backend_url + 'user_permission/', {
+        method: 'GET',
+        credentials: 'include',
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to fetch user permission');
+      }
+  
+      const data = await response.json();
+      const userPermission = data.upermission || 0;
+      setPermission(userPermission);
+    } catch (error) {
+      console.error(error);
+      setPermission(0);
+    }
+  };
   
   // Only runs once on page load
   useEffect(() => {
     const initialize = async () => {
       await loadArtifacts();
       await fetchCsrf();
+      await fetchPermission();
     };
     initialize();
   }, []);
@@ -276,7 +297,36 @@ const ResearcherNewportArtifacts = () => {
     const { name, value } = e.target;
     setNewArtifact({ ...newArtifact, [name]: value });
   };
-
+  const handleDeleteArtifact = async (artifactId) => {
+    if (!window.confirm("Are you sure you want to delete this artifact?")) {
+      return;
+    }
+  
+    try {
+      const response = await fetch(backend_url + 'delete_artifact/', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrfToken,
+        },
+        body: JSON.stringify({ id: artifactId }),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        alert("Artifact deleted successfully.");
+        await loadArtifacts(); // Refresh artifacts list
+      } else {
+        alert("Error: " + data.error);
+      }
+    } catch (error) {
+      alert("Unexpected error occurred while deleting artifact.");
+      console.error(error);
+    }
+  };
+  
   const handleAddArtifact = async () => {
 
     const payload = {
@@ -372,7 +422,7 @@ const ResearcherNewportArtifacts = () => {
     <div className="researcher-page">
       <Header />
       <div className="researcher-container">
-        <h1>Researcher Dashboard</h1>
+        <h1>Researcher Newport Dashboard</h1>
         <button className="add-toggle-button" onClick={() => setShowForm(!showForm)}>
           {showForm ? "Close Form ▲" : "Add New Artifact ▼"}
         </button>
@@ -568,6 +618,17 @@ const ResearcherNewportArtifacts = () => {
                 <h3>{artifact.object_name}</h3>
                 <p>{artifact.object_description}</p>
                 <button onClick={(e) => { e.stopPropagation();handleEditClick(artifact);}}>Edit</button>
+                {permission === 1 && (
+                  
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDeleteArtifact(artifact.id); // Define this function elsewhere
+                    }}
+                  >
+                    Delete
+                  </button>
+                )}
                 {expandedArtifactIndex === globalIndex && (
                   <div className="artifact-details">
                     <p><strong>Material:</strong> {artifact.material}</p>

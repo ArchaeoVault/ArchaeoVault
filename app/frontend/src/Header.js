@@ -2,20 +2,47 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Header.css';
 
+let backend_url = '';
+if (process.env.REACT_APP_DJANGO_ENV === 'production'){ backend_url = 'https://www.archaeovault.com/api/';}
+else{ backend_url = 'http://localhost:8000/api/';}
+
 const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  /*const [userName, setUserName] = useState('');*/
+  const [permission, setPermission] = useState(0);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [hamburgerOpen, setHamburgerOpen] = useState(false);
   const dropdownRef = useRef();
   const navigate = useNavigate();
-
+  
   useEffect(() => {
     const auth = localStorage.getItem('isAuthenticated') === 'true';
-    /*const name = localStorage.getItem('userName');*/
     setIsLoggedIn(auth);
-    /*setUserName(name || '');*/
+
+    const fetchPermission = async () => {
+      try {
+        const response = await fetch(backend_url + 'user_permission/', {
+          method: 'GET',
+          credentials: 'include',
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch user permission');
+        }
+
+        const data = await response.json();
+        const userPermission = data.upermission || 0; // Assuming the API returns { upermission: 1 }
+        setPermission(userPermission);
+      } catch (error) {
+        console.error(error);
+        setPermission(0); // Default to 0 if there's an error
+      }
+    };
+
+    if (auth) {
+      fetchPermission();
+    }
   }, []);
+
 
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
@@ -40,7 +67,7 @@ const Header = () => {
   const handleSignOut = () => {
     localStorage.removeItem('isAuthenticated');
     setIsLoggedIn(false);
-    /*setUserName('');*/
+    setPermission(0);
     navigate('/login');
   };
 
@@ -87,13 +114,22 @@ const Header = () => {
             )}
           </div>
         )}
+        {permission === 1 && (
+          <Link to="/admin-page" onClick={toggleHamburger} className="admin-link">
+            Admin Page
+          </Link>
+        )}
       </nav>
 
       <nav className="nav-links">
         <Link to="/Artifacts">Artifacts</Link>
         <Link to="/Artifacts2">3D Scans</Link>
         <Link to="/About">About Us</Link>
-
+        {permission === 1 && (
+          <Link to="/admin-page" onClick={toggleHamburger} className="admin-link">
+            Admin Page
+          </Link>
+        )}
         {!isLoggedIn ? (
           <Link to="/Login" className="login-link">Login</Link>
         ) : (

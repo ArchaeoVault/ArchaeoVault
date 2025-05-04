@@ -49,12 +49,10 @@ function ArtifactsPage() {
       const permission = data.upermission; // assuming your API returns { permission: 2 } or { permission: 3 }
       let targetPath = artifact.path;
 
-      if (permission === 3) {
+      if (permission === 3 || permission === 1) {
         targetPath = `/researcher-${artifact.path.slice(1)}`;
       }
-      if (permission === 1) {
-        targetPath = `/admin-${artifact.path.slice(1)}`;
-      }
+
       navigate(targetPath);
     } catch (error) {
       console.error("Error checking permission:", error);

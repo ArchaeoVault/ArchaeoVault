@@ -241,34 +241,6 @@ const AdminPage = () => {
             ])}
             </tbody>
       </table>
-
-      <h3>Create New User</h3>
-      <input placeholder="Email" value={newUser.email} onChange={(e) => setNewUser({ ...newUser, email: e.target.value })} />
-      <input placeholder="Password" value={newUser.password} onChange={(e) => setNewUser({ ...newUser, password: e.target.value })} />
-      <input placeholder="Confirm Password" value={newUser.confirm_password} onChange={(e) => setNewUser({ ...newUser, confirm_password: e.target.value })}/>
-
-      <select
-            value={newUser.permission}
-            onChange={(e) => setNewUser({ ...newUser, permission: e.target.value })}
-            >
-            <option value="">Select Permission</option>
-            <option value="GeneralPublic">GeneralPublic</option>
-            <option value="Researchers">Researchers</option>
-            <option value="SuperAdmin">SuperAdmin</option>
-        </select>
-        <label>
-            <select
-                value={newUser.activated ? "yes" : "no"}
-                onChange={(e) =>
-                setEditUser({ ...newUser, activated: e.target.value === "yes" })
-                }
-            >
-                <option value="">Select Activation</option>
-                <option value="yes">Yes</option>
-                <option value="no">No</option>
-            </select>
-        </label>
-      <button onClick={handleCreateUser}>Add User</button>
     </div>
     <Footer /> 
     </>

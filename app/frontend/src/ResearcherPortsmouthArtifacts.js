@@ -335,11 +335,12 @@ const ResearcherPortsmouthArtifacts = () => {
       date_excavated: newArtifact.date_excavated,
       address: parseInt(newArtifact.address),
       material_of_manufacture: parseInt(newArtifact.material),
+      organic_inorganic: 3,
       catalog_number: newArtifact.catalog_number,
       owner: newArtifact.owner,
       accessor_number: newArtifact.accessor_number,
-      scanned_3d: newArtifact.scanned_3d,
-      printed_3d: newArtifact.printed_3d,
+      scanned_3d: 2,
+      printed_3d: 2,
       length_mm: newArtifact.length_mm,
       weight_grams: newArtifact.weight_grams,
       weight_notes: newArtifact.weight_notes, 
@@ -454,6 +455,15 @@ const ResearcherPortsmouthArtifacts = () => {
                   <select name="material" value={newArtifact.material} onChange={handleNewArtifactInputChange}>
                     <option value="">Select Material</option>
                     {Object.entries(materialMap).map(([id, label]) => (
+                      <option key={id} value={id}>{label}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label>Organic/Inorganic</label>
+                  <select name="organic_inorganic" value={newArtifact.organic_inorganic} onChange={handleNewArtifactInputChange}>
+                    <option value="">Select Organic/Inorganic</option>
+                    {Object.entries(organicMap).map(([id, label]) => (
                       <option key={id} value={id}>{label}</option>
                     ))}
                   </select>

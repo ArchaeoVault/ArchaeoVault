@@ -689,6 +689,7 @@ def add_artifact_view(request):
         try:
             data = json.loads(request.body)
             # Basic required fields
+            print("Received data keys:", data.keys())
             artifact = your_table.objects.create(
                 object_name=data['object_name'],
                 object_description=data['object_description'],

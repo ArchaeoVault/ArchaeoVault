@@ -110,7 +110,7 @@ const ResearcherNewportArtifacts = () => {
   const [permission, setPermission] = useState(0);
   const artifactsPerPage = 9;
   const [newArtifact, setNewArtifact] = useState({
-    name: '', age: '', description: '', catalog_number: '', address: '', owner: '', accessor_number: '', catalog_day: '', object_name: '',
+    name: '', description: '', catalog_number: '', address: '', owner: '', accessor_number: '', catalog_day: '', object_name: '',
     scanned_3d: '', printed_3d: '', scanned_by: '', date_excavated: '',
     object_dated_to: '', object_description: '', organic_inorganic: '',
     species: '', material_of_manufacture: '', quantity: '',
@@ -119,7 +119,7 @@ const ResearcherNewportArtifacts = () => {
     deformation_index: -1, condition: '', cataloger_name: '', date_catalogued: '',
     location_repository: '', plat_lot: '', depth: '', longitude: '',
     latitude: '', distance_from_datum: '', grid: '', excavator: '',
-    notes: '', image: '', image2: '', image3: '', double_checked_by: '',
+    notes: '', image: '', double_checked_by: '',
     questions: '', uhl_check: '', sources: '', location: '', location_general: '',
     storage_location: '', uhl_flags: '',
   });
@@ -160,7 +160,6 @@ const ResearcherNewportArtifacts = () => {
           name: editingArtifact.name,
           description: editingArtifact.description,
           address: editingArtifact.address,
-          age: editingArtifact.age,
           material_of_manufacture: editingArtifact.material_of_manufacture,
           organic_inorganic: editingArtifact.organic_inorganic,
           scanned_3d: editingArtifact.scanned_3d,
@@ -226,6 +225,7 @@ const ResearcherNewportArtifacts = () => {
   const loadArtifacts = async () => {
     const res = await fetch(backend_url + "newport_artifacts/");
     const data = await res.json();
+    console.log("Fetched artifacts:", data.artifacts); // Log the fetched data
     const processed = data.artifacts.map((a) => ({
       ...a,
       address: addressMap[a.address_id] || "Unknown",
@@ -335,11 +335,12 @@ const ResearcherNewportArtifacts = () => {
       date_excavated: newArtifact.date_excavated,
       address: parseInt(newArtifact.address),
       material_of_manufacture: parseInt(newArtifact.material),
+      organic_inorganic: 3,
       catalog_number: newArtifact.catalog_number,
       owner: newArtifact.owner,
       accessor_number: newArtifact.accessor_number,
-      scanned_3d: newArtifact.scanned_3d,
-      printed_3d: newArtifact.printed_3d,
+      scanned_3d: 2,
+      printed_3d: 2,
       length_mm: newArtifact.length_mm,
       weight_grams: newArtifact.weight_grams,
       weight_notes: newArtifact.weight_notes, 
@@ -393,7 +394,7 @@ const ResearcherNewportArtifacts = () => {
       if (data.success) {
         alert("Artifact added successfully!");
         setNewArtifact({
-          name: '', address: '', material: '', age: '',
+          name: '', address: '', material: '',
           catalog_number: '', owner: '',
           scanned_3d: '', printed_3d: '', scanned_by: '', date_excavated: '',
           object_dated_to: '', object_description: '', organic_inorganic: '',
@@ -406,7 +407,8 @@ const ResearcherNewportArtifacts = () => {
           notes: '', image: '', double_checked_by: '',
           questions: '', uhl_check: '', sources: '', location: '', location_general: '',
           storage_location: '', uhl_flags: '',
-        });        
+        }); 
+        await loadArtifacts();       
       } else {
         alert('Failed to add artifact: ' + data.error);
       }
@@ -458,8 +460,17 @@ const ResearcherNewportArtifacts = () => {
                   </select>
                 </div>
                 <div className="form-group">
+                  <label>Organic/Inorganic</label>
+                  <select name="organic_inorganic" value={newArtifact.organic_inorganic} onChange={handleNewArtifactInputChange}>
+                    <option value="">Select Organic/Inorganic</option>
+                    {Object.entries(organicMap).map(([id, label]) => (
+                      <option key={id} value={id}>{label}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="form-group">
                   <label>Date Excavated </label>
-                  <input type="date" name="age" value={newArtifact.age} onChange={handleNewArtifactInputChange} />
+                  <input type="date" name="date_excavated" value={newArtifact.date_excavated} onChange={handleNewArtifactInputChange} />
                 </div>
                 <div className="form-group">
                   <label>Description </label>

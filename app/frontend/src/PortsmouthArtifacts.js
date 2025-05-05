@@ -914,41 +914,10 @@ const PortsmouthArtifacts = () => {
                     <p>{artifact.object_description}</p>
                     {expandedArtifactIndex === globalIndex && (
                       <div className="artifact-details">
-                        {artifact.address && (
-                          <p><strong>Address:</strong> {artifact.address}</p>
-                        )}
-                        {artifact.material && (
-                          <p><strong>Material:</strong> {artifact.material}</p>
-                        )}
-                        {artifact.year && (
-                        <p>
-                        <strong>Year Excavated:</strong>{" "}
-                        {artifact.year === "2262" ? "No year found" : artifact.year}
-                        </p>
-                        )}
-                        {artifact.organic && (
-                          <p><strong>Organic/Inorganic:</strong> {artifact.organic}</p>
-                        )}
-                        {artifact.scanned && (
-                          <p><strong>3D Scanned:</strong> {artifact.scanned}</p>
-                        )}
-                        {artifact.id && (() => {
-  const imageEntry = imageMappings.find(entry => entry.your_table_id === String(artifact.id));
-  const imageUrl = imageEntry ? `http://archaeovault.com/${imageEntry.filepath}` : null;
-
-  return (
-    <p>
-      <strong>Image:</strong>{" "}
-      {imageUrl ? (
-        <a href={imageUrl} target="_blank" rel="noopener noreferrer">
-          View Image
-        </a>
-      ) : (
-        "No image available"
-      )}
-    </p>
-  );
-})()}
+                        <p><strong>Material:</strong> {artifact.material}</p>
+                        <p><strong>Year:</strong> {artifact.year}</p>
+                        <p><strong>Organic:</strong> {artifact.organic}</p>
+                        <p><strong>3D Scanned:</strong> {artifact.scanned}</p>
                       </div>
                     )}
                   </div>

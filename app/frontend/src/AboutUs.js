@@ -24,7 +24,7 @@ const AboutUs = () => {
           can upload and manage artifacts to ensure the accuracy and integrity
           of the collection. ArchaeoVault is designed purely for discovery,
           education, and the appreciation of the rich cultural history of these
-          iconic New England towns!
+          iconic New England towns.
         </p>
       </div>
       <div className="about-image-container">

@@ -45,7 +45,7 @@ pipeline {
                 sh 'chmod +x ./app/manage.py'
                 // sh 'env/bin/python ./app/manage.py runserver > /dev/null 2>&1 &'
                 sh 'touch ./test_results.log'
-                sh 'env/bin/python ./app/manage.py test ./deployment/tests'// > test_results.log 2>&1'
+                sh 'env/bin/python ./app/manage.py test ./deployment/tests > test_results.log 2>&1'
             }
         }
         stage('Deploy'){
@@ -60,7 +60,7 @@ pipeline {
                 
                 
     }
-    post{
+    /*post{
         success{
             slackSend color: "good", message: "Build successful :man_dancing: `${env.JOB_NAME}#${env.BUILD_NUMBER}` <${env.BUILD_URL}|Open in Jenkins>"
             cleanWs(deleteDirs: true)
@@ -84,7 +84,7 @@ pipeline {
             
         }
         
-    }
+    }*/
     
 
 } 

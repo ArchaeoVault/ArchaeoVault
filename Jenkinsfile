@@ -16,11 +16,11 @@ pipeline {
     }
     stages{ 
           
-        stage('Notify'){
+        /*stage('Notify'){
             steps{
                 slackSend color: "warning", message: "Started `${env.JOB_NAME}#${env.BUILD_NUMBER}`\n"
             }
-        }
+        }*/
         stage('Tests'){
             when { not { branch 'main' } }
             steps{

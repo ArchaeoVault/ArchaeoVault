@@ -1,6 +1,6 @@
 #!/bin/sh
 
-ssh samgoree@173.255.234.139 <<EOF
+#ssh samgoree@173.255.234.139 <<EOF
 cd /var/www/html/ArchaeoVault
 git pull origin main
 source /var/www/html/ArchaeoVault/myprojectenv/bin/activate

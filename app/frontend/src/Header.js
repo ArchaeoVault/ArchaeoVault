@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import './Header.css';
 
 let backend_url = '';
-if (process.env.REACT_APP_DJANGO_ENV === 'production'){ backend_url = `https://${process.env.DJANGO_ALLOWED_HOST_1}/api/`;}
+if (process.env.REACT_APP_DJANGO_ENV === 'production'){ backend_url = `https://${process.env.REACT_APP_URL}/api/`;}
 else{ backend_url = 'http://localhost:8000/api/';}
 
 const Header = () => {

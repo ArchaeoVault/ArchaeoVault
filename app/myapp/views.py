@@ -40,7 +40,7 @@ import time
 env = os.environ.get('DJANGO_ENV', 'None')
 
 if env == 'production':
-    frontend_url = 'https://{}'.format(os.environ.get('DJANGO_ALLOWED_HOST_1', 'None'))
+    frontend_url = 'https://{}'.format(os.environ.get('REACT_APP_URL', 'None'))
 else:
     frontend_url = 'http://localhost:3000'
 
@@ -411,7 +411,7 @@ def redirect_change_password(request, uidb64, token):
         if account_activation_token.check_token(user, token):
             try:
                 if os.environ.get('DJANGO_ENV') == 'production':
-                    frontend_url = 'https://{}'.format(os.environ.get('DJANGO_ALLOWED_HOST_1', 'None'))
+                    frontend_url = 'https://{}'.format(os.environ.get('REACT_APP_URL', 'None'))
                 else:
                     frontend_url = 'http://localhost:3000'
                 return redirect(f'{frontend_url}/api/change_password/{uidb64}/{token}/')

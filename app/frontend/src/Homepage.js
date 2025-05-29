@@ -11,7 +11,7 @@ const HomePage = () => {
       <Header />
       <section className="hero">
         <div className="hero-image">
-          <img src="./placeholder.jpg" alt="Geometric artifact" />
+          <img src="./frontpage.jpg" alt="Topographic map with archaeological grids" />
         </div>
         <div className="hero-content">
           <h1>Explore the World of Archaeology</h1>

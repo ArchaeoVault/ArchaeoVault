@@ -81,7 +81,7 @@ const Contact = () => {
         </form>
       </div>
       <div className="contact-image-container">
-        <img src="./placeholder6.jpg" alt="Modern chair" className="contact-image" />
+        <img src="./about_us.png" alt="Several people, some in revolutionary war costumes, some with Battle of Rhode Island t-shirts." className="contact-image" />
       </div>
     </div>
     <Footer />

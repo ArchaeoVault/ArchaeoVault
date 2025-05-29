@@ -12,7 +12,7 @@ const artifactsData = [
   {
     id: 2,
     name: "Portsmouth, RI",
-    imageUrl: "/Portsmouth_placeholder.png",
+    imageUrl: "/Portsmouth.jpg",
     location: "Portsmouth, RI",
     timePeriod: "17th Century",
     description:
@@ -22,7 +22,7 @@ const artifactsData = [
   {
     id: 3,
     name: "Newport, RI",
-    imageUrl: "/Newport_placeholder.jpg",
+    imageUrl: "/Newport.jpg",
     location: "Newport, RI",
     timePeriod: "18th Century",
     description:

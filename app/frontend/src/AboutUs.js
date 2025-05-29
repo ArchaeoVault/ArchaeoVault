@@ -28,7 +28,7 @@ const AboutUs = () => {
         </p>
       </div>
       <div className="about-image-container">
-        <img src="./placeholder5.jpg" alt="Artifact bowl" className="about-image" />
+        <img src="./about_us.png" alt="Several people, some in revolutionary war costumes, some with Battle of Rhode Island t-shirts." className="about-image" />
       </div>
     </div>
     <Footer />

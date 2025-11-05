@@ -36,7 +36,7 @@ function ArtifactsPage() {
 
   async function handleArtifactClick(artifact) {
     try {
-      const response = await fetch(backend_url+"user_permission/", {
+      const response = await fetch(backend_url+"user_permission_view/", {
         method: "GET",
         credentials: "include",
       });

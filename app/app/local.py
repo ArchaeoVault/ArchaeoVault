@@ -23,6 +23,7 @@ DATABASES = {
         'PORT': env('ARCHAEODB_PORT'),
     }
 }
+print(DATABASES)
 
 STATIC_URL = '/static/'
 

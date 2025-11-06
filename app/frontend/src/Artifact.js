@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import Header from './Header';
 import Footer from './Footer';
-// import "./Artifact.css";
+
+import Cookies from 'js-cookie'; 
+import "./Artifact.css";
 
 let backend_url = '';
 if (process.env.REACT_APP_DJANGO_ENV === 'production'){ backend_url = `https://${process.env.REACT_APP_URL}/api/`;}
@@ -10,11 +12,12 @@ else{ backend_url = 'http://localhost:8000/api/';}
 function Artifact() {
     const [artifactData, setArtifactData] = useState(null);
     const [error, setError] = useState(null);
+    const [csrfToken, setCsrfToken] = useState('');
   
     useEffect(() => {
       const fetchArtifact = async () => {
         try {
-          const response = await fetch(backend_url + "single_artifact/", {
+          const artifactResponse = await fetch(backend_url + "single_artifact/", {
             method: "POST",
             headers: {
               'Content-Type': 'application/json',
@@ -22,11 +25,11 @@ function Artifact() {
             body: JSON.stringify({ id: 1 }),
           });
   
-          if (!response.ok) {
-            throw new Error(`Failed to fetch artifact data: ${response.status}`);
+          if (!artifactResponse.ok) {
+            throw new Error(`Failed to fetch artifact data: ${artifactResponse.status}`);
           }
   
-          const data = await response.json();
+          const data = await artifactResponse.json();
           
           if (!data.artifacts || data.artifacts.length === 0) {
             throw new Error("No artifact found with the specified ID");

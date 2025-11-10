@@ -70,9 +70,7 @@ function Artifact() {
         <Header />
         <div className="artifact-page">
           <header className="artifact-hero">
-            <h1 className="hero-title">
-              {artifactData?.object_name || "Artifact Details"}
-            </h1>
+            <h1 className="hero-title">{"Single Artifact"}</h1>
           </header>
   
           <section className="artifact-container">
@@ -85,16 +83,67 @@ function Artifact() {
                 />
               )}
               <div className="artifact-info">
-                <h2>{artifactData?.object_name || "Unnamed Artifact"}</h2>
-                <p className="artifact-location">
-                  Location: {artifactData?.location || "Unknown"}
-                </p>
-                <p className="artifact-timePeriod">
-                  Time Period: {artifactData?.timePeriod || "Unknown"}
-                </p>
-                <p className="artifact-description">
-                  {artifactData?.description || "No description available."}
-                </p>
+                <h2 className="artifact-name">{artifactData?.object_name}</h2>
+                    <div className="artifact-section">
+                    <h3>General Information</h3>
+                        <p>Catalog Number: {artifactData?.catalog_number || "Unknown"}</p>
+                        <p>Description: {artifactData?.object_description || "Unknown"}</p>
+                        <p>Material: {artifactData?.material_of_manufacture || "Unknown"}</p>
+                        <p>Form/Obeject Type: {artifactData?.form_object_type || "Unknown"}</p>
+                        <p>Time Period: {artifactData?.object_dated_to || "Unknown"}</p>
+                        <p>Quantity: {artifactData?.quantity || "Unknown"}</p>
+                    </div>
+
+                    <div className="artifact-section">
+                        <h3>Measurements</h3>
+                        <ul>
+                            <li>Length: {artifactData?.length || "Unknown"} mm</li>
+                            <li>Width: {artifactData?.width || "Unknown"} mm</li>
+                            <li>Height: {artifactData?.height || "Unknown"} mm</li>
+                            <li>Diameter: {artifactData?.measurement_diameter || "Unknown"} mm</li>
+                            <li>Weight: {artifactData?.weight || "Unknown"} g</li>
+                            <li>Measurement notes: {artifactData?.measurement_notes || "Unknown"}</li>
+                        </ul>
+                    </div>
+
+                    <div className="artifact-section">
+                        <h3>Locations & Excavation</h3>
+                            <p>Repository Location: {artifactData?.location_in_repository || "Unknown"}</p>
+                            <p>Storage Location: {artifactData?.storage_location || "Unknown"}</p>
+                            <p>Platlot: {artifactData?.platlot || "Unknown"}</p>
+                            <p>Found at Depth: {artifactData?.found_at_depth || "Unknown"}</p>
+                            <p>Longitud: {artifactData?.longitude || "Unknown"}</p>
+                            <p>Latitud: {artifactData?.latitude || "Unknown"}</p>
+                            <p>Distance from Datum: {artifactData?.distance_from_datum || "Unknown"}</p>
+                            <p>Found in Grid: {artifactData?.found_in_grid || "Unknown"}</p>
+                    </div>
+
+                    <div className="artifact-section">
+                        <h3>People involved</h3>
+                            <p>Owner: {artifactData?.owner || "Unknown"}</p>
+                            <p>Excavator: {artifactData?.excavator || "Unknown"}</p>
+                            <p>Scanned By: {artifactData?.scanned_by || "Unknown"}</p>
+                            <p>Cataloger Name: {artifactData?.cataloguer_name || "Unknown"}</p>
+                            <p>Data Double Checked By: {artifactData?.data_double_checked_by || "Unknown"}</p>
+                    </div>
+
+                    <div className="artifact-section">
+                        <h3>Dates</h3>
+                            <p>Date Excavated: {artifactData?.date_excavated || "Unknown"}</p>
+                            <p>Date Catalogued: {artifactData?.date_catalogued || "Unknown"}</p>
+                            <p>Date Collected: {artifactData?.date_catalogued || "Unknown"}</p>
+                    </div>
+
+                    <div className="artifact-section">
+                        <h3>Other Details</h3>
+                            <p>Conservation Condition: {artifactData?.conservation_condition || "Unknown"}</p>
+                            <p>Oranic/Inorganic: {artifactData?.organic_inorganic || "Unknown"}</p>
+                            <p>Species: {artifactData?.species || "Unknown"}</p>
+                            <p>Notes: {artifactData?.notes || "Unknown"}</p>
+                            <p>Source for ID: {artifactData?.sources_for_id || "Unknown"}</p>
+                            <p>QS Concerns: {artifactData?.qsconcerns || "Unknown"}</p>
+                            <p>Druhl Check: {artifactData?.druhlcheck || "Unknown"}</p>
+                    </div>
               </div>
             </article>
           </section>

@@ -1,0 +1,242 @@
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Georgia', serif;
+    color: #333;
+    background-color: #F6F6F6;
+  }
+  
+  /* Hero / Banner area for artifacts list */
+  .artifacts-hero {
+    background-color: #2f2f2f;
+    height: 225px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .hero-title {
+    color: #FFFFFF;
+    font-size: 3rem;
+    text-align: center;
+    margin: 0;
+    transform: translateY(25px);
+  }
+  
+  /* Main container styling */
+  .artifacts-container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 2rem auto;
+  }
+  
+  /* Grid layout for artifacts */
+  .artifacts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+  }
+  
+  /* Individual artifact card */
+  .artifact-card {
+    border: 1px solid #eee;
+    border-radius: 5px;
+    overflow: hidden;
+    background-color: #FAFAFA;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Artifact image */
+  .artifact-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+  }
+  
+  /* Artifact info container */
+  .artifact-info {
+    padding: 1rem;
+  }
+  
+  /* Artifact text styling */
+  .artifact-name {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+  }
+  
+  .artifact-location,
+  .artifact-timePeriod,
+  .artifact-material {
+    font-size: 0.95rem;
+    margin-bottom: 0.25rem;
+    color: rgb(120, 120, 120);
+  }
+  
+  .artifact-description {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+  
+  /* ------------------------------
+     Artifact Page (Individual View)
+  --------------------------------*/
+  .artifact-page {
+    background-color: #f6f6f6;
+    min-height: 100vh;
+    padding-bottom: 2rem;
+  }
+  
+  /* Hero section */
+  .artifact-hero {
+    background-color: #2F2F2F;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .artifact-hero .hero-title {
+    color: #f3f3f3;
+    font-size: 2.8rem;
+    letter-spacing: 1px;
+    transform: none;
+  }
+  
+  /* Container and card */
+  .artifact-container {
+    width: 90%;
+    max-width: 1000px;
+    margin: 2rem auto;
+  }
+  
+  .artifact-card {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .artifact-card .artifact-image {
+    width: 100%;
+    height: 350px;
+    object-fit: cover;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  /* Info and sections */
+  .artifact-info {
+    padding: 2rem;
+  }
+  
+  .artifact-name {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #e5e5e5;
+    padding-bottom: 0.5rem;
+  }
+  
+  /* Section headers */
+  .artifact-section {
+    margin-bottom: 1.5rem;
+  }
+  
+  .artifact-section h3 {
+    font-size: 1.2rem;
+    color: #444;
+    margin-bottom: 0.5rem;
+    border-left: 4px solid #a89c94;
+    padding-left: 8px;
+  }
+  
+  /* Paragraph and list styles */
+  .artifact-section p,
+  .artifact-section li {
+    font-size: 0.95rem;
+    margin: 0.25rem 0;
+    line-height: 1.4;
+    color: #555;
+  }
+  
+  .artifact-section ul {
+    list-style: disc;
+    padding-left: 1.5rem;
+  }
+  
+  /* ------------------------------
+     Responsive Styles
+  --------------------------------*/
+  
+  /* Tablet view */
+  @media (max-width: 768px) {
+    .hero-title {
+      font-size: 2rem;
+    }
+  
+    .artifacts-container {
+      width: 95%;
+      margin: 1rem auto;
+    }
+  
+    .artifact-name {
+      font-size: 1.25rem;
+    }
+  
+    .artifact-location,
+    .artifact-timePeriod,
+    .artifact-material {
+      font-size: 0.85rem;
+    }
+  
+    .artifact-description {
+      font-size: 0.85rem;
+    }
+  
+    .artifact-info {
+      padding: 1.25rem;
+    }
+  
+    .artifact-section h3 {
+      font-size: 1rem;
+    }
+  }
+  
+  /* Mobile view */
+  @media (max-width: 480px) {
+    .artifacts-hero {
+      height: 180px;
+    }
+  
+    .hero-title {
+      font-size: 1.5rem;
+      transform: translateY(15px);
+    }
+  
+    .artifacts-container {
+      width: 100%;
+      margin: 0.5rem auto;
+    }
+  
+    .artifact-name {
+      font-size: 1rem;
+    }
+  
+    .artifact-location,
+    .artifact-timePeriod,
+    .artifact-material {
+      font-size: 0.75rem;
+    }
+  
+    .artifact-description {
+      font-size: 0.75rem;
+    }
+  }

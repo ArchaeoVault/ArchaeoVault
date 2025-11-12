@@ -7,6 +7,7 @@ import ForgotPassword from "./ForgotPassword";
 import ResetPassword from "./ResetPassword";
 import NewportArtifacts from './NewportArtifacts';
 import PortsmouthArtifacts from './PortsmouthArtifacts';
+import Artifact from "./Artifact"; // new route
 import Artifacts from './Artifacts';
 import Artifacts2 from './Artifacts2';
 import AboutUs from "./AboutUs";
@@ -48,6 +49,7 @@ const App = () => {
         {/* Other routes */}
         <Route path="/about" element={<AboutUs />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/artifact/1" element={<Artifact />} /> 
         <Route path="/artifacts" element={<Artifacts />} />
         <Route path="/Artifacts2" element={<Artifacts2 />} />
         <Route path="/list" element={<ListPage />} />

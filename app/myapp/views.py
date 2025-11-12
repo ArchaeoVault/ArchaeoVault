@@ -92,6 +92,7 @@ def get_user_permission(request):
         return JsonResponse({'error': 'User not logged in'}, status=401)
     try:
         user = users.objects.get(email=email)
+        print(JsonResponse({'upermission': user.upermission.numval}, status=200).content)
         return JsonResponse({'upermission': user.upermission.numval}, status=200)
     except users.DoesNotExist:
         return JsonResponse({'error': 'User not found'}, status=404)
@@ -296,7 +297,7 @@ def all_artifacts_view(request):
     # Return data as JSON response
     return JsonResponse({'artifacts': artifact_data,}, status = 200)
 
-
+@csrf_exempt
 def single_artifact_view(request):
     if request.method == 'POST':
         try:

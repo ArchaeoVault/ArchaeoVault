@@ -137,17 +137,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:3000',  # Add your frontend's URL here
-    'http://localhost:8000',
-    'http://127.0.0.1:3000',
-    'http://127.0.0.1:8000',
+    'http://localhost:8000/',
+    'http://127.0.0.1:3000/',
+    'http://127.0.0.1:8000/',
     'https://www.archaeovault.com',
     'https://archaeovault.com',
 ]
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',  # Add your frontend's URL here
-    'http://localhost:8000',
-    'http://127.0.0.1:3000',
-    'http://127.0.0.1:8000',
+    'http://localhost:3000',
     'https://archaeovault.com',
     'https://www.archaeovault.com',
     ]

@@ -24,11 +24,17 @@ const Header = () => {
           method: 'GET',
           credentials: 'include',
         });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch user permission');
+        }
+
         const data = await response.json();
         const userPermission = data.upermission || 0; // Assuming the API returns { upermission: 1 }
         setPermission(userPermission);
       } catch (error) {
-        setPermission(0);
+        console.error(error);
+        setPermission(0); // Default to 0 if there's an error
       }
     };
 

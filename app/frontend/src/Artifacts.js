@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Header from "./Header";
 import Footer from "./Footer";
 import "./Artifacts.css";
-import Cookies from 'js-cookie'; 
 
 let backend_url = '';
 if (process.env.REACT_APP_DJANGO_ENV === 'production'){ backend_url = `https://${process.env.REACT_APP_URL}/api/`;}
@@ -33,8 +32,6 @@ const artifactsData = [
 ];
 
 function ArtifactsPage() {
-
-  const [csrfToken, setCsrfToken] = useState('');
   const navigate = useNavigate(); // << useNavigate for redirects
 
   async function handleArtifactClick(artifact) {
@@ -43,13 +40,17 @@ function ArtifactsPage() {
         method: "GET",
         credentials: "include",
       });
+      
+      if (!response.ok) {
+        throw new Error("Failed to fetch user permission");
+      }
 
       const data = await response.json();
       const permission = data.upermission; // assuming your API returns { permission: 2 } or { permission: 3 }
       let targetPath = artifact.path;
 
       if (permission === 3 || permission === 1) {
-        targetPath = `/researcher-${artifact.path}`;
+        targetPath = `/researcher-${artifact.path.slice(1)}`;
       }
 
       navigate(targetPath);

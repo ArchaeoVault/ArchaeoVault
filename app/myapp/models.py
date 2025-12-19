@@ -100,7 +100,7 @@ class your_table(models.Model):
     found_in_grid = models.ForeignKey(gridnames, on_delete=models.CASCADE,db_column='Found in grid') #foriegn key
     excavator = models.CharField(max_length=50,db_column='Excavator')
     notes = models.CharField(max_length=500,db_column='Notes')
-    images = models.CharField(max_length=500,db_column='Image (add column for each additional image)')
+    images = models.ImageField(upload_to="artifacts/", blank=True, null=True)
     data_double_checked_by = models.CharField(max_length=50,db_column='Data entry double checked by ')
     qsconcerns = models.CharField(max_length=100,db_column='Questions/ concerns ')
     druhlcheck = models.CharField(max_length=50,db_column='Dr.Uhl Check')
@@ -108,6 +108,7 @@ class your_table(models.Model):
     location = models.CharField(max_length=100,db_column='Location')
     storage_location = models.CharField(max_length=50,db_column='Storage Location')
     uhlflages = models.CharField(max_length=250,db_column='Uhl Flags')
+    qr_code = models.ImageField(upload_to="qr_codes/", blank=True, null=True) # add QR codes
     id = models.AutoField(primary_key=True)
 
 

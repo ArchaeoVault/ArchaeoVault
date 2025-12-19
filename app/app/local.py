@@ -11,16 +11,15 @@ DEBUG = True
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'None')
 
 
-ALLOWED_HOSTS = [env('DJANGO_ALLOWED_HOST_1'),env('DJANGO_ALLOWED_HOST_2') ]
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+]
 
 DATABASES = {
     'default': {
-        'ENGINE': env('ARCHAEODB_ENGINE'),
-        'NAME': env('ARCHAEODB_NAME'),
-        'USER': env('ARCHAEODB_USER'),
-        'PASSWORD': env('ARCHAEODB_PASSWORD'),
-        'HOST': env('ARCHAEODB_HOST'),
-        'PORT': env('ARCHAEODB_PORT'),
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 print(DATABASES)

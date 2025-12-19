@@ -298,70 +298,104 @@ def all_artifacts_view(request):
     return JsonResponse({'artifacts': artifact_data,}, status = 200)
 
 @csrf_exempt
-def single_artifact_view(request):
-    if request.method == 'POST':
-        try:
-            # Parsing the incoming JSON data
-            data = json.loads(request.body)
-            provided_id = data.get('id')
-            artifacts = your_table.objects.filter(id = provided_id)
-            artifact_data = [
-                {
-                    'address': artifact.address.id,
-                    'owner': artifact.owner,
-                    'date_collected': artifact.date_collected.isoformat(),
-                    'catalog_number': artifact.catalog_number,
-                    'object_name': artifact.object_name,
-                    'scanned_3d': artifact.scanned_3d.id,
-                    'printed_3d': artifact.printed_3d.id,
-                    'scanned_by': artifact.scanned_by,
-                    'date_excavated': artifact.date_excavated.isoformat(),
-                    'object_dated_to': artifact.object_dated_to,
-                    'object_description': artifact.object_description,
-                    'organic_inorganic': artifact.organic_inorganic.id,
-                    'species': artifact.species.id,
-                    'material_of_manufacture': artifact.material_of_manufacture.id,
-                    'form_object_type': artifact.form_object_type.id,
-                    'quantity': artifact.quantity,
-                    'measurement_diameter': artifact.measurement_diameter,
-                    'length': artifact.length,
-                    'width': artifact.width,
-                    'height': artifact.height,
-                    'measurement_notes': artifact.measurement_notes,
-                    'weight': artifact.weight,
-                    'weight_notes': artifact.weight_notes,
-                    'sivilich_diameter': artifact.sivilich_diameter,
-                    'deformation_index': artifact.deformation_index,
-                    'conservation_condition': artifact.conservation_condition.id,
-                    'cataloguer_name': artifact.cataloguer_name,
-                    'date_catalogued': artifact.date_catalogued.isoformat(),
-                    'location_in_repository': artifact.location_in_repository,
-                    'platlot': artifact.platlot,
-                    'found_at_depth': artifact.found_at_depth,
-                    'longitude': artifact.longitude,
-                    'latitude': artifact.latitude,
-                    'distance_from_datum': artifact.distance_from_datum,
-                    'found_in_grid': artifact.found_in_grid.id,
-                    'excavator': artifact.excavator,
-                    'notes': artifact.notes,
-                    'images': artifact.images,
-                    'data_double_checked_by': artifact.data_double_checked_by,
-                    'qsconcerns': artifact.qsconcerns,
-                    'druhlcheck': artifact.druhlcheck,
-                    'sources_for_id': artifact.sources_for_id,
-                    'location': artifact.location,
-                    'storage_location': artifact.storage_location,
-                    'uhlflages': artifact.uhlflages,
-                    'id': artifact.id
-                } for artifact in artifacts
-            ]
+def single_artifact_view(request, id):
+    artifacts = your_table.objects.select_related(
+        "material_of_manufacture",
+        "form_object_type",
+        "species",
+        "organic_inorganic",
+        "found_in_grid",
+        "conservation_condition",
+        "address",
+        "scanned_3d",
+        "printed_3d",
+    ).filter(id=id)
 
-            # Return data as JSON response
-            return JsonResponse({'artifacts': artifact_data,}, status = 200)
-        except json.JSONDecodeError:
-            return JsonResponse({'error': 'Invalid JSON data'}, status=400)
-    return JsonResponse({'error': 'Invalid request method'}, status=405)
+    artifact_data = []
+    for artifact in artifacts:
+        artifact_data.append({
+            "id": artifact.id,
+            "object_name": artifact.object_name,
 
+            # Image URL (absolute)
+            "images": request.build_absolute_uri(artifact.images.url) if artifact.images else None,
+
+            # normal fields
+            "catalog_number": artifact.catalog_number,
+            "object_description": artifact.object_description,
+            "object_dated_to": artifact.object_dated_to,
+            "quantity": artifact.quantity,
+
+            "length": artifact.length,
+            "width": artifact.width,
+            "height": artifact.height,
+            "measurement_diameter": artifact.measurement_diameter,
+            "weight": artifact.weight,
+            "measurement_notes": artifact.measurement_notes,
+
+            "location_in_repository": artifact.location_in_repository,
+            "storage_location": artifact.storage_location,
+            "platlot": artifact.platlot,
+            "found_at_depth": artifact.found_at_depth,
+            "longitude": artifact.longitude,
+            "latitude": artifact.latitude,
+            "distance_from_datum": artifact.distance_from_datum,
+
+            "owner": artifact.owner,
+            "excavator": artifact.excavator,
+            "scanned_by": artifact.scanned_by,
+            "cataloguer_name": artifact.cataloguer_name,
+            "data_double_checked_by": artifact.data_double_checked_by,
+
+            "date_excavated": artifact.date_excavated.isoformat() if artifact.date_excavated else None,
+            "date_catalogued": artifact.date_catalogued.isoformat() if artifact.date_catalogued else None,
+            "date_collected": artifact.date_collected.isoformat() if artifact.date_collected else None,
+
+            "notes": artifact.notes,
+            "sources_for_id": artifact.sources_for_id,
+            "qsconcerns": artifact.qsconcerns,
+            "druhlcheck": artifact.druhlcheck,
+
+            # FOREIGN KEYS: return TEXT not ID
+            "material_of_manufacture": (
+                artifact.material_of_manufacture.typename
+                if artifact.material_of_manufacture else None
+            ),
+            "form_object_type": (
+                artifact.form_object_type.typename
+                if artifact.form_object_type else None
+            ),
+            "species": (
+                artifact.species.typename
+                if artifact.species else None
+            ),
+            "organic_inorganic": (
+                artifact.organic_inorganic.type
+                if artifact.organic_inorganic else None
+            ),
+            "found_in_grid": (
+                artifact.found_in_grid.typename
+                if artifact.found_in_grid else None
+            ),
+            "conservation_condition": (
+                artifact.conservation_condition.typename
+                if artifact.conservation_condition else None
+            ),
+
+            # optional: address fields
+            "address": {
+                "id": artifact.address.id if artifact.address else None,
+                "streetnumber": artifact.address.streetnumber if artifact.address else None,
+                "streetname": artifact.address.streetname if artifact.address else None,
+                "state": artifact.address.state if artifact.address else None,
+                "countyorcity": artifact.address.countyorcity if artifact.address else None,
+                "site": artifact.address.site if artifact.address else None,
+            } if artifact.address else None,
+            'qr_code': request.build_absolute_uri(artifact.qr_code.url)
+            if artifact.qr_code else None,
+        })
+
+    return JsonResponse({"artifacts": artifact_data}, status=200)
 
 def all_image_table_view(request):
     images = imagetable.objects.all()

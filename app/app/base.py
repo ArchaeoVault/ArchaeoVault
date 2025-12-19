@@ -160,3 +160,6 @@ CSRF_COOKIE_SAMESITE = 'None'  # or 'Strict' based on your needs
 CSRF_COOKIE_SECURE = True  # Set to True if you're running over HTTPS
 SESSION_COOKIE_SECURE = True
 SESSION_COOKIE_SAMESITE = 'None'
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"

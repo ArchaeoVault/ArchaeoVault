@@ -49,7 +49,7 @@ const App = () => {
         {/* Other routes */}
         <Route path="/about" element={<AboutUs />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/artifact/1" element={<Artifact />} /> 
+        <Route path="/artifact/:id" element={<Artifact />} /> 
         <Route path="/artifacts" element={<Artifacts />} />
         <Route path="/Artifacts2" element={<Artifacts2 />} />
         <Route path="/list" element={<ListPage />} />

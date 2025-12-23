@@ -36,14 +36,7 @@ function Artifact() {
         }
 
 
-        const imageRes = await fetch(`${backend_api}image_table/`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: {"artifact_id": {id}}
-          });
+        const imageRes = await fetch(`${backend_api}image_table/${id}`);
 
         if (!imageRes.images) {
           throw new Error("Error fetching images");

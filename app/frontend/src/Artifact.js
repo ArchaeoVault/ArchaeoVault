@@ -35,7 +35,22 @@ function Artifact() {
           throw new Error("No artifact found with the specified ID");
         }
 
+
+        const imageRes = await fetch(`${backend_api}image_table/`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: {"artifact_id": {id}}
+          });
+
+        if (!imageRes.images) {
+          throw new Error("Error fetching images");
+        }
+        data.artifacts[0].images = imageRes.images;
         setArtifactData(data.artifacts[0]);
+
       } catch (err) {
         console.error("Error fetching artifact:", err);
         setError(err.message);
@@ -88,6 +103,22 @@ function Artifact() {
     return `${backend_host}${url}`;
   };
 
+  const makeImgs = (images) => {
+    const imgs = [];
+    for(let i = 0; i < images.length(); i++){
+      imgs.push(<tr><img
+            src="https://{process.env.REACT_APP_URL}/{images[i].filepath}"
+            alt={artifactData.object_name}
+            className="artifact-image"
+            onError={(e) => {
+              console.error("Artifact image failed:", artifactData.images);
+              e.target.style.display = "none";
+            }}
+          /></tr>);
+      return <tbody>{imgs}</tbody>
+    }
+  }
+
   return (
     <>
       <Header />
@@ -98,16 +129,7 @@ function Artifact() {
 
         <section className="artifact-container">
           <article className="artifact-card">
-          {artifactData?.images && (
-          <img
-            src={artifactData.images}
-            alt={artifactData.object_name}
-            className="artifact-image"
-            onError={(e) => {
-              console.error("Artifact image failed:", artifactData.images);
-              e.target.style.display = "none";
-            }}
-          />
+          {artifactData?.images && makeImgs(artifactData?.images
           )}
           {artifactData?.qr_code && (
           <div className="qr-section">

@@ -399,18 +399,21 @@ def single_artifact_view(request, id):
 
 @csrf_exempt
 def all_image_table_view(request, artifact_id):
-    images = imagetable.objects.get(id=artifact_id)
+    try:
+        images = imagetable.objects.filter(your_table_id=artifact_id)
 
-    image_data = [
-    {
-        'id': image.id,
-        'artifact_id': image.your_table.id,
-        'filepath': image.filepath,
-    }
-        for image in images
-    ]
+        image_data = [
+        {
+            'id': image.id,
+            'artifact_id': image.your_table.id,
+            'filepath': image.filepath,
+        }
+            for image in images
+        ]
 
-    return JsonResponse({'images': image_data,}, status = 200)
+        return JsonResponse({'images': image_data,}, status = 200)
+    except Exception as e:
+        return JsonResponse({'error':'Error' + str(e)},status = 400)
 
 
 def activate(request, uidb64, token):

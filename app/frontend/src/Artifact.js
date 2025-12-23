@@ -100,13 +100,14 @@ function Artifact() {
     const imgs = [];
     for(let i = 0; i < images.length(); i++){
       imgs.push(<tr><img
-            src="https://{process.env.REACT_APP_URL}/{images[i].filepath}"
+            src={backend_host + "/" + images[i].filepath}
             alt={artifactData.object_name}
             className="artifact-image"
             onError={(e) => {
               console.error("Artifact image failed:", artifactData.images);
               e.target.style.display = "none";
-            }}
+            }
+          }
           /></tr>);
       return <tbody>{imgs}</tbody>
     }

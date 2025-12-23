@@ -398,7 +398,11 @@ def single_artifact_view(request, id):
     return JsonResponse({"artifacts": artifact_data}, status=200)
 
 def all_image_table_view(request):
-    images = imagetable.objects.all()
+    data = json.loads(request.body)
+    if 'artifact_id' in data:
+        images = imagetable.objects.get(id=data['artifact_id'])
+    else:
+        images = imagetable.objects.all()
 
     image_data = [
     {
@@ -410,7 +414,6 @@ def all_image_table_view(request):
     ]
 
     return JsonResponse({'images': image_data,}, status = 200)
-
 
 
 def activate(request, uidb64, token):

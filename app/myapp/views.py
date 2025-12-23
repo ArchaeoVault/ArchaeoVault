@@ -397,12 +397,9 @@ def single_artifact_view(request, id):
 
     return JsonResponse({"artifacts": artifact_data}, status=200)
 
-def all_image_table_view(request):
-    data = json.loads(request.body)
-    if 'artifact_id' in data:
-        images = imagetable.objects.get(id=data['artifact_id'])
-    else:
-        images = imagetable.objects.all()
+@csrf_exempt
+def all_image_table_view(request, artifact_id):
+    images = imagetable.objects.get(id=artifact_id)
 
     image_data = [
     {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
-import * as THREE from "https://cdn.skypack.dev/three@0.129.0/build/three.module.js";
-import { OrbitControls } from "https://cdn.skypack.dev/three@0.129.0/examples/js/controls/OrbitControls.js";
-import { GLTFLoader } from "https://cdn.skypack.dev/three@0.129.0/examples/js/loaders/GLTFLoader.js";
+import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.129.0/build/three.module.js/+esm";
+import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.129.0/examples/jsm/controls/OrbitControls.js/+esm";
+import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.129.0/examples/jsm/loaders/GLTFLoader.js/+esm";
 import Header from "./Header";
 import Footer from "./Footer";
 import "./Artifacts2.css";

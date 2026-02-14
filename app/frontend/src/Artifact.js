@@ -176,7 +176,7 @@ function Artifact() {
               <div className="artifact-section">
               <h3>Locations & Excavation</h3>
                 {artifactData?.site_vague && (
-                  <p>Site: {artifactData.siteVague}</p>
+                  <p>Site: {artifactData.site_vague}</p>
                 )}
                 {artifactData?.storage_location && (
                   <p>Storage Location: {artifactData.storage_location}</p>

@@ -118,7 +118,7 @@ function Artifact() {
       <Header />
       <div className="artifact-page">
         <header className="artifact-hero">
-          <h1 className="hero-title">{artifactData.catalog_number}</h1>
+          <h1 className="hero-title">Artifact {artifactData.catalog_number}</h1>
         </header>
 
         <section className="artifact-container">
@@ -188,7 +188,9 @@ function Artifact() {
                 {artifactData?.longitude && <p>Longitude: {artifactData.longitude}</p>}
                 {artifactData?.latitude && <p>Latitude: {artifactData.latitude}</p>}
                 {artifactData?.distance_from_datum && (
-                  <p>Distance from Datum: {(artifactData.distance_from_datum ?? 0) / 10} cm</p>
+                  (typeof artifactData.distance_from_datum === 'number') ?
+                  <p>Distance from Datum: {(artifactData.distance_from_datum ?? 0) / 10} cm</p> :
+                  <p>Distance from Datum: Unknown</p>
                 )}
                 {artifactData?.found_in_grid && (
                   <p>Found in Grid: {artifactData.found_in_grid}</p>

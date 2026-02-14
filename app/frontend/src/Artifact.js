@@ -118,7 +118,7 @@ function Artifact() {
       <Header />
       <div className="artifact-page">
         <header className="artifact-hero">
-          <h1 className="hero-title">Artifact {id}</h1>
+          <h1 className="hero-title">{artifactData.catalog_number}</h1>
         </header>
 
         <section className="artifact-container">
@@ -175,20 +175,20 @@ function Artifact() {
 
               <div className="artifact-section">
               <h3>Locations & Excavation</h3>
-                {artifactData?.location_in_repository && (
-                  <p>Repository Location: {artifactData.location_in_repository}</p>
+                {artifactData?.site_vague && (
+                  <p>Site: {artifactData.siteVague}</p>
                 )}
                 {artifactData?.storage_location && (
                   <p>Storage Location: {artifactData.storage_location}</p>
                 )}
                 {artifactData?.platlot && <p>Platlot: {artifactData.platlot}</p>}
                 {artifactData?.found_at_depth && (
-                  <p>Found at Depth: {artifactData.found_at_depth}</p>
+                  <p>Found at Depth: {artifactData.found_at_depth} mm</p>
                 )}
                 {artifactData?.longitude && <p>Longitude: {artifactData.longitude}</p>}
                 {artifactData?.latitude && <p>Latitude: {artifactData.latitude}</p>}
                 {artifactData?.distance_from_datum && (
-                  <p>Distance from Datum: {artifactData.distance_from_datum}</p>
+                  <p>Distance from Datum: {(artifactData.distance_from_datum ?? 0) / 10} cm</p>
                 )}
                 {artifactData?.found_in_grid && (
                   <p>Found in Grid: {artifactData.found_in_grid}</p>
@@ -196,25 +196,9 @@ function Artifact() {
               </div>
 
               <div className="artifact-section">
-              <h3>People Involved</h3>
-                {artifactData?.owner && <p>Owner: {artifactData.owner}</p>}
-                {artifactData?.excavator && <p>Excavator: {artifactData.excavator}</p>}
-                {artifactData?.scanned_by && <p>Scanned By: {artifactData.scanned_by}</p>}
-                {artifactData?.cataloguer_name && (
-                  <p>Cataloger Name: {artifactData.cataloguer_name}</p>
-                )}
-                {artifactData?.data_double_checked_by && (
-                  <p>Data Double Checked By: {artifactData.data_double_checked_by}</p>
-                )}
-              </div>
-
-              <div className="artifact-section">
               <h3>Dates</h3>
                 {artifactData?.date_excavated && (
                   <p>Date Excavated: {new Date(artifactData.date_excavated).toLocaleDateString()}</p>
-                )}
-                {artifactData?.date_catalogued && (
-                  <p>Date Catalogued: {new Date(artifactData.date_catalogued).toLocaleDateString()}</p>
                 )}
                 {artifactData?.date_collected && (
                   <p>Date Collected: {new Date(artifactData.date_collected).toLocaleDateString()}</p>

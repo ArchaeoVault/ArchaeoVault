@@ -382,7 +382,17 @@ def single_artifact_view(request, id):
                 if artifact.conservation_condition else None
             ),
 
+            "site_vague": (
+                ("Newport" if "newport" in artifact.address.countyorcity.lower() 
+                 else "Portsmouth" if "portsmouth" in artifact.address.countyorcity.lower()
+                 else None
+                )
+                if (artifact.address.countyorcity)
+                else None
+            ),
+        })
             # optional: address fields
+        """
             "address": {
                 "id": artifact.address.id if artifact.address else None,
                 "streetnumber": artifact.address.streetnumber if artifact.address else None,
@@ -393,7 +403,8 @@ def single_artifact_view(request, id):
             } if artifact.address else None,
             'qr_code': request.build_absolute_uri(artifact.qr_code.url)
             if artifact.qr_code else None,
-        })
+            
+        })"""
 
     return JsonResponse({"artifacts": artifact_data}, status=200)
 
